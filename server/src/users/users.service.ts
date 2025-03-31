@@ -1,0 +1,63 @@
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
+import { User } from './users.model';
+import { CreateUserDto } from './dto/create-user.dto';
+
+@Injectable()
+export class UsersService {
+  constructor(@InjectModel(User) private userRepository: typeof User) {}
+
+  async createUser(dto: CreateUserDto) {
+    return await this.userRepository.create(dto);
+  }
+
+  async findAllUsers() {
+    return await this.userRepository.findAll();
+  }
+
+  async findOneUser(id: number) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      include: { all: true },
+    });
+
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    return user;
+  }
+
+  async deleteUsers(ids: number[]) {
+    const deletedCount = await this.userRepository.destroy({
+      where: { id: ids },
+    });
+
+    if (deletedCount === 0) {
+      throw new HttpException('No users found', HttpStatus.NOT_FOUND);
+    }
+  }
+
+  async blockUsers(ids: number[]) {
+    await this.setBlockStatus(ids, true);
+  }
+
+  async unBlockUsers(ids: number[]) {
+    await this.setBlockStatus(ids, false);
+  }
+
+  private async setBlockStatus(ids: number[], isBlocked: boolean) {
+    const users = await this.userRepository.findAll({
+      where: { id: ids },
+    });
+
+    if (users.length !== ids.length) {
+      throw new HttpException(
+        'Some users were not found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    await this.userRepository.update({ isBlocked }, { where: { id: ids } });
+  }
+}
