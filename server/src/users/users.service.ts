@@ -15,17 +15,11 @@ export class UsersService {
     return await this.userRepository.findAll();
   }
 
-  async findOneUser(id: number) {
-    const user = await this.userRepository.findOne({
-      where: { id },
+  async findOneUser(email: string) {
+    return await this.userRepository.findOne({
+      where: { email },
       include: { all: true },
     });
-
-    if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
-
-    return user;
   }
 
   async deleteUsers(ids: number[]) {
@@ -39,6 +33,7 @@ export class UsersService {
   }
 
   async blockUsers(ids: number[]) {
+    console.log(ids);
     await this.setBlockStatus(ids, true);
   }
 

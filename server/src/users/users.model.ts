@@ -5,6 +5,7 @@ interface UserAttributes {
   email: string;
   password: string;
   isBlocked?: boolean;
+  role?: string;
 }
 
 @Table({ tableName: 'users' })
@@ -45,4 +46,11 @@ export class User extends Model<User, UserAttributes> {
     defaultValue: false,
   })
   isBlocked: boolean;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+    defaultValue: 'USER',
+  })
+  role: string;
 }

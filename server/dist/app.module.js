@@ -10,7 +10,8 @@ exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const sequelize_1 = require("@nestjs/sequelize");
-const sequelize_config_1 = require("./config/sequelize.config");
+const users_module_1 = require("./users/users.module");
+const auth_module_1 = require("./auth/auth.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -21,11 +22,19 @@ exports.AppModule = AppModule = __decorate([
                 envFilePath: `.${process.env.NODE_ENV || 'development'}.env`,
                 isGlobal: true,
             }),
-            sequelize_1.SequelizeModule.forRootAsync({
-                imports: [config_1.ConfigModule],
-                inject: [config_1.ConfigService],
-                useFactory: sequelize_config_1.getSequelizeConfig,
+            sequelize_1.SequelizeModule.forRoot({
+                dialect: 'postgres',
+                host: process.env.DB_HOST,
+                port: Number(process.env.DB_PORT),
+                username: process.env.DB_USER,
+                password: process.env.DB_PASSWORD,
+                database: process.env.DB_NAME,
+                models: [],
+                autoLoadModels: true,
+                synchronize: true,
             }),
+            users_module_1.UsersModule,
+            auth_module_1.AuthModule,
         ],
     })
 ], AppModule);
