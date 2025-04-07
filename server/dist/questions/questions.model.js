@@ -25,7 +25,6 @@ let Question = class Question extends sequelize_typescript_1.Model {
     description;
     type;
     isRequired;
-    options;
     order;
     showInTable;
     templateId;
@@ -76,20 +75,6 @@ __decorate([
     }),
     __metadata("design:type", Boolean)
 ], Question.prototype, "isRequired", void 0);
-__decorate([
-    (0, sequelize_typescript_1.Column)({
-        type: sequelize_typescript_1.DataType.JSON,
-        defaultValue: [],
-        validate: {
-            validateOptions(value) {
-                if (!value || value.length === 0) {
-                    throw new Error('Options are required for SELECT type questions');
-                }
-            },
-        },
-    }),
-    __metadata("design:type", Array)
-], Question.prototype, "options", void 0);
 __decorate([
     (0, sequelize_typescript_1.Column)({
         type: sequelize_typescript_1.DataType.INTEGER,

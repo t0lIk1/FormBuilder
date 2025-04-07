@@ -1,7 +1,7 @@
-import { CreateQuestionDto } from './dto/create-question.dto';
-import { ReorderQuestionsDto } from './dto/reorder-question.dto';
 import { Question } from './questions.model';
 import { Templates } from '../templates/templates.model';
+import { CreateQuestionDto } from './dto/create-question.dto';
+import { ReorderQuestionsDto } from './dto/reorder-question.dto';
 export declare class QuestionsService {
     private questionRepository;
     private templatesRepository;
@@ -11,6 +11,6 @@ export declare class QuestionsService {
     findOne(templateId: number, id: number): Promise<Question>;
     update(templateId: number, id: number, dto: CreateQuestionDto): Promise<Question>;
     remove(templateId: number, id: number): Promise<void>;
-    reorder(templateId: number, dto: ReorderQuestionsDto): Promise<Question[]>;
-    private getNextOrder;
+    reorder(templateId: number, dto: ReorderQuestionsDto): Promise<[affectedCount: number][]>;
+    private reorderAfterDelete;
 }

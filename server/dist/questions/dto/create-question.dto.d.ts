@@ -4,5 +4,6 @@ export declare class CreateQuestionDto {
     readonly description?: string;
     readonly type: QuestionType;
     readonly isRequired?: boolean;
-    readonly options?: string[];
+    readonly order?: number;
+    readonly showInTable?: boolean;
 }

@@ -16,6 +16,7 @@ exports.TemplatesController = void 0;
 const common_1 = require("@nestjs/common");
 const templates_service_1 = require("./templates.service");
 const create_template_dto_1 = require("./dto/create-template.dto");
+const access_templates_guard_1 = require("./access-templates.guard");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 let TemplatesController = class TemplatesController {
     templatesService;
@@ -65,6 +66,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], TemplatesController.prototype, "findOne", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, access_templates_guard_1.AccessTemplatesGuard),
     (0, common_1.Put)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
@@ -72,6 +74,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], TemplatesController.prototype, "update", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, access_templates_guard_1.AccessTemplatesGuard),
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
@@ -79,6 +82,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], TemplatesController.prototype, "remove", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, access_templates_guard_1.AccessTemplatesGuard),
     (0, common_1.Get)(':id/questions'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),

@@ -16,12 +16,13 @@ class CreateQuestionDto {
     question;
     description;
     type;
-    isRequired;
-    options;
+    isRequired = false;
+    order;
+    showInTable = false;
 }
 exports.CreateQuestionDto = CreateQuestionDto;
 __decorate([
-    (0, class_validator_1.IsNotEmpty)({ message: 'Текст вопроса обязателен' }),
+    (0, class_validator_1.IsNotEmpty)({ message: 'Question text is required' }),
     __metadata("design:type", String)
 ], CreateQuestionDto.prototype, "question", void 0);
 __decorate([
@@ -29,17 +30,23 @@ __decorate([
     __metadata("design:type", String)
 ], CreateQuestionDto.prototype, "description", void 0);
 __decorate([
-    (0, class_validator_1.IsEnum)(questions_model_1.QuestionType, { message: 'Недопустимый тип вопроса' }),
+    (0, class_validator_1.IsEnum)(questions_model_1.QuestionType, { message: 'Invalid question type' }),
     __metadata("design:type", String)
 ], CreateQuestionDto.prototype, "type", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsBoolean)({ message: 'isRequired должно быть boolean' }),
+    (0, class_validator_1.IsBoolean)({ message: 'isRequired must be a boolean' }),
     __metadata("design:type", Boolean)
 ], CreateQuestionDto.prototype, "isRequired", void 0);
 __decorate([
-    (0, class_validator_1.ValidateIf)((o) => o.type === questions_model_1.QuestionType.SELECT),
-    (0, class_validator_1.ArrayMinSize)(1, { message: 'Для SELECT-вопроса нужен хотя бы один вариант' }),
-    __metadata("design:type", Array)
-], CreateQuestionDto.prototype, "options", void 0);
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.Min)(0),
+    __metadata("design:type", Number)
+], CreateQuestionDto.prototype, "order", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], CreateQuestionDto.prototype, "showInTable", void 0);
 //# sourceMappingURL=create-question.dto.js.map

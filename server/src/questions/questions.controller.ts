@@ -6,10 +6,12 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { QuestionsService } from './questions.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { ReorderQuestionsDto } from './dto/reorder-question.dto';
+import { AccessTemplatesGuard } from '../templates/access-templates.guard';
 
 @Controller('/templates/:templateId/questions')
 export class QuestionsController {

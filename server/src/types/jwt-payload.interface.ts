@@ -3,3 +3,7 @@ interface JwtPayload {
   role: string;
   id: number;
 }
+
+interface ParamsPayload {
+  id: string;
+}

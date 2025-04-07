@@ -23,7 +23,6 @@ export declare class Question extends Model<Question, QuestionAttributes> {
     description: string;
     type: QuestionType;
     isRequired: boolean;
-    options: string[];
     order: number;
     showInTable: boolean;
     templateId: number;

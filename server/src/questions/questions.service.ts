@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateQuestionDto } from './dto/create-question.dto';
-import { ReorderQuestionsDto } from './dto/reorder-question.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Question } from './questions.model';
 import { Templates } from '../templates/templates.model';
+import { CreateQuestionDto } from './dto/create-question.dto';
+import { ReorderQuestionsDto } from './dto/reorder-question.dto';
 
 @Injectable()
 export class QuestionsService {
@@ -14,20 +14,24 @@ export class QuestionsService {
 
   async create(templateId: number, dto: CreateQuestionDto) {
     const template = await this.templatesRepository.findByPk(templateId);
-    if (!template) {
-      throw new NotFoundException();
-    }
+    if (!template) throw new NotFoundException('Template not found');
+
+    const maxOrder = await this.questionRepository.max('order', {
+      where: { templateId },
+    });
+    const newOrder = typeof maxOrder === 'number' ? maxOrder + 1 : 1;
+
     return this.questionRepository.create({
       ...dto,
       templateId,
-      order: await this.getNextOrder(templateId),
+      order: newOrder,
     });
   }
 
   async findAllByTemplate(templateId: number) {
-    return await this.questionRepository.findAll({
+    return this.questionRepository.findAll({
       where: { templateId },
-      order: [['order', 'DESC']],
+      order: [['order', 'ASC']],
     });
   }
 
@@ -35,50 +39,43 @@ export class QuestionsService {
     const question = await this.questionRepository.findOne({
       where: { id, templateId },
     });
-    if (!question) {
-      throw new NotFoundException('Question not found');
-    }
+    if (!question) throw new NotFoundException('Question not found');
     return question;
   }
 
   async update(templateId: number, id: number, dto: CreateQuestionDto) {
-    const question = await this.questionRepository.findOne({
-      where: { id, templateId },
-    });
-
-    if (!question) {
-      throw new NotFoundException('Question not found');
-    }
-
+    const question = await this.findOne(templateId, id);
     return question.update(dto);
   }
 
   async remove(templateId: number, id: number) {
-    const question = await this.questionRepository.findOne({
-      where: { id, templateId },
-    });
+    const question = await this.findOne(templateId, id);
+    await question.destroy();
 
-    if (!question) {
-      throw new NotFoundException('Question not found');
-    }
-
-    return question.destroy();
+    await this.reorderAfterDelete(templateId);
   }
 
   async reorder(templateId: number, dto: ReorderQuestionsDto) {
-    const questions = await this.findAllByTemplate(templateId);
-    const updates = questions.map((q) => {
-      const newOrder = dto.orderedIds.indexOf(q.id);
-      return q.update({ order: newOrder });
-    });
+    const updates = dto.orderedIds.map((id, index) =>
+      this.questionRepository.update(
+        { order: index },
+        { where: { id, templateId } },
+      ),
+    );
     return Promise.all(updates);
   }
 
-  private async getNextOrder(templateId: number) {
-    const lastQuestion = await this.questionRepository.findOne({
+  // 🔒 Приватный метод для пересортировки вопросов
+  private async reorderAfterDelete(templateId: number) {
+    const questions = await this.questionRepository.findAll({
       where: { templateId },
-      order: [['order', 'DESC']],
+      order: [['order', 'ASC']],
     });
-    return lastQuestion ? lastQuestion.order + 1 : 0;
+
+    const updates = questions.map((q, index) =>
+      this.questionRepository.update({ order: index }, { where: { id: q.id } }),
+    );
+
+    await Promise.all(updates);
   }
 }

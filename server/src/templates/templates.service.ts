@@ -1,5 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Templates } from './templates.model';
 import { Question } from '../questions/questions.model';
 import { CreateTemplateDto } from './dto/create-template.dto';
@@ -9,15 +9,14 @@ export class TemplatesService {
   constructor(
     @InjectModel(Templates) private templateRepository: typeof Templates,
     @InjectModel(Question) private questionRepository: typeof Question,
-    // private usersService: UsersService,
   ) {}
 
   async create(dto: CreateTemplateDto) {
-    return await this.templateRepository.create(dto);
+    return this.templateRepository.create(dto);
   }
 
   async findAll() {
-    return await this.templateRepository.findAll({
+    return this.templateRepository.findAll({
       include: [Question],
       order: [['createdAt', 'DESC']],
     });
@@ -27,37 +26,32 @@ export class TemplatesService {
     const template = await this.templateRepository.findByPk(id, {
       include: [Question],
     });
-    if (!template) {
-      throw new NotFoundException();
-    }
+    if (!template) throw new NotFoundException('Template not found');
     return template;
   }
 
   async update(id: number, dto: CreateTemplateDto) {
-    const template = await this.templateRepository.findOne({ where: { id } });
-
-    if (!template) {
-      throw new NotFoundException();
-    }
+    const template = await this.templateRepository.findByPk(id);
+    if (!template) throw new NotFoundException('Template not found');
     return template.update(dto);
   }
 
   async remove(id: number) {
-    const template = await this.templateRepository.findOne({ where: { id } });
+    const template = await this.templateRepository.findByPk(id);
+    if (!template) throw new NotFoundException('Template not found');
 
-    if (!template) {
-      throw new NotFoundException();
-    }
+    // Удаляем связанные вопросы
+    await this.questionRepository.destroy({ where: { templateId: id } });
     return template.destroy();
   }
 
   async getTemplateQuestions(id: number) {
-    const template = await this.templateRepository.findOne({ where: { id } });
+    const template = await this.templateRepository.findByPk(id);
+    if (!template) throw new NotFoundException('Template not found');
 
-    if (!template) {
-      throw new NotFoundException();
-    }
-
-    return template.questions.sort((a, b) => a.order - b.order);
+    return this.questionRepository.findAll({
+      where: { templateId: id },
+      order: [['order', 'ASC']],
+    });
   }
 }

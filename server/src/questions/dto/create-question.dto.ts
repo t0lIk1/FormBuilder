@@ -1,31 +1,33 @@
 import {
-  ArrayMaxSize,
-  ArrayMinSize,
-  IsArray,
   IsBoolean,
   IsEnum,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
-  Length,
-  ValidateIf,
+  Min,
 } from 'class-validator';
 import { QuestionType } from '../questions.model';
 
 export class CreateQuestionDto {
-  @IsNotEmpty({ message: 'Текст вопроса обязателен' })
+  @IsNotEmpty({ message: 'Question text is required' })
   readonly question: string;
 
   @IsOptional()
   readonly description?: string;
 
-  @IsEnum(QuestionType, { message: 'Недопустимый тип вопроса' })
+  @IsEnum(QuestionType, { message: 'Invalid question type' })
   readonly type: QuestionType;
 
   @IsOptional()
-  @IsBoolean({ message: 'isRequired должно быть boolean' })
-  readonly isRequired?: boolean;
+  @IsBoolean({ message: 'isRequired must be a boolean' })
+  readonly isRequired?: boolean = false;
 
-  @ValidateIf((o) => o.type === QuestionType.SELECT)
-  @ArrayMinSize(1, { message: 'Для SELECT-вопроса нужен хотя бы один вариант' })
-  readonly options?: string[];
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  readonly order?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  readonly showInTable?: boolean = false;
 }

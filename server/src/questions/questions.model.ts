@@ -68,18 +68,21 @@ export class Question extends Model<Question, QuestionAttributes> {
   })
   isRequired: boolean;
 
-  @Column({
-    type: DataType.JSON,
-    defaultValue: [],
-    validate: {
-      validateOptions(value: string[]) {
-        if (!value || value.length === 0) {
-          throw new Error('Options are required for SELECT type questions');
-        }
-      },
-    },
-  })
-  options: string[];
+  // @Column({
+  //   type: DataType.JSON,
+  //   defaultValue: [],
+  //   validate: {
+  //     validateOptions(value: string[]) {
+  //       // Проверяем только для SELECT типа
+  //       if (this.getDataValue('type') === 'SELECT') {
+  //         if (!value || value.length === 0) {
+  //           throw new Error('Options are required for SELECT type questions');
+  //         }
+  //       }
+  //     },
+  //   },
+  // })
+  // options: string[];
 
   @Column({
     type: DataType.INTEGER,

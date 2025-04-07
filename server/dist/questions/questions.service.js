@@ -26,62 +26,52 @@ let QuestionsService = class QuestionsService {
     }
     async create(templateId, dto) {
         const template = await this.templatesRepository.findByPk(templateId);
-        if (!template) {
-            throw new common_1.NotFoundException();
-        }
+        if (!template)
+            throw new common_1.NotFoundException('Template not found');
+        const maxOrder = await this.questionRepository.max('order', {
+            where: { templateId },
+        });
+        const newOrder = typeof maxOrder === 'number' ? maxOrder + 1 : 1;
         return this.questionRepository.create({
             ...dto,
             templateId,
-            order: await this.getNextOrder(templateId),
+            order: newOrder,
         });
     }
     async findAllByTemplate(templateId) {
-        return await this.questionRepository.findAll({
+        return this.questionRepository.findAll({
             where: { templateId },
-            order: [['order', 'DESC']],
+            order: [['order', 'ASC']],
         });
     }
     async findOne(templateId, id) {
         const question = await this.questionRepository.findOne({
             where: { id, templateId },
         });
-        if (!question) {
+        if (!question)
             throw new common_1.NotFoundException('Question not found');
-        }
         return question;
     }
     async update(templateId, id, dto) {
-        const question = await this.questionRepository.findOne({
-            where: { id, templateId },
-        });
-        if (!question) {
-            throw new common_1.NotFoundException('Question not found');
-        }
+        const question = await this.findOne(templateId, id);
         return question.update(dto);
     }
     async remove(templateId, id) {
-        const question = await this.questionRepository.findOne({
-            where: { id, templateId },
-        });
-        if (!question) {
-            throw new common_1.NotFoundException('Question not found');
-        }
-        return question.destroy();
+        const question = await this.findOne(templateId, id);
+        await question.destroy();
+        await this.reorderAfterDelete(templateId);
     }
     async reorder(templateId, dto) {
-        const questions = await this.findAllByTemplate(templateId);
-        const updates = questions.map((q) => {
-            const newOrder = dto.orderedIds.indexOf(q.id);
-            return q.update({ order: newOrder });
-        });
+        const updates = dto.orderedIds.map((id, index) => this.questionRepository.update({ order: index }, { where: { id, templateId } }));
         return Promise.all(updates);
     }
-    async getNextOrder(templateId) {
-        const lastQuestion = await this.questionRepository.findOne({
+    async reorderAfterDelete(templateId) {
+        const questions = await this.questionRepository.findAll({
             where: { templateId },
-            order: [['order', 'DESC']],
+            order: [['order', 'ASC']],
         });
-        return lastQuestion ? lastQuestion.order + 1 : 0;
+        const updates = questions.map((q, index) => this.questionRepository.update({ order: index }, { where: { id: q.id } }));
+        await Promise.all(updates);
     }
 };
 exports.QuestionsService = QuestionsService;
