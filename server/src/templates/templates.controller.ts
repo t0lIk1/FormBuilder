@@ -6,13 +6,14 @@ import {
   Param,
   Post,
   Put,
-  Request,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { TemplatesService } from './templates.service';
 import { CreateTemplateDto } from './dto/create-template.dto';
 import { AccessTemplatesGuard } from './access-templates.guard';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Request } from 'express';
 
 @Controller('templates')
 export class TemplatesController {
@@ -20,7 +21,10 @@ export class TemplatesController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() dto: CreateTemplateDto, @Request() req) {
+  create(@Body() dto: CreateTemplateDto, @Req() req: Request) {
+    if (!req.user) {
+      throw new Error('User not authenticated');
+    }
     return this.templatesService.create({ ...dto, userId: req.user.id });
   }
 

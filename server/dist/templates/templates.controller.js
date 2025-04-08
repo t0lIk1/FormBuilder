@@ -24,6 +24,9 @@ let TemplatesController = class TemplatesController {
         this.templatesService = templatesService;
     }
     create(dto, req) {
+        if (!req.user) {
+            throw new Error('User not authenticated');
+        }
         return this.templatesService.create({ ...dto, userId: req.user.id });
     }
     findAll() {
@@ -47,7 +50,7 @@ __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Request)()),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_template_dto_1.CreateTemplateDto, Object]),
     __metadata("design:returntype", void 0)
