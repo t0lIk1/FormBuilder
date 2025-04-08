@@ -13,12 +13,18 @@ const questions_controller_1 = require("./questions.controller");
 const sequelize_1 = require("@nestjs/sequelize");
 const questions_model_1 = require("./questions.model");
 const templates_model_1 = require("../templates/templates.model");
+const auth_module_1 = require("../auth/auth.module");
+const templates_module_1 = require("../templates/templates.module");
 let QuestionsModule = class QuestionsModule {
 };
 exports.QuestionsModule = QuestionsModule;
 exports.QuestionsModule = QuestionsModule = __decorate([
     (0, common_1.Module)({
-        imports: [sequelize_1.SequelizeModule.forFeature([questions_model_1.Question, templates_model_1.Templates])],
+        imports: [
+            sequelize_1.SequelizeModule.forFeature([questions_model_1.Question, templates_model_1.Templates]),
+            auth_module_1.AuthModule,
+            templates_module_1.TemplatesModule,
+        ],
         controllers: [questions_controller_1.QuestionsController],
         providers: [questions_service_1.QuestionsService],
     })

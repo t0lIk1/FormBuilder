@@ -31,7 +31,7 @@ let QuestionsService = class QuestionsService {
         const maxOrder = await this.questionRepository.max('order', {
             where: { templateId },
         });
-        const newOrder = typeof maxOrder === 'number' ? maxOrder + 1 : 1;
+        const newOrder = typeof maxOrder === 'number' ? maxOrder + 1 : 0;
         return this.questionRepository.create({
             ...dto,
             templateId,
@@ -54,6 +54,9 @@ let QuestionsService = class QuestionsService {
     }
     async update(templateId, id, dto) {
         const question = await this.findOne(templateId, id);
+        if (!question) {
+            throw new common_1.NotFoundException('Question not founded');
+        }
         return question.update(dto);
     }
     async remove(templateId, id) {

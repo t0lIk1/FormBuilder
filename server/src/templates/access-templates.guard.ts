@@ -6,6 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { TemplatesService } from './templates.service';
+import {Templates} from "./templates.model";
 
 @Injectable()
 export class AccessTemplatesGuard implements CanActivate {
@@ -13,11 +14,13 @@ export class AccessTemplatesGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<{
+      template: Templates;
       user?: { id: number; role: string };
-      params: { id: string };
+      params: { id?: string; templateId?: string };
     }>();
 
-    const templateId = request.params.id;
+    // Получаем ID шаблона из разных возможных параметров
+    const templateId = request.params.templateId || request.params.id;
     if (!templateId || isNaN(Number(templateId))) {
       throw new NotFoundException('Incorrect template id');
     }
@@ -38,6 +41,7 @@ export class AccessTemplatesGuard implements CanActivate {
       );
     }
 
+    request.template = template;
     return true;
   }
 }

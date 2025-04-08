@@ -19,7 +19,7 @@ let AccessTemplatesGuard = class AccessTemplatesGuard {
     }
     async canActivate(context) {
         const request = context.switchToHttp().getRequest();
-        const templateId = request.params.id;
+        const templateId = request.params.templateId || request.params.id;
         if (!templateId || isNaN(Number(templateId))) {
             throw new common_1.NotFoundException('Incorrect template id');
         }
@@ -34,6 +34,7 @@ let AccessTemplatesGuard = class AccessTemplatesGuard {
         if (template.userId !== user.id && user.role !== 'ADMIN') {
             throw new common_1.ForbiddenException('Access denied: you do not have permission for this template');
         }
+        request.template = template;
         return true;
     }
 };

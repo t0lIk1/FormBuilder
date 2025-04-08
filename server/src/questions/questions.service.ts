@@ -19,7 +19,7 @@ export class QuestionsService {
     const maxOrder = await this.questionRepository.max('order', {
       where: { templateId },
     });
-    const newOrder = typeof maxOrder === 'number' ? maxOrder + 1 : 1;
+    const newOrder = typeof maxOrder === 'number' ? maxOrder + 1 : 0;
 
     return this.questionRepository.create({
       ...dto,
@@ -45,6 +45,9 @@ export class QuestionsService {
 
   async update(templateId: number, id: number, dto: CreateQuestionDto) {
     const question = await this.findOne(templateId, id);
+    if (!question) {
+      throw new NotFoundException('Question not founded');
+    }
     return question.update(dto);
   }
 
@@ -65,7 +68,6 @@ export class QuestionsService {
     return Promise.all(updates);
   }
 
-  // 🔒 Приватный метод для пересортировки вопросов
   private async reorderAfterDelete(templateId: number) {
     const questions = await this.questionRepository.findAll({
       where: { templateId },

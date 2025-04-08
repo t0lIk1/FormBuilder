@@ -17,6 +17,8 @@ const common_1 = require("@nestjs/common");
 const questions_service_1 = require("./questions.service");
 const create_question_dto_1 = require("./dto/create-question.dto");
 const reorder_question_dto_1 = require("./dto/reorder-question.dto");
+const access_templates_guard_1 = require("../templates/access-templates.guard");
+const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 let QuestionsController = class QuestionsController {
     questionsService;
     constructor(questionsService) {
@@ -43,6 +45,7 @@ let QuestionsController = class QuestionsController {
 };
 exports.QuestionsController = QuestionsController;
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, access_templates_guard_1.AccessTemplatesGuard),
     (0, common_1.Post)(),
     __param(0, (0, common_1.Param)('templateId')),
     __param(1, (0, common_1.Body)()),
@@ -66,6 +69,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], QuestionsController.prototype, "findOne", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, access_templates_guard_1.AccessTemplatesGuard),
     (0, common_1.Put)(':id'),
     __param(0, (0, common_1.Param)('templateId')),
     __param(1, (0, common_1.Param)('id')),
@@ -75,6 +79,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], QuestionsController.prototype, "update", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, access_templates_guard_1.AccessTemplatesGuard),
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('templateId')),
     __param(1, (0, common_1.Param)('id')),
@@ -83,6 +88,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], QuestionsController.prototype, "remove", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, access_templates_guard_1.AccessTemplatesGuard),
     (0, common_1.Post)('reorder'),
     __param(0, (0, common_1.Param)('templateId')),
     __param(1, (0, common_1.Body)()),
