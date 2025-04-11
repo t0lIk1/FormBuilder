@@ -3,18 +3,13 @@ import {
   Column,
   DataType,
   ForeignKey,
+  HasMany,
   Model,
   Table,
 } from 'sequelize-typescript';
 import { Templates } from '../templates/templates.model';
-
-export enum QuestionType {
-  TEXT = 'TEXT', // Однострочный текст
-  TEXTAREA = 'TEXTAREA', // Многострочный текст
-  NUMBER = 'NUMBER', // Число
-  CHECKBOX = 'CHECKBOX', // Чекбокс
-  SELECT = 'SELECT', // Выпадающий список
-}
+import { Answer } from '../forms/answers.model';
+import { QuestionType } from '../types/enum';
 
 interface QuestionAttributes {
   question: string;
@@ -53,12 +48,8 @@ export class Question extends Model<Question, QuestionAttributes> {
   description: string;
 
   @Column({
-    type: DataType.ENUM,
-    values: Object.values(QuestionType),
+    type: DataType.ENUM(...Object.values(QuestionType)),
     allowNull: false,
-    validate: {
-      isIn: [Object.values(QuestionType)],
-    },
   })
   type: QuestionType;
 
@@ -108,4 +99,8 @@ export class Question extends Model<Question, QuestionAttributes> {
 
   @BelongsTo(() => Templates)
   template: Templates;
+
+  // questions.model.ts
+  @HasMany(() => Answer)
+  answers: Answer[];
 }

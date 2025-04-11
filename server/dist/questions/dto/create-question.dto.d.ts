@@ -1,4 +1,4 @@
-import { QuestionType } from '../questions.model';
+import { QuestionType } from '../../types/enum';
 export declare class CreateQuestionDto {
     readonly question: string;
     readonly description?: string;

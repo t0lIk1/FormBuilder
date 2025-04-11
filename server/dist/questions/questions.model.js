@@ -9,17 +9,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Question = exports.QuestionType = void 0;
+exports.Question = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
 const templates_model_1 = require("../templates/templates.model");
-var QuestionType;
-(function (QuestionType) {
-    QuestionType["TEXT"] = "TEXT";
-    QuestionType["TEXTAREA"] = "TEXTAREA";
-    QuestionType["NUMBER"] = "NUMBER";
-    QuestionType["CHECKBOX"] = "CHECKBOX";
-    QuestionType["SELECT"] = "SELECT";
-})(QuestionType || (exports.QuestionType = QuestionType = {}));
+const answers_model_1 = require("../forms/answers.model");
+const enum_1 = require("../types/enum");
 let Question = class Question extends sequelize_typescript_1.Model {
     question;
     description;
@@ -29,6 +23,7 @@ let Question = class Question extends sequelize_typescript_1.Model {
     showInTable;
     templateId;
     template;
+    answers;
 };
 exports.Question = Question;
 __decorate([
@@ -59,12 +54,8 @@ __decorate([
 ], Question.prototype, "description", void 0);
 __decorate([
     (0, sequelize_typescript_1.Column)({
-        type: sequelize_typescript_1.DataType.ENUM,
-        values: Object.values(QuestionType),
+        type: sequelize_typescript_1.DataType.ENUM(...Object.values(enum_1.QuestionType)),
         allowNull: false,
-        validate: {
-            isIn: [Object.values(QuestionType)],
-        },
     }),
     __metadata("design:type", String)
 ], Question.prototype, "type", void 0);
@@ -104,6 +95,10 @@ __decorate([
     (0, sequelize_typescript_1.BelongsTo)(() => templates_model_1.Templates),
     __metadata("design:type", templates_model_1.Templates)
 ], Question.prototype, "template", void 0);
+__decorate([
+    (0, sequelize_typescript_1.HasMany)(() => answers_model_1.Answer),
+    __metadata("design:type", Array)
+], Question.prototype, "answers", void 0);
 exports.Question = Question = __decorate([
     (0, sequelize_typescript_1.Table)({ tableName: 'questions' })
 ], Question);

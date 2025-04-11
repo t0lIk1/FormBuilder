@@ -14,6 +14,7 @@ const users_module_1 = require("./users/users.module");
 const auth_module_1 = require("./auth/auth.module");
 const templates_module_1 = require("./templates/templates.module");
 const questions_module_1 = require("./questions/questions.module");
+const forms_module_1 = require("./forms/forms.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -21,8 +22,7 @@ exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             config_1.ConfigModule.forRoot({
-                envFilePath: `.${process.env.NODE_ENV || 'development'}.env`,
-                isGlobal: true,
+                envFilePath: `.${process.env.NODE_ENV}.env`,
             }),
             sequelize_1.SequelizeModule.forRoot({
                 dialect: 'postgres',
@@ -33,12 +33,12 @@ exports.AppModule = AppModule = __decorate([
                 database: process.env.DB_NAME,
                 models: [],
                 autoLoadModels: true,
-                synchronize: true,
             }),
             users_module_1.UsersModule,
             auth_module_1.AuthModule,
             templates_module_1.TemplatesModule,
             questions_module_1.QuestionsModule,
+            forms_module_1.FormsModule,
         ],
     })
 ], AppModule);

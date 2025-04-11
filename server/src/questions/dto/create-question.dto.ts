@@ -6,7 +6,7 @@ import {
   IsOptional,
   Min,
 } from 'class-validator';
-import { QuestionType } from '../questions.model';
+import { QuestionType } from '../../types/enum';
 
 export class CreateQuestionDto {
   @IsNotEmpty({ message: 'Question text is required' })

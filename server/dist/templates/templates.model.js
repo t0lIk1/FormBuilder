@@ -13,6 +13,7 @@ exports.Templates = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
 const users_model_1 = require("../users/users.model");
 const questions_model_1 = require("../questions/questions.model");
+const forms_model_1 = require("../forms/forms.model");
 let Templates = class Templates extends sequelize_typescript_1.Model {
     title;
     description;
@@ -21,6 +22,7 @@ let Templates = class Templates extends sequelize_typescript_1.Model {
     userId;
     user;
     questions;
+    forms;
 };
 exports.Templates = Templates;
 __decorate([
@@ -62,6 +64,10 @@ __decorate([
     (0, sequelize_typescript_1.HasMany)(() => questions_model_1.Question),
     __metadata("design:type", Array)
 ], Templates.prototype, "questions", void 0);
+__decorate([
+    (0, sequelize_typescript_1.HasMany)(() => forms_model_1.Form),
+    __metadata("design:type", Array)
+], Templates.prototype, "forms", void 0);
 exports.Templates = Templates = __decorate([
     (0, sequelize_typescript_1.Table)({ tableName: 'templates' })
 ], Templates);

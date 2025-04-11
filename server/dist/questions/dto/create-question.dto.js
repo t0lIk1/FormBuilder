@@ -11,7 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateQuestionDto = void 0;
 const class_validator_1 = require("class-validator");
-const questions_model_1 = require("../questions.model");
+const enum_1 = require("../../types/enum");
 class CreateQuestionDto {
     question;
     description;
@@ -30,7 +30,7 @@ __decorate([
     __metadata("design:type", String)
 ], CreateQuestionDto.prototype, "description", void 0);
 __decorate([
-    (0, class_validator_1.IsEnum)(questions_model_1.QuestionType, { message: 'Invalid question type' }),
+    (0, class_validator_1.IsEnum)(enum_1.QuestionType, { message: 'Invalid question type' }),
     __metadata("design:type", String)
 ], CreateQuestionDto.prototype, "type", void 0);
 __decorate([

@@ -1,12 +1,7 @@
 import { Model } from 'sequelize-typescript';
 import { Templates } from '../templates/templates.model';
-export declare enum QuestionType {
-    TEXT = "TEXT",
-    TEXTAREA = "TEXTAREA",
-    NUMBER = "NUMBER",
-    CHECKBOX = "CHECKBOX",
-    SELECT = "SELECT"
-}
+import { Answer } from '../forms/answers.model';
+import { QuestionType } from '../types/enum';
 interface QuestionAttributes {
     question: string;
     type: QuestionType;
@@ -27,5 +22,6 @@ export declare class Question extends Model<Question, QuestionAttributes> {
     showInTable: boolean;
     templateId: number;
     template: Templates;
+    answers: Answer[];
 }
 export {};

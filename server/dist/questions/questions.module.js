@@ -15,13 +15,14 @@ const questions_model_1 = require("./questions.model");
 const templates_model_1 = require("../templates/templates.model");
 const auth_module_1 = require("../auth/auth.module");
 const templates_module_1 = require("../templates/templates.module");
+const answers_model_1 = require("../forms/answers.model");
 let QuestionsModule = class QuestionsModule {
 };
 exports.QuestionsModule = QuestionsModule;
 exports.QuestionsModule = QuestionsModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            sequelize_1.SequelizeModule.forFeature([questions_model_1.Question, templates_model_1.Templates]),
+            sequelize_1.SequelizeModule.forFeature([questions_model_1.Question, templates_model_1.Templates, answers_model_1.Answer]),
             auth_module_1.AuthModule,
             templates_module_1.TemplatesModule,
         ],

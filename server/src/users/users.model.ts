@@ -1,4 +1,5 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
+import { Form } from "../forms/forms.model";
 
 interface UserAttributes {
   name: string;
@@ -53,4 +54,7 @@ export class User extends Model<User, UserAttributes> {
     defaultValue: 'USER',
   })
   role: string;
+
+  @HasMany(() => Form)
+  answers: Form[];
 }
