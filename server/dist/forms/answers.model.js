@@ -14,7 +14,7 @@ const sequelize_typescript_1 = require("sequelize-typescript");
 const questions_model_1 = require("../questions/questions.model");
 const forms_model_1 = require("./forms.model");
 let Answer = class Answer extends sequelize_typescript_1.Model {
-    formResponseId;
+    formId;
     formResponse;
     questionId;
     question;
@@ -37,7 +37,7 @@ __decorate([
         allowNull: false,
     }),
     __metadata("design:type", Number)
-], Answer.prototype, "formResponseId", void 0);
+], Answer.prototype, "formId", void 0);
 __decorate([
     (0, sequelize_typescript_1.BelongsTo)(() => forms_model_1.Form),
     __metadata("design:type", forms_model_1.Form)
@@ -62,6 +62,6 @@ __decorate([
     __metadata("design:type", String)
 ], Answer.prototype, "value", void 0);
 exports.Answer = Answer = __decorate([
-    (0, sequelize_typescript_1.Table)({ tableName: 'answers' })
+    (0, sequelize_typescript_1.Table)({ tableName: 'answers', timestamps: false })
 ], Answer);
 //# sourceMappingURL=answers.model.js.map

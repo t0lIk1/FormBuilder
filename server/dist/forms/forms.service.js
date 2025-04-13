@@ -36,18 +36,33 @@ let FormsService = class FormsService {
         if (!template) {
             throw new common_1.NotFoundException('Template not found');
         }
-        const questionIds = dto.answers.map((a) => a.questionId);
+        const requiredQuestionIds = (await this.questionRepository.findAll({
+            where: {
+                templateId: dto.templateId,
+                isRequired: true,
+            },
+            attributes: ['id'],
+        })).map((q) => q.id);
+        const answeredQuestionIds = dto.answers.map((a) => a.questionId);
+        const allRequiredAnswered = requiredQuestionIds.every((id) => answeredQuestionIds.includes(id));
+        if (!allRequiredAnswered) {
+            throw new common_1.NotFoundException('There are no answers to the required questions.');
+        }
         const questions = await this.questionRepository.findAll({
-            where: { id: questionIds },
+            where: {
+                id: answeredQuestionIds,
+                templateId: dto.templateId,
+            },
         });
+        if (questions.length !== answeredQuestionIds.length) {
+            throw new common_1.NotFoundException('Some answered questions do not belong to the selected template');
+        }
         for (const answer of dto.answers) {
             const question = questions.find((q) => q.id === answer.questionId);
             if (!question) {
                 throw new common_1.NotFoundException(`Question with ID ${answer.questionId} not found`);
             }
             if (!this.validateAnswer(answer.value, question.dataValues.type)) {
-                console.log(answer);
-                console.log(question);
                 throw new common_1.NotFoundException(`Invalid answer value for question ID ${answer.questionId} (expected ${question.type}, got ${answer.value})`);
             }
         }
@@ -56,11 +71,13 @@ let FormsService = class FormsService {
             userId: dto.userId,
         });
         const answers = dto.answers.map((answer) => ({
-            formResponseId: form.id,
+            formId: form.id,
             questionId: answer.questionId,
             value: answer.value,
         }));
-        await this.answerRepository.bulkCreate(answers, { returning: true });
+        await this.answerRepository.bulkCreate(answers, {
+            returning: true,
+        });
         return await this.getFormResponse(form.id);
     }
     async getFormResponse(id) {
@@ -114,7 +131,7 @@ let FormsService = class FormsService {
             case enum_1.QuestionType.NUMBER:
                 return !isNaN(Number(value));
             case enum_1.QuestionType.CHECKBOX:
-                return typeof value === "boolean";
+                return typeof value === 'boolean';
             default:
                 return false;
         }

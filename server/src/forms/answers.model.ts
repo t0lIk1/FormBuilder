@@ -10,7 +10,7 @@ import { Question } from '../questions/questions.model';
 import { Form } from './forms.model';
 import { QuestionType } from '../types/enum';
 
-@Table({ tableName: 'answers' })
+@Table({ tableName: 'answers', timestamps: false })
 export class Answer extends Model {
   @Column({
     type: DataType.INTEGER,
@@ -25,7 +25,7 @@ export class Answer extends Model {
     type: DataType.INTEGER,
     allowNull: false,
   })
-  formResponseId: number;
+  formId: number;
 
   @BelongsTo(() => Form)
   formResponse: Form;

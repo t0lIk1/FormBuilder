@@ -5,15 +5,7 @@ import { Answer } from './answers.model';
 import { Question } from '../questions/questions.model';
 import { Templates } from '../templates/templates.model';
 import { QuestionType } from '../types/enum';
-
-interface SubmitFormDto {
-  templateId: number;
-  userId: number;
-  answers: {
-    questionId: number;
-    value: string;
-  }[];
-}
+import { SubmitFormDto } from './dto/submit-form.dto';
 
 @Injectable()
 export class FormsService {
@@ -29,14 +21,7 @@ export class FormsService {
     if (!template) {
       throw new NotFoundException('Template not found');
     }
-
-    // Получаем все вопросы, чтобы проверить типы
-    const questionIds = dto.answers.map((a) => a.questionId);
-    const questions = await this.questionRepository.findAll({
-      where: { id: questionIds },
-    });
-
-    // Проверка валидности каждого ответа
+    const questions = await this.validateQuestion(dto);
     for (const answer of dto.answers) {
       const question = questions.find((q) => q.id === answer.questionId);
       if (!question) {
@@ -46,15 +31,12 @@ export class FormsService {
       }
 
       if (!this.validateAnswer(answer.value, question.dataValues.type)) {
-        console.log(answer);
-        console.log(question);
         throw new NotFoundException(
           `Invalid answer value for question ID ${answer.questionId} (expected ${question.type}, got ${answer.value})`,
         );
       }
     }
 
-    // Создаем запись о заполнении формы
     const form = await this.formRepository.create({
       templateId: dto.templateId,
       userId: dto.userId,
@@ -62,12 +44,14 @@ export class FormsService {
 
     // Сохраняем ответы
     const answers = dto.answers.map((answer) => ({
-      formResponseId: form.id,
+      formId: form.id,
       questionId: answer.questionId,
       value: answer.value,
     }));
 
-    await this.answerRepository.bulkCreate(answers, { returning: true });
+    await this.answerRepository.bulkCreate(answers, {
+      returning: true,
+    });
 
     return await this.getFormResponse(form.id);
   }
@@ -127,9 +111,47 @@ export class FormsService {
       case QuestionType.NUMBER:
         return !isNaN(Number(value));
       case QuestionType.CHECKBOX:
-        return typeof value === "boolean";
+        return typeof value === 'boolean';
       default:
         return false;
     }
+  }
+
+  private async validateQuestion(dto: SubmitFormDto) {
+    const requiredQuestionIds = (
+      await this.questionRepository.findAll({
+        where: {
+          templateId: dto.templateId,
+          isRequired: true,
+        },
+        attributes: ['id'],
+      })
+    ).map((q) => q.id);
+
+    const answeredQuestionIds = dto.answers.map((a) => a.questionId);
+
+    const allRequiredAnswered = requiredQuestionIds.every((id) =>
+      answeredQuestionIds.includes(id),
+    );
+
+    if (!allRequiredAnswered) {
+      throw new NotFoundException(
+        'There are no answers to the required questions.',
+      );
+    }
+
+    const questions = await this.questionRepository.findAll({
+      where: {
+        id: answeredQuestionIds,
+        templateId: dto.templateId,
+      },
+    });
+
+    if (questions.length !== answeredQuestionIds.length) {
+      throw new NotFoundException(
+        'Some answered questions do not belong to the selected template',
+      );
+    }
+    return questions;
   }
 }

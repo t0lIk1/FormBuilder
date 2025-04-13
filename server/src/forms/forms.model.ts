@@ -11,7 +11,7 @@ import { Templates } from '../templates/templates.model';
 import { User } from '../users/users.model';
 import { Answer } from './answers.model';
 
-@Table({ tableName: 'forms' })
+@Table({ tableName: 'forms', timestamps: false })
 export class Form extends Model {
   @Column({
     type: DataType.INTEGER,

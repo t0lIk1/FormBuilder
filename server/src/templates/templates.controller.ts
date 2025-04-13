@@ -22,10 +22,8 @@ export class TemplatesController {
   @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() dto: CreateTemplateDto, @Req() req: Request) {
-    if (!req.user) {
-      throw new Error('User not authenticated');
-    }
-    return this.templatesService.create({ ...dto, userId: req.user.id });
+    const user = req.user as { id: number };
+    return this.templatesService.create({ ...dto, userId: user.id });
   }
 
   @Get()

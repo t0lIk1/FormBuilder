@@ -2,14 +2,7 @@ import { Form } from './forms.model';
 import { Answer } from './answers.model';
 import { Question } from '../questions/questions.model';
 import { Templates } from '../templates/templates.model';
-interface SubmitFormDto {
-    templateId: number;
-    userId: number;
-    answers: {
-        questionId: number;
-        value: string;
-    }[];
-}
+import { SubmitFormDto } from './dto/submit-form.dto';
 export declare class FormsService {
     private formRepository;
     private answerRepository;
@@ -22,4 +15,3 @@ export declare class FormsService {
     getTemplateResponses(templateId: number): Promise<Form[]>;
     private validateAnswer;
 }
-export {};

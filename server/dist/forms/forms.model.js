@@ -69,6 +69,6 @@ __decorate([
     __metadata("design:type", Array)
 ], Form.prototype, "answers", void 0);
 exports.Form = Form = __decorate([
-    (0, sequelize_typescript_1.Table)({ tableName: 'forms' })
+    (0, sequelize_typescript_1.Table)({ tableName: 'forms', timestamps: false })
 ], Form);
 //# sourceMappingURL=forms.model.js.map
