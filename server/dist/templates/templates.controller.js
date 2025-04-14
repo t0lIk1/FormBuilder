@@ -24,10 +24,8 @@ let TemplatesController = class TemplatesController {
         this.templatesService = templatesService;
     }
     create(dto, req) {
-        if (!req.user) {
-            throw new Error('User not authenticated');
-        }
-        return this.templatesService.create({ ...dto, userId: req.user.id });
+        const user = req.user;
+        return this.templatesService.create({ ...dto, userId: user.id });
     }
     findAll() {
         return this.templatesService.findAll();

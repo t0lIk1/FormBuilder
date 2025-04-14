@@ -14,4 +14,5 @@ export declare class FormsService {
     getUserResponses(userId: number): Promise<Form[]>;
     getTemplateResponses(templateId: number): Promise<Form[]>;
     private validateAnswer;
+    private validateQuestion;
 }

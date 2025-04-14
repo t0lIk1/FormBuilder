@@ -15,6 +15,7 @@ const auth_module_1 = require("./auth/auth.module");
 const templates_module_1 = require("./templates/templates.module");
 const questions_module_1 = require("./questions/questions.module");
 const forms_module_1 = require("./forms/forms.module");
+const comments_module_1 = require("./comments/comments.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -39,6 +40,7 @@ exports.AppModule = AppModule = __decorate([
             templates_module_1.TemplatesModule,
             questions_module_1.QuestionsModule,
             forms_module_1.FormsModule,
+            comments_module_1.CommentsModule,
         ],
     })
 ], AppModule);

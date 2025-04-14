@@ -23,23 +23,19 @@ let FormsController = class FormsController {
         this.formsService = formsService;
     }
     async submitForm(dto, req, templateId) {
-        if (!req.user) {
-            throw new Error('User not authenticated');
-        }
+        const user = req.user;
         return this.formsService.submitForm({
             templateId: Number(templateId),
             ...dto,
-            userId: req.user.id,
+            userId: user.id,
         });
     }
     getFormResponse(id) {
         return this.formsService.getFormResponse(Number(id));
     }
     getUserResponses(req) {
-        if (!req.user) {
-            throw new Error('User not authenticated');
-        }
-        return this.formsService.getUserResponses(req.user.id);
+        const user = req.user;
+        return this.formsService.getUserResponses(user.id);
     }
     getTemplateResponses(templateId) {
         return this.formsService.getTemplateResponses(Number(templateId));

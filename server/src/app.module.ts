@@ -11,6 +11,7 @@ import { Templates } from './templates/templates.model';
 import { Question } from './questions/questions.model';
 import { Form } from './forms/forms.model';
 import { Answer } from './forms/answers.model';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { Answer } from './forms/answers.model';
     TemplatesModule,
     QuestionsModule,
     FormsModule,
+    CommentsModule,
   ],
 })
 export class AppModule {}

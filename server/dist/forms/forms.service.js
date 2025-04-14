@@ -36,27 +36,7 @@ let FormsService = class FormsService {
         if (!template) {
             throw new common_1.NotFoundException('Template not found');
         }
-        const requiredQuestionIds = (await this.questionRepository.findAll({
-            where: {
-                templateId: dto.templateId,
-                isRequired: true,
-            },
-            attributes: ['id'],
-        })).map((q) => q.id);
-        const answeredQuestionIds = dto.answers.map((a) => a.questionId);
-        const allRequiredAnswered = requiredQuestionIds.every((id) => answeredQuestionIds.includes(id));
-        if (!allRequiredAnswered) {
-            throw new common_1.NotFoundException('There are no answers to the required questions.');
-        }
-        const questions = await this.questionRepository.findAll({
-            where: {
-                id: answeredQuestionIds,
-                templateId: dto.templateId,
-            },
-        });
-        if (questions.length !== answeredQuestionIds.length) {
-            throw new common_1.NotFoundException('Some answered questions do not belong to the selected template');
-        }
+        const questions = await this.validateQuestion(dto);
         for (const answer of dto.answers) {
             const question = questions.find((q) => q.id === answer.questionId);
             if (!question) {
@@ -135,6 +115,30 @@ let FormsService = class FormsService {
             default:
                 return false;
         }
+    }
+    async validateQuestion(dto) {
+        const requiredQuestionIds = (await this.questionRepository.findAll({
+            where: {
+                templateId: dto.templateId,
+                isRequired: true,
+            },
+            attributes: ['id'],
+        })).map((q) => q.id);
+        const answeredQuestionIds = dto.answers.map((a) => a.questionId);
+        const allRequiredAnswered = requiredQuestionIds.every((id) => answeredQuestionIds.includes(id));
+        if (!allRequiredAnswered) {
+            throw new common_1.NotFoundException('There are no answers to the required questions.');
+        }
+        const questions = await this.questionRepository.findAll({
+            where: {
+                id: answeredQuestionIds,
+                templateId: dto.templateId,
+            },
+        });
+        if (questions.length !== answeredQuestionIds.length) {
+            throw new common_1.NotFoundException('Some answered questions do not belong to the selected template');
+        }
+        return questions;
     }
 };
 exports.FormsService = FormsService;
