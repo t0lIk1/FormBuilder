@@ -17,19 +17,43 @@ const common_1 = require("@nestjs/common");
 const sequelize_1 = require("@nestjs/sequelize");
 const comments_model_1 = require("./comments.model");
 const users_model_1 = require("../users/users.model");
+const templates_model_1 = require("../templates/templates.model");
 let CommentsService = class CommentsService {
     commentRepository;
-    constructor(commentRepository) {
+    userRepository;
+    templateRepository;
+    constructor(commentRepository, userRepository, templateRepository) {
         this.commentRepository = commentRepository;
+        this.userRepository = userRepository;
+        this.templateRepository = templateRepository;
     }
     async create(userId, templateId, content) {
+        const template = await this.templateRepository.findByPk(templateId);
+        if (!template) {
+            throw new common_1.NotFoundException('Template not found');
+        }
+        const user = await this.userRepository.findByPk(userId);
+        if (!user) {
+            throw new common_1.NotFoundException('User not found');
+        }
         return await this.commentRepository.create({ userId, templateId, content });
     }
     async getAllComments(templateId) {
-        return this.commentRepository.findAll({
+        return await this.commentRepository.findAll({
             where: { templateId },
             include: { model: users_model_1.User, attributes: ['id', 'name'] },
             order: [['createdAt', 'ASC']],
+        });
+    }
+    async getCommentById(commentId) {
+        return await this.commentRepository.findByPk(commentId);
+    }
+    async deleteComment(commentId, userId) {
+        return await this.commentRepository.destroy({
+            where: {
+                id: commentId,
+                userId: userId,
+            },
         });
     }
 };
@@ -37,6 +61,8 @@ exports.CommentsService = CommentsService;
 exports.CommentsService = CommentsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, sequelize_1.InjectModel)(comments_model_1.Comment)),
-    __metadata("design:paramtypes", [Object])
+    __param(1, (0, sequelize_1.InjectModel)(users_model_1.User)),
+    __param(2, (0, sequelize_1.InjectModel)(templates_model_1.Templates)),
+    __metadata("design:paramtypes", [Object, Object, Object])
 ], CommentsService);
 //# sourceMappingURL=comments.service.js.map

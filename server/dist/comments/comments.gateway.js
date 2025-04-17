@@ -17,10 +17,10 @@ const websockets_1 = require("@nestjs/websockets");
 const socket_io_1 = require("socket.io");
 const comments_service_1 = require("./comments.service");
 const common_1 = require("@nestjs/common");
-const ws_jwt_auth_guard_1 = require("./ws-jwt-auth.guard");
-const ws_user_decorator_1 = require("./ws-user.decorator");
+const ws_jwt_auth_guard_1 = require("../auth/ws-jwt-auth.guard");
 let CommentsGateway = class CommentsGateway {
     commentsService;
+    server;
     constructor(commentsService) {
         this.commentsService = commentsService;
     }
@@ -30,27 +30,51 @@ let CommentsGateway = class CommentsGateway {
     handleDisconnect(client) {
         console.log(`Client disconnected: ${client.id}`);
     }
-    async handleAddComment(data, client, user) {
-        const comment = await this.commentsService.create(user.userId, data.templateId, data.content);
-        client.broadcast.emit('new_comment', comment);
-        client.emit('new_comment', comment);
+    async handleAddComment(data, client) {
+        const comment = await this.commentsService.create(client.data.userId, data.templateId, data.content);
+        this.server.to(`template_${data.templateId}`).emit('new_comment', comment);
     }
     async handleGetComments(templateId, client) {
+        client.join(`template_${templateId}`);
         const comments = await this.commentsService.getAllComments(templateId);
         client.emit('comments_list', comments);
+    }
+    async handleDeleteComment(data, client) {
+        try {
+            const userId = client.data.userId;
+            const result = await this.commentsService.deleteComment(data.commentId, userId);
+            if (result === 0) {
+                throw new websockets_1.WsException('Комментарий не найден или у вас нет прав на его удаление');
+            }
+            const deletedComment = await this.commentsService.getCommentById(data.commentId);
+            if (deletedComment) {
+                this.server
+                    .to(`template_${deletedComment.templateId}`)
+                    .emit('comment_deleted', data.commentId);
+            }
+            return { success: true };
+        }
+        catch (error) {
+            throw new websockets_1.WsException(error.message);
+        }
     }
 };
 exports.CommentsGateway = CommentsGateway;
 __decorate([
+    (0, websockets_1.WebSocketServer)(),
+    __metadata("design:type", socket_io_1.Server)
+], CommentsGateway.prototype, "server", void 0);
+__decorate([
+    (0, common_1.UseGuards)(ws_jwt_auth_guard_1.WsJwtAuthGuard),
     (0, websockets_1.SubscribeMessage)('add_comment'),
     __param(0, (0, websockets_1.MessageBody)()),
     __param(1, (0, websockets_1.ConnectedSocket)()),
-    __param(2, (0, ws_user_decorator_1.WsUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, socket_io_1.Socket, Object]),
+    __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
     __metadata("design:returntype", Promise)
 ], CommentsGateway.prototype, "handleAddComment", null);
 __decorate([
+    (0, common_1.UseGuards)(ws_jwt_auth_guard_1.WsJwtAuthGuard),
     (0, websockets_1.SubscribeMessage)('get_comments'),
     __param(0, (0, websockets_1.MessageBody)()),
     __param(1, (0, websockets_1.ConnectedSocket)()),
@@ -58,9 +82,23 @@ __decorate([
     __metadata("design:paramtypes", [Number, socket_io_1.Socket]),
     __metadata("design:returntype", Promise)
 ], CommentsGateway.prototype, "handleGetComments", null);
-exports.CommentsGateway = CommentsGateway = __decorate([
-    (0, websockets_1.WebSocketGateway)({ cors: true }),
+__decorate([
     (0, common_1.UseGuards)(ws_jwt_auth_guard_1.WsJwtAuthGuard),
+    (0, websockets_1.SubscribeMessage)('delete_comment'),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __param(1, (0, websockets_1.ConnectedSocket)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
+    __metadata("design:returntype", Promise)
+], CommentsGateway.prototype, "handleDeleteComment", null);
+exports.CommentsGateway = CommentsGateway = __decorate([
+    (0, websockets_1.WebSocketGateway)({
+        cors: {
+            origin: '*',
+            methods: ['GET', 'POST'],
+            credentials: true,
+        },
+    }),
     __metadata("design:paramtypes", [comments_service_1.CommentsService])
 ], CommentsGateway);
 //# sourceMappingURL=comments.gateway.js.map
