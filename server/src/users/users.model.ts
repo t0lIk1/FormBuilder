@@ -1,5 +1,6 @@
 import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
-import { Form } from "../forms/forms.model";
+import { Form } from '../forms/forms.model';
+import { Templates } from '../templates/templates.model';
 
 interface UserAttributes {
   name: string;
@@ -53,8 +54,11 @@ export class User extends Model<User, UserAttributes> {
     allowNull: false,
     defaultValue: 'USER',
   })
-  role: string;
+  role: 'ADMIN' | 'USER';
 
   @HasMany(() => Form)
   answers: Form[];
+
+  @HasMany(() => Templates)
+  templates: Templates[];
 }

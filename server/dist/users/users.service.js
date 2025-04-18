@@ -33,6 +33,12 @@ let UsersService = class UsersService {
             include: { all: true },
         });
     }
+    async findOneUsers(email) {
+        return await this.userRepository.findAll({
+            where: { email },
+            include: { all: true },
+        });
+    }
     async deleteUsers(ids) {
         const deletedCount = await this.userRepository.destroy({
             where: { id: ids },
@@ -47,6 +53,20 @@ let UsersService = class UsersService {
     }
     async unBlockUsers(ids) {
         await this.setBlockStatus(ids, false);
+    }
+    async toggleUsersRole(ids) {
+        const users = await this.userRepository.findAll({
+            where: { id: ids },
+        });
+        if (users.length !== ids.length) {
+            throw new common_1.HttpException(`Users not found`, common_1.HttpStatus.NOT_FOUND);
+        }
+        const updatePromises = users.map(async (user) => {
+            const newRole = user.dataValues.role === 'USER' ? 'ADMIN' : 'USER';
+            await user.update({ role: newRole });
+            return { id: user.id, newRole };
+        });
+        return await Promise.all(updatePromises);
     }
     async setBlockStatus(ids, isBlocked) {
         const users = await this.userRepository.findAll({

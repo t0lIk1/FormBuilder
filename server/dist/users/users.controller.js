@@ -16,6 +16,9 @@ exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
 const users_service_1 = require("./users.service");
 const create_user_dto_1 = require("./dto/create-user.dto");
+const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
+const roles_guard_1 = require("../auth/roles.guard");
+const roles_decorator_1 = require("../auth/roles.decorator");
 let UsersController = class UsersController {
     usersService;
     constructor(usersService) {
@@ -28,7 +31,7 @@ let UsersController = class UsersController {
         return this.usersService.findAllUsers();
     }
     getOne(email) {
-        return this.usersService.findOneUser(email);
+        return this.usersService.findOneUsers(email);
     }
     delete(body) {
         return this.usersService.deleteUsers(body.ids);
@@ -38,6 +41,13 @@ let UsersController = class UsersController {
     }
     unblock(body) {
         return this.usersService.unBlockUsers(body.ids);
+    }
+    async toggleRole(body) {
+        const result = await this.usersService.toggleUsersRole(body.ids);
+        return {
+            message: 'Roles toggle success',
+            ...result,
+        };
     }
 };
 exports.UsersController = UsersController;
@@ -62,6 +72,9 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "getOne", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, roles_decorator_1.Roles)('ADMIN'),
+    (0, common_1.UseGuards)(roles_guard_1.RolesGuard),
     (0, common_1.Delete)('delete'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -69,6 +82,9 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "delete", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, roles_decorator_1.Roles)('ADMIN'),
+    (0, common_1.UseGuards)(roles_guard_1.RolesGuard),
     (0, common_1.Put)('block'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -76,12 +92,25 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "block", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, roles_decorator_1.Roles)('ADMIN'),
+    (0, common_1.UseGuards)(roles_guard_1.RolesGuard),
     (0, common_1.Put)('unblock'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "unblock", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, roles_decorator_1.Roles)('ADMIN'),
+    (0, common_1.UseGuards)(roles_guard_1.RolesGuard),
+    (0, common_1.Put)('admin/toggle-roles'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "toggleRole", null);
 exports.UsersController = UsersController = __decorate([
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [users_service_1.UsersService])

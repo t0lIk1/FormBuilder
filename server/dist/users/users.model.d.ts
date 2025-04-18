@@ -1,5 +1,6 @@
 import { Model } from 'sequelize-typescript';
-import { Form } from "../forms/forms.model";
+import { Form } from '../forms/forms.model';
+import { Templates } from '../templates/templates.model';
 interface UserAttributes {
     name: string;
     email: string;
@@ -13,7 +14,8 @@ export declare class User extends Model<User, UserAttributes> {
     email: string;
     password: string;
     isBlocked: boolean;
-    role: string;
+    role: 'ADMIN' | 'USER';
     answers: Form[];
+    templates: Templates[];
 }
 export {};

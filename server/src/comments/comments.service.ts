@@ -34,17 +34,15 @@ export class CommentsService {
     });
   }
 
-  // src/comments/comments.service.ts
   async getCommentById(commentId: number) {
     return await this.commentRepository.findByPk(commentId);
   }
 
   async deleteComment(commentId: number, userId: number) {
-    // Удаляем только если комментарий принадлежит пользователю
     return await this.commentRepository.destroy({
       where: {
         id: commentId,
-        userId: userId, // Проверка что комментарий принадлежит пользователю
+        userId: userId,
       },
     });
   }

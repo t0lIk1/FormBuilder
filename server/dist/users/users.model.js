@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
 const forms_model_1 = require("../forms/forms.model");
+const templates_model_1 = require("../templates/templates.model");
 let User = class User extends sequelize_typescript_1.Model {
     name;
     email;
@@ -19,6 +20,7 @@ let User = class User extends sequelize_typescript_1.Model {
     isBlocked;
     role;
     answers;
+    templates;
 };
 exports.User = User;
 __decorate([
@@ -75,6 +77,10 @@ __decorate([
     (0, sequelize_typescript_1.HasMany)(() => forms_model_1.Form),
     __metadata("design:type", Array)
 ], User.prototype, "answers", void 0);
+__decorate([
+    (0, sequelize_typescript_1.HasMany)(() => templates_model_1.Templates),
+    __metadata("design:type", Array)
+], User.prototype, "templates", void 0);
 exports.User = User = __decorate([
     (0, sequelize_typescript_1.Table)({ tableName: 'users' })
 ], User);

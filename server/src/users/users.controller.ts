@@ -36,18 +36,39 @@ export class UsersController {
     return this.usersService.findOneUser(email);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Roles('ADMIN')
+  @UseGuards(RolesGuard)
   @Delete('delete')
   delete(@Body() body: { ids: number[] }) {
     return this.usersService.deleteUsers(body.ids);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Roles('ADMIN')
+  @UseGuards(RolesGuard)
   @Put('block')
   block(@Body() body: { ids: number[] }) {
     return this.usersService.blockUsers(body.ids);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Roles('ADMIN')
+  @UseGuards(RolesGuard)
   @Put('unblock')
   unblock(@Body() body: { ids: number[] }) {
     return this.usersService.unBlockUsers(body.ids);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Roles('ADMIN')
+  @UseGuards(RolesGuard)
+  @Put('admin/toggle-roles')
+  async toggleRole(@Body() body: { ids: number[] }) {
+    const result = await this.usersService.toggleUsersRole(body.ids);
+    return {
+      message: 'Roles toggle success',
+      ...result,
+    };
   }
 }

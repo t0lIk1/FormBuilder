@@ -1,4 +1,3 @@
-// src/auth/ws-jwt-auth.guard.ts
 import {
   CanActivate,
   ExecutionContext,
@@ -11,7 +10,6 @@ import { Socket } from 'socket.io';
 
 interface JwtPayload {
   id: number;
-  // другие поля, которые могут быть в вашем токене
 }
 
 @Injectable()
@@ -28,7 +26,6 @@ export class WsJwtAuthGuard implements CanActivate {
     try {
       const payload = this.jwtService.verify<JwtPayload>(token);
 
-      // Добавляем userId к данным клиента для последующего использования
       client.data.userId = payload.id;
       return true;
     } catch (error) {

@@ -22,6 +22,13 @@ export class UsersService {
     });
   }
 
+  async findOneUsers(email: string) {
+    return await this.userRepository.findAll({
+      where: { email },
+      include: { all: true },
+    });
+  }
+
   async deleteUsers(ids: number[]) {
     const deletedCount = await this.userRepository.destroy({
       where: { id: ids },
@@ -39,6 +46,24 @@ export class UsersService {
 
   async unBlockUsers(ids: number[]) {
     await this.setBlockStatus(ids, false);
+  }
+
+  async toggleUsersRole(ids: number[]) {
+    const users = await this.userRepository.findAll({
+      where: { id: ids },
+    });
+
+    if (users.length !== ids.length) {
+      throw new HttpException(`Users not found`, HttpStatus.NOT_FOUND);
+    }
+
+    const updatePromises = users.map(async (user) => {
+      const newRole = user.dataValues.role === 'USER' ? 'ADMIN' : 'USER';
+      await user.update({ role: newRole });
+      return { id: user.id, newRole };
+    });
+
+    return await Promise.all(updatePromises);
   }
 
   private async setBlockStatus(ids: number[], isBlocked: boolean) {

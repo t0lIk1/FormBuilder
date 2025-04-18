@@ -12,7 +12,6 @@ interface JwtPayload {
   role: string;
 }
 
-// Расширяем стандартный объект запроса, чтобы включить пользователя
 interface AuthenticatedRequest extends Request {
   user: JwtPayload;
 }
@@ -25,25 +24,20 @@ export class RolesGuard implements CanActivate {
   ) {}
 
   canActivate(context: ExecutionContext): boolean {
-    // Получаем список ролей, которые необходимы для доступа к этому эндпоинту
     const requiredRoles = this.reflector.getAllAndOverride<string[]>(
       ROLES_KEY,
       [context.getHandler(), context.getClass()],
     );
 
-    // Если роли не указаны, доступ разрешён для всех
     if (!requiredRoles) return true;
 
-    // Получаем объект запроса
     const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
     const authHeader = request.headers['authorization'];
 
-    // Проверяем, есть ли заголовок авторизации
     if (!authHeader) {
       throw new UnauthorizedException('Отсутствует заголовок авторизации');
     }
 
-    // Разделяем заголовок на две части: "Bearer" и сам токен
     const [bearer, token] = authHeader.split(' ');
     if (bearer !== 'Bearer' || !token) {
       throw new UnauthorizedException('Некорректный формат токена');

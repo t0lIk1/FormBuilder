@@ -1,4 +1,3 @@
-// src/comments/comments.gateway.ts
 import {
   SubscribeMessage,
   WebSocketGateway,
@@ -6,7 +5,8 @@ import {
   OnGatewayDisconnect,
   MessageBody,
   ConnectedSocket,
-  WebSocketServer, WsException,
+  WebSocketServer,
+  WsException,
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 import { CommentsService } from './comments.service';
@@ -48,7 +48,6 @@ export class CommentsGateway
       data.content,
     );
 
-    // Отправляем всем клиентам, подписанным на этот templateId
     this.server.to(`template_${data.templateId}`).emit('new_comment', comment);
   }
 
@@ -58,14 +57,12 @@ export class CommentsGateway
     @MessageBody() templateId: number,
     @ConnectedSocket() client: Socket,
   ) {
-    // Подписываем клиента на комнату для этого шаблона
     client.join(`template_${templateId}`);
 
     const comments = await this.commentsService.getAllComments(templateId);
     client.emit('comments_list', comments);
   }
 
-  // src/comments/comments.gateway.ts
   @UseGuards(WsJwtAuthGuard)
   @SubscribeMessage('delete_comment')
   async handleDeleteComment(
@@ -73,10 +70,8 @@ export class CommentsGateway
     @ConnectedSocket() client: Socket,
   ) {
     try {
-      // Получаем userId из данных клиента (установлено в WsJwtAuthGuard)
       const userId = client.data.userId;
 
-      // Удаляем комментарий с проверкой прав
       const result = await this.commentsService.deleteComment(
         data.commentId,
         userId,
@@ -88,13 +83,11 @@ export class CommentsGateway
         );
       }
 
-      // Получаем информацию о комментарии для рассылки
       const deletedComment = await this.commentsService.getCommentById(
         data.commentId,
       );
 
       if (deletedComment) {
-        // Уведомляем всех подписанных на этот шаблон
         this.server
           .to(`template_${deletedComment.templateId}`)
           .emit('comment_deleted', data.commentId);

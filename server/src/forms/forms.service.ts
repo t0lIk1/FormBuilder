@@ -42,7 +42,6 @@ export class FormsService {
       userId: dto.userId,
     });
 
-    // Сохраняем ответы
     const answers = dto.answers.map((answer) => ({
       formId: form.id,
       questionId: answer.questionId,

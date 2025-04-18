@@ -17,7 +17,6 @@ import { Request } from 'express';
 export class FormsController {
   constructor(private readonly formsService: FormsService) {}
 
-  // отправить форму
   @Post('submit')
   async submitForm(
     @Body() dto: SubmitFormDto,
@@ -50,7 +49,6 @@ export class FormsController {
     return this.formsService.getUserResponses(user.id);
   }
 
-  // получить все ответы по определенному template
   @Get('template-responses')
   getTemplateResponses(
     @Param('templateId')
