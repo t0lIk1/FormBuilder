@@ -7,7 +7,7 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { Templates } from '../templates/templates.model';
+import { Template } from '../templates/templates.model';
 import { User } from '../users/users.model';
 import { Answer } from './answers.model';
 
@@ -21,15 +21,15 @@ export class Form extends Model {
   })
   declare id: number;
 
-  @ForeignKey(() => Templates)
+  @ForeignKey(() => Template)
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
   })
   templateId: number;
 
-  @BelongsTo(() => Templates)
-  template: Templates;
+  @BelongsTo(() => Template)
+  template: Template;
 
   @ForeignKey(() => User)
   @Column({

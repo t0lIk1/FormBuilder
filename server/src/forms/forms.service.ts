@@ -3,7 +3,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Form } from './forms.model';
 import { Answer } from './answers.model';
 import { Question } from '../questions/questions.model';
-import { Templates } from '../templates/templates.model';
+import { Template } from '../templates/templates.model';
 import { QuestionType } from '../types/enum';
 import { SubmitFormDto } from './dto/submit-form.dto';
 
@@ -13,7 +13,7 @@ export class FormsService {
     @InjectModel(Form) private formRepository: typeof Form,
     @InjectModel(Answer) private answerRepository: typeof Answer,
     @InjectModel(Question) private questionRepository: typeof Question,
-    @InjectModel(Templates) private templateRepository: typeof Templates,
+    @InjectModel(Template) private templateRepository: typeof Template,
   ) {}
 
   async submitForm(dto: SubmitFormDto) {
@@ -62,7 +62,7 @@ export class FormsService {
           model: Answer,
           include: [Question],
         },
-        Templates,
+        Template,
       ],
     });
     if (!form) {
@@ -80,7 +80,7 @@ export class FormsService {
           model: Answer,
           include: [Question],
         },
-        Templates,
+        Template,
       ],
       order: [['submittedAt', 'DESC']],
     });
@@ -94,7 +94,7 @@ export class FormsService {
           model: Answer,
           include: [Question],
         },
-        Templates,
+        Template,
       ],
       order: [['submittedAt', 'DESC']],
     });

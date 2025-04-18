@@ -3,14 +3,14 @@ import { QuestionsService } from './questions.service';
 import { QuestionsController } from './questions.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Question } from './questions.model';
-import { Templates } from '../templates/templates.model';
+import { Template } from '../templates/templates.model';
 import { AuthModule } from '../auth/auth.module';
 import { TemplatesModule } from '../templates/templates.module';
 import { Answer } from '../forms/answers.model';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([Question, Templates, Answer]),
+    SequelizeModule.forFeature([Question, Template, Answer]),
     AuthModule,
     TemplatesModule,
   ],

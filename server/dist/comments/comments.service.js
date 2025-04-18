@@ -62,7 +62,7 @@ exports.CommentsService = CommentsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, sequelize_1.InjectModel)(comments_model_1.Comment)),
     __param(1, (0, sequelize_1.InjectModel)(users_model_1.User)),
-    __param(2, (0, sequelize_1.InjectModel)(templates_model_1.Templates)),
+    __param(2, (0, sequelize_1.InjectModel)(templates_model_1.Template)),
     __metadata("design:paramtypes", [Object, Object, Object])
 ], CommentsService);
 //# sourceMappingURL=comments.service.js.map

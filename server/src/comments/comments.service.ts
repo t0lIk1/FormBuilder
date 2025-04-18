@@ -3,14 +3,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Comment } from './comments.model';
 import { User } from '../users/users.model';
-import { Templates } from '../templates/templates.model'; // Обязательно импортируем модель
+import { Template } from '../templates/templates.model'; // Обязательно импортируем модель
 
 @Injectable()
 export class CommentsService {
   constructor(
     @InjectModel(Comment) private commentRepository: typeof Comment,
     @InjectModel(User) private userRepository: typeof User,
-    @InjectModel(Templates) private templateRepository: typeof Templates,
+    @InjectModel(Template) private templateRepository: typeof Template,
   ) {}
 
   async create(userId: number, templateId: number, content: string) {

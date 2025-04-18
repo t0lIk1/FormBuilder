@@ -1,18 +1,23 @@
 import { InjectModel } from '@nestjs/sequelize';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Templates } from './templates.model';
+import { Template } from './templates.model';
 import { Question } from '../questions/questions.model';
 import { CreateTemplateDto } from './dto/create-template.dto';
+import { TagsService } from '../tags/tags.service';
 
 @Injectable()
 export class TemplatesService {
   constructor(
-    @InjectModel(Templates) private templateRepository: typeof Templates,
+    @InjectModel(Template) private templateRepository: typeof Template,
     @InjectModel(Question) private questionRepository: typeof Question,
+    private tagsService: TagsService,
   ) {}
 
-  async create(dto: CreateTemplateDto) {
-    return this.templateRepository.create(dto);
+  async create(dto: CreateTemplateDto, tagNames?: string[]) {
+    const template = await this.templateRepository.create(dto);
+
+    const tags = await this.tagsService.findOrCreate(tagNames);
+    await template.$set('tags', tags);
   }
 
   async findAll() {
@@ -30,18 +35,21 @@ export class TemplatesService {
     return template;
   }
 
-  async update(id: number, dto: CreateTemplateDto) {
+  async update(id: number, dto: CreateTemplateDto, tagNames?: string[]) {
     const template = await this.templateRepository.findByPk(id);
     if (!template) throw new NotFoundException('Template not found');
-    return template.update(dto);
+    const updateTemplate = await template.update(dto);
+    const tags = await this.tagsService.findOrCreate(tagNames);
+    await updateTemplate.$set('tags', tags);
+    return updateTemplate;
   }
 
   async remove(id: number) {
     const template = await this.templateRepository.findByPk(id);
     if (!template) throw new NotFoundException('Template not found');
 
-    // Удаляем связанные вопросы
     await this.questionRepository.destroy({ where: { templateId: id } });
+
     return template.destroy();
   }
 

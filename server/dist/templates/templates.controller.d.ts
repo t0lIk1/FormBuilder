@@ -4,10 +4,10 @@ import { Request } from 'express';
 export declare class TemplatesController {
     private readonly templatesService;
     constructor(templatesService: TemplatesService);
-    create(dto: CreateTemplateDto, req: Request): Promise<import("./templates.model").Templates>;
-    findAll(): Promise<import("./templates.model").Templates[]>;
-    findOne(id: number): Promise<import("./templates.model").Templates>;
-    update(id: number, dto: CreateTemplateDto): Promise<import("./templates.model").Templates>;
+    create(dto: CreateTemplateDto, req: Request): Promise<void>;
+    findAll(): Promise<import("./templates.model").Template[]>;
+    findOne(id: number): Promise<import("./templates.model").Template>;
+    update(id: number, dto: CreateTemplateDto): Promise<import("./templates.model").Template>;
     remove(id: number): Promise<void>;
     getTemplateQuestions(id: number): Promise<import("../questions/questions.model").Question[]>;
 }

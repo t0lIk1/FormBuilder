@@ -7,7 +7,7 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { Templates } from '../templates/templates.model';
+import { Template } from '../templates/templates.model';
 import { Answer } from '../forms/answers.model';
 import { QuestionType } from '../types/enum';
 
@@ -90,15 +90,15 @@ export class Question extends Model<Question, QuestionAttributes> {
   })
   showInTable: boolean;
 
-  @ForeignKey(() => Templates)
+  @ForeignKey(() => Template)
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
   })
   templateId: number;
 
-  @BelongsTo(() => Templates)
-  template: Templates;
+  @BelongsTo(() => Template)
+  template: Template;
 
   // questions.model.ts
   @HasMany(() => Answer)

@@ -2,6 +2,7 @@ import { Model } from 'sequelize-typescript';
 import { User } from '../users/users.model';
 import { Question } from '../questions/questions.model';
 import { Form } from '../forms/forms.model';
+import { Tag } from '../tags/tags.model';
 interface TemplateAttributes {
     title: string;
     description: string;
@@ -9,7 +10,7 @@ interface TemplateAttributes {
     isPublic: boolean;
     userId: number;
 }
-export declare class Templates extends Model<Templates, TemplateAttributes> {
+export declare class Template extends Model<Template, TemplateAttributes> {
     id: number;
     title: string;
     description: string;
@@ -19,5 +20,6 @@ export declare class Templates extends Model<Templates, TemplateAttributes> {
     user: User;
     questions: Question[];
     forms: Form[];
+    tags: Tag[];
 }
 export {};

@@ -1,14 +1,16 @@
-import { Templates } from './templates.model';
+import { Template } from './templates.model';
 import { Question } from '../questions/questions.model';
 import { CreateTemplateDto } from './dto/create-template.dto';
+import { TagsService } from '../tags/tags.service';
 export declare class TemplatesService {
     private templateRepository;
     private questionRepository;
-    constructor(templateRepository: typeof Templates, questionRepository: typeof Question);
-    create(dto: CreateTemplateDto): Promise<Templates>;
-    findAll(): Promise<Templates[]>;
-    findOne(id: number): Promise<Templates>;
-    update(id: number, dto: CreateTemplateDto): Promise<Templates>;
+    private tagsService;
+    constructor(templateRepository: typeof Template, questionRepository: typeof Question, tagsService: TagsService);
+    create(dto: CreateTemplateDto, tagNames?: string[]): Promise<void>;
+    findAll(): Promise<Template[]>;
+    findOne(id: number): Promise<Template>;
+    update(id: number, dto: CreateTemplateDto, tagNames?: string[]): Promise<Template>;
     remove(id: number): Promise<void>;
     getTemplateQuestions(id: number): Promise<Question[]>;
 }

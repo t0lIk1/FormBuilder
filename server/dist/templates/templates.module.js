@@ -15,14 +15,18 @@ const sequelize_1 = require("@nestjs/sequelize");
 const questions_model_1 = require("../questions/questions.model");
 const users_model_1 = require("../users/users.model");
 const auth_module_1 = require("../auth/auth.module");
+const tags_model_1 = require("../tags/tags.model");
+const templates_tags_model_1 = require("../tags/templates-tags.model");
+const tags_module_1 = require("../tags/tags.module");
 let TemplatesModule = class TemplatesModule {
 };
 exports.TemplatesModule = TemplatesModule;
 exports.TemplatesModule = TemplatesModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            sequelize_1.SequelizeModule.forFeature([questions_model_1.Question, templates_model_1.Templates, users_model_1.User]),
+            sequelize_1.SequelizeModule.forFeature([questions_model_1.Question, templates_model_1.Template, users_model_1.User, tags_model_1.Tag, templates_tags_model_1.TemplateTag]),
             auth_module_1.AuthModule,
+            tags_module_1.TagsModule,
         ],
         controllers: [templates_controller_1.TemplatesController],
         providers: [templates_service_1.TemplatesService],

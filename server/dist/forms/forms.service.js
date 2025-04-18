@@ -67,7 +67,7 @@ let FormsService = class FormsService {
                     model: answers_model_1.Answer,
                     include: [questions_model_1.Question],
                 },
-                templates_model_1.Templates,
+                templates_model_1.Template,
             ],
         });
         if (!form) {
@@ -83,7 +83,7 @@ let FormsService = class FormsService {
                     model: answers_model_1.Answer,
                     include: [questions_model_1.Question],
                 },
-                templates_model_1.Templates,
+                templates_model_1.Template,
             ],
             order: [['submittedAt', 'DESC']],
         });
@@ -96,7 +96,7 @@ let FormsService = class FormsService {
                     model: answers_model_1.Answer,
                     include: [questions_model_1.Question],
                 },
-                templates_model_1.Templates,
+                templates_model_1.Template,
             ],
             order: [['submittedAt', 'DESC']],
         });
@@ -147,7 +147,7 @@ exports.FormsService = FormsService = __decorate([
     __param(0, (0, sequelize_1.InjectModel)(forms_model_1.Form)),
     __param(1, (0, sequelize_1.InjectModel)(answers_model_1.Answer)),
     __param(2, (0, sequelize_1.InjectModel)(questions_model_1.Question)),
-    __param(3, (0, sequelize_1.InjectModel)(templates_model_1.Templates)),
+    __param(3, (0, sequelize_1.InjectModel)(templates_model_1.Template)),
     __metadata("design:paramtypes", [Object, Object, Object, Object])
 ], FormsService);
 //# sourceMappingURL=forms.service.js.map

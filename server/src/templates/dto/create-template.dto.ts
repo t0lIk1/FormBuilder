@@ -1,4 +1,10 @@
-import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateTemplateDto {
   @IsNotEmpty()
@@ -17,13 +23,15 @@ export class CreateTemplateDto {
   // @IsString()
   // imageUrl?: string;
 
-  @IsNotEmpty() // Добавляем явное указание, что поле обязательно
+  @IsNotEmpty()
   @IsBoolean()
-  isPublic: boolean; // Убираем "?" - делаем обязательным
-
-  // @IsArray()
-  // tags: string[];
+  isPublic: boolean;
 
   @IsNotEmpty()
   userId: number;
+
+  @IsOptional()
+  @IsArray()
+  @IsString()
+  tags?: string[];
 }

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Question } from './questions.model';
-import { Templates } from '../templates/templates.model';
+import { Template } from '../templates/templates.model';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { ReorderQuestionsDto } from './dto/reorder-question.dto';
 
@@ -9,7 +9,7 @@ import { ReorderQuestionsDto } from './dto/reorder-question.dto';
 export class QuestionsService {
   constructor(
     @InjectModel(Question) private questionRepository: typeof Question,
-    @InjectModel(Templates) private templatesRepository: typeof Templates,
+    @InjectModel(Template) private templatesRepository: typeof Template,
   ) {}
 
   async create(templateId: number, dto: CreateQuestionDto) {

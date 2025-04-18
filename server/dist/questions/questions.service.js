@@ -81,7 +81,7 @@ exports.QuestionsService = QuestionsService;
 exports.QuestionsService = QuestionsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, sequelize_1.InjectModel)(questions_model_1.Question)),
-    __param(1, (0, sequelize_1.InjectModel)(templates_model_1.Templates)),
+    __param(1, (0, sequelize_1.InjectModel)(templates_model_1.Template)),
     __metadata("design:paramtypes", [Object, Object])
 ], QuestionsService);
 //# sourceMappingURL=questions.service.js.map

@@ -16,6 +16,7 @@ const templates_module_1 = require("./templates/templates.module");
 const questions_module_1 = require("./questions/questions.module");
 const forms_module_1 = require("./forms/forms.module");
 const comments_module_1 = require("./comments/comments.module");
+const tags_module_1 = require("./tags/tags.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -41,6 +42,7 @@ exports.AppModule = AppModule = __decorate([
             questions_module_1.QuestionsModule,
             forms_module_1.FormsModule,
             comments_module_1.CommentsModule,
+            tags_module_1.TagsModule,
         ],
     })
 ], AppModule);

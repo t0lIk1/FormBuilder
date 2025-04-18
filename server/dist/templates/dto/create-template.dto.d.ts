@@ -4,4 +4,5 @@ export declare class CreateTemplateDto {
     topic: string;
     isPublic: boolean;
     userId: number;
+    tags?: string[];
 }

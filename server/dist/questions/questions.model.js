@@ -84,7 +84,7 @@ __decorate([
     __metadata("design:type", Boolean)
 ], Question.prototype, "showInTable", void 0);
 __decorate([
-    (0, sequelize_typescript_1.ForeignKey)(() => templates_model_1.Templates),
+    (0, sequelize_typescript_1.ForeignKey)(() => templates_model_1.Template),
     (0, sequelize_typescript_1.Column)({
         type: sequelize_typescript_1.DataType.INTEGER,
         allowNull: false,
@@ -92,8 +92,8 @@ __decorate([
     __metadata("design:type", Number)
 ], Question.prototype, "templateId", void 0);
 __decorate([
-    (0, sequelize_typescript_1.BelongsTo)(() => templates_model_1.Templates),
-    __metadata("design:type", templates_model_1.Templates)
+    (0, sequelize_typescript_1.BelongsTo)(() => templates_model_1.Template),
+    __metadata("design:type", templates_model_1.Template)
 ], Question.prototype, "template", void 0);
 __decorate([
     (0, sequelize_typescript_1.HasMany)(() => answers_model_1.Answer),

@@ -17,6 +17,7 @@ class CreateTemplateDto {
     topic;
     isPublic;
     userId;
+    tags;
 }
 exports.CreateTemplateDto = CreateTemplateDto;
 __decorate([
@@ -43,4 +44,10 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", Number)
 ], CreateTemplateDto.prototype, "userId", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", Array)
+], CreateTemplateDto.prototype, "tags", void 0);
 //# sourceMappingURL=create-template.dto.js.map

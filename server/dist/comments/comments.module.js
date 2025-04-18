@@ -20,7 +20,7 @@ let CommentsModule = class CommentsModule {
 exports.CommentsModule = CommentsModule;
 exports.CommentsModule = CommentsModule = __decorate([
     (0, common_1.Module)({
-        imports: [sequelize_1.SequelizeModule.forFeature([comments_model_1.Comment, users_model_1.User, templates_model_1.Templates]), auth_module_1.AuthModule],
+        imports: [sequelize_1.SequelizeModule.forFeature([comments_model_1.Comment, users_model_1.User, templates_model_1.Template]), auth_module_1.AuthModule],
         providers: [comments_service_1.CommentsService, comments_gateway_1.CommentsGateway],
     })
 ], CommentsModule);

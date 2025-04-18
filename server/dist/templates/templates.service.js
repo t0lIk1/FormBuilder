@@ -17,15 +17,20 @@ const sequelize_1 = require("@nestjs/sequelize");
 const common_1 = require("@nestjs/common");
 const templates_model_1 = require("./templates.model");
 const questions_model_1 = require("../questions/questions.model");
+const tags_service_1 = require("../tags/tags.service");
 let TemplatesService = class TemplatesService {
     templateRepository;
     questionRepository;
-    constructor(templateRepository, questionRepository) {
+    tagsService;
+    constructor(templateRepository, questionRepository, tagsService) {
         this.templateRepository = templateRepository;
         this.questionRepository = questionRepository;
+        this.tagsService = tagsService;
     }
-    async create(dto) {
-        return this.templateRepository.create(dto);
+    async create(dto, tagNames) {
+        const template = await this.templateRepository.create(dto);
+        const tags = await this.tagsService.findOrCreate(tagNames);
+        await template.$set('tags', tags);
     }
     async findAll() {
         return this.templateRepository.findAll({
@@ -41,11 +46,14 @@ let TemplatesService = class TemplatesService {
             throw new common_1.NotFoundException('Template not found');
         return template;
     }
-    async update(id, dto) {
+    async update(id, dto, tagNames) {
         const template = await this.templateRepository.findByPk(id);
         if (!template)
             throw new common_1.NotFoundException('Template not found');
-        return template.update(dto);
+        const updateTemplate = await template.update(dto);
+        const tags = await this.tagsService.findOrCreate(tagNames);
+        await updateTemplate.$set('tags', tags);
+        return updateTemplate;
     }
     async remove(id) {
         const template = await this.templateRepository.findByPk(id);
@@ -67,8 +75,8 @@ let TemplatesService = class TemplatesService {
 exports.TemplatesService = TemplatesService;
 exports.TemplatesService = TemplatesService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, sequelize_1.InjectModel)(templates_model_1.Templates)),
+    __param(0, (0, sequelize_1.InjectModel)(templates_model_1.Template)),
     __param(1, (0, sequelize_1.InjectModel)(questions_model_1.Question)),
-    __metadata("design:paramtypes", [Object, Object])
+    __metadata("design:paramtypes", [Object, Object, tags_service_1.TagsService])
 ], TemplatesService);
 //# sourceMappingURL=templates.service.js.map

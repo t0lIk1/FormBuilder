@@ -7,11 +7,12 @@ import { TemplatesModule } from './templates/templates.module';
 import { QuestionsModule } from './questions/questions.module';
 import { FormsModule } from './forms/forms.module';
 import { User } from './users/users.model';
-import { Templates } from './templates/templates.model';
+import { Template } from './templates/templates.model';
 import { Question } from './questions/questions.model';
 import { Form } from './forms/forms.model';
 import { Answer } from './forms/answers.model';
 import { CommentsModule } from './comments/comments.module';
+import { TagsModule } from './tags/tags.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { CommentsModule } from './comments/comments.module';
     QuestionsModule,
     FormsModule,
     CommentsModule,
+    TagsModule,
   ],
 })
 export class AppModule {}

@@ -22,7 +22,7 @@ exports.FormsModule = FormsModule;
 exports.FormsModule = FormsModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            sequelize_1.SequelizeModule.forFeature([forms_model_1.Form, answers_model_1.Answer, questions_model_1.Question, templates_model_1.Templates]),
+            sequelize_1.SequelizeModule.forFeature([forms_model_1.Form, answers_model_1.Answer, questions_model_1.Question, templates_model_1.Template]),
             auth_module_1.AuthModule,
         ],
         controllers: [forms_controller_1.FormsController],

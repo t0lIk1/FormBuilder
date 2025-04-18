@@ -78,7 +78,7 @@ __decorate([
     __metadata("design:type", Array)
 ], User.prototype, "answers", void 0);
 __decorate([
-    (0, sequelize_typescript_1.HasMany)(() => templates_model_1.Templates),
+    (0, sequelize_typescript_1.HasMany)(() => templates_model_1.Template),
     __metadata("design:type", Array)
 ], User.prototype, "templates", void 0);
 exports.User = User = __decorate([

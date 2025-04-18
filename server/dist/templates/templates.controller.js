@@ -25,7 +25,8 @@ let TemplatesController = class TemplatesController {
     }
     create(dto, req) {
         const user = req.user;
-        return this.templatesService.create({ ...dto, userId: user.id });
+        const { tags, ...templateDto } = dto;
+        return this.templatesService.create({ ...templateDto, userId: user.id }, tags);
     }
     findAll() {
         return this.templatesService.findAll();
@@ -34,7 +35,8 @@ let TemplatesController = class TemplatesController {
         return this.templatesService.findOne(id);
     }
     update(id, dto) {
-        return this.templatesService.update(id, dto);
+        const { tags, ...templateDto } = dto;
+        return this.templatesService.update(id, templateDto, tags);
     }
     remove(id) {
         return this.templatesService.remove(id);
@@ -60,6 +62,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], TemplatesController.prototype, "findAll", null);
 __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
@@ -70,6 +73,7 @@ __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, access_templates_guard_1.AccessTemplatesGuard),
     (0, common_1.Put)(':id'),
     __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, create_template_dto_1.CreateTemplateDto]),
     __metadata("design:returntype", void 0)

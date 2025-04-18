@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { TemplatesService } from './templates.service';
-import {Templates} from "./templates.model";
+import {Template} from "./templates.model";
 
 @Injectable()
 export class AccessTemplatesGuard implements CanActivate {
@@ -14,7 +14,7 @@ export class AccessTemplatesGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<{
-      template: Templates;
+      template: Template;
       user?: { id: number; role: string };
       params: { id?: string; templateId?: string };
     }>();

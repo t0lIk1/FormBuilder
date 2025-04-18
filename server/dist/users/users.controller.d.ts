@@ -5,7 +5,7 @@ export declare class UsersController {
     constructor(usersService: UsersService);
     create(dto: CreateUserDto): Promise<import("./users.model").User>;
     getAll(): Promise<import("./users.model").User[]>;
-    getOne(email: string): Promise<import("./users.model").User[]>;
+    getOne(email: string): Promise<import("./users.model").User | null>;
     delete(body: {
         ids: number[];
     }): Promise<void>;

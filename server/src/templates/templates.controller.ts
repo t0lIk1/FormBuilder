@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Req,
@@ -23,7 +24,11 @@ export class TemplatesController {
   @Post()
   create(@Body() dto: CreateTemplateDto, @Req() req: Request) {
     const user = req.user as { id: number };
-    return this.templatesService.create({ ...dto, userId: user.id });
+    const { tags, ...templateDto } = dto;
+    return this.templatesService.create(
+      { ...templateDto, userId: user.id },
+      tags,
+    );
   }
 
   @Get()
@@ -31,6 +36,7 @@ export class TemplatesController {
     return this.templatesService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: number) {
     return this.templatesService.findOne(id);
@@ -38,8 +44,9 @@ export class TemplatesController {
 
   @UseGuards(JwtAuthGuard, AccessTemplatesGuard)
   @Put(':id')
-  update(@Param('id') id: number, dto: CreateTemplateDto) {
-    return this.templatesService.update(id, dto);
+  update(@Param('id') id: number, @Body() dto: CreateTemplateDto) {
+    const { tags, ...templateDto } = dto;
+    return this.templatesService.update(id, templateDto, tags);
   }
 
   @UseGuards(JwtAuthGuard, AccessTemplatesGuard)

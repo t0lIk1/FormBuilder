@@ -31,7 +31,7 @@ let UsersController = class UsersController {
         return this.usersService.findAllUsers();
     }
     getOne(email) {
-        return this.usersService.findOneUsers(email);
+        return this.usersService.findOneUser(email);
     }
     delete(body) {
         return this.usersService.deleteUsers(body.ids);

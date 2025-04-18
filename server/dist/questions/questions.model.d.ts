@@ -1,5 +1,5 @@
 import { Model } from 'sequelize-typescript';
-import { Templates } from '../templates/templates.model';
+import { Template } from '../templates/templates.model';
 import { Answer } from '../forms/answers.model';
 import { QuestionType } from '../types/enum';
 interface QuestionAttributes {
@@ -21,7 +21,7 @@ export declare class Question extends Model<Question, QuestionAttributes> {
     order: number;
     showInTable: boolean;
     templateId: number;
-    template: Templates;
+    template: Template;
     answers: Answer[];
 }
 export {};

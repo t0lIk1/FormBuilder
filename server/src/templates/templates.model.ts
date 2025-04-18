@@ -1,5 +1,6 @@
 import {
   BelongsTo,
+  BelongsToMany,
   Column,
   DataType,
   ForeignKey,
@@ -10,6 +11,8 @@ import {
 import { User } from '../users/users.model';
 import { Question } from '../questions/questions.model';
 import { Form } from '../forms/forms.model';
+import { Tag } from '../tags/tags.model';
+import { TemplateTag } from '../tags/templates-tags.model';
 
 interface TemplateAttributes {
   title: string;
@@ -21,7 +24,7 @@ interface TemplateAttributes {
 }
 
 @Table({ tableName: 'templates' })
-export class Templates extends Model<Templates, TemplateAttributes> {
+export class Template extends Model<Template, TemplateAttributes> {
   @Column({
     type: DataType.INTEGER,
     unique: true,
@@ -58,4 +61,7 @@ export class Templates extends Model<Templates, TemplateAttributes> {
 
   @HasMany(() => Form)
   forms: Form[];
+
+  @BelongsToMany(() => Tag, () => TemplateTag)
+  tags: Tag[];
 }

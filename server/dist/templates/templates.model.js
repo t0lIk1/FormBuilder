@@ -9,12 +9,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Templates = void 0;
+exports.Template = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
 const users_model_1 = require("../users/users.model");
 const questions_model_1 = require("../questions/questions.model");
 const forms_model_1 = require("../forms/forms.model");
-let Templates = class Templates extends sequelize_typescript_1.Model {
+const tags_model_1 = require("../tags/tags.model");
+const templates_tags_model_1 = require("../tags/templates-tags.model");
+let Template = class Template extends sequelize_typescript_1.Model {
     title;
     description;
     topic;
@@ -23,8 +25,9 @@ let Templates = class Templates extends sequelize_typescript_1.Model {
     user;
     questions;
     forms;
+    tags;
 };
-exports.Templates = Templates;
+exports.Template = Template;
 __decorate([
     (0, sequelize_typescript_1.Column)({
         type: sequelize_typescript_1.DataType.INTEGER,
@@ -34,41 +37,45 @@ __decorate([
         allowNull: false,
     }),
     __metadata("design:type", Number)
-], Templates.prototype, "id", void 0);
+], Template.prototype, "id", void 0);
 __decorate([
     (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.STRING, allowNull: false }),
     __metadata("design:type", String)
-], Templates.prototype, "title", void 0);
+], Template.prototype, "title", void 0);
 __decorate([
     (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.STRING, allowNull: false }),
     __metadata("design:type", String)
-], Templates.prototype, "description", void 0);
+], Template.prototype, "description", void 0);
 __decorate([
     (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.STRING, allowNull: false }),
     __metadata("design:type", String)
-], Templates.prototype, "topic", void 0);
+], Template.prototype, "topic", void 0);
 __decorate([
     (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.BOOLEAN, allowNull: false, defaultValue: false }),
     __metadata("design:type", Boolean)
-], Templates.prototype, "isPublic", void 0);
+], Template.prototype, "isPublic", void 0);
 __decorate([
     (0, sequelize_typescript_1.ForeignKey)(() => users_model_1.User),
     (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER, allowNull: false }),
     __metadata("design:type", Number)
-], Templates.prototype, "userId", void 0);
+], Template.prototype, "userId", void 0);
 __decorate([
     (0, sequelize_typescript_1.BelongsTo)(() => users_model_1.User),
     __metadata("design:type", users_model_1.User)
-], Templates.prototype, "user", void 0);
+], Template.prototype, "user", void 0);
 __decorate([
     (0, sequelize_typescript_1.HasMany)(() => questions_model_1.Question),
     __metadata("design:type", Array)
-], Templates.prototype, "questions", void 0);
+], Template.prototype, "questions", void 0);
 __decorate([
     (0, sequelize_typescript_1.HasMany)(() => forms_model_1.Form),
     __metadata("design:type", Array)
-], Templates.prototype, "forms", void 0);
-exports.Templates = Templates = __decorate([
+], Template.prototype, "forms", void 0);
+__decorate([
+    (0, sequelize_typescript_1.BelongsToMany)(() => tags_model_1.Tag, () => templates_tags_model_1.TemplateTag),
+    __metadata("design:type", Array)
+], Template.prototype, "tags", void 0);
+exports.Template = Template = __decorate([
     (0, sequelize_typescript_1.Table)({ tableName: 'templates' })
-], Templates);
+], Template);
 //# sourceMappingURL=templates.model.js.map
