@@ -13,6 +13,7 @@ import { Question } from '../questions/questions.model';
 import { Form } from '../forms/forms.model';
 import { Tag } from '../tags/tags.model';
 import { TemplateTag } from '../tags/templates-tags.model';
+import {TemplateLike} from "./template-likes.model";
 
 interface TemplateAttributes {
   title: string;
@@ -64,4 +65,7 @@ export class Template extends Model<Template, TemplateAttributes> {
 
   @BelongsToMany(() => Tag, () => TemplateTag)
   tags: Tag[];
+
+  @HasMany(() => TemplateLike)
+  likes: TemplateLike[];
 }

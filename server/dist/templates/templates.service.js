@@ -18,13 +18,18 @@ const common_1 = require("@nestjs/common");
 const templates_model_1 = require("./templates.model");
 const questions_model_1 = require("../questions/questions.model");
 const tags_service_1 = require("../tags/tags.service");
+const template_likes_model_1 = require("./template-likes.model");
+const tags_model_1 = require("../tags/tags.model");
+const templates_tags_model_1 = require("../tags/templates-tags.model");
 let TemplatesService = class TemplatesService {
     templateRepository;
     questionRepository;
+    templateLikeRepository;
     tagsService;
-    constructor(templateRepository, questionRepository, tagsService) {
+    constructor(templateRepository, questionRepository, templateLikeRepository, tagsService) {
         this.templateRepository = templateRepository;
         this.questionRepository = questionRepository;
+        this.templateLikeRepository = templateLikeRepository;
         this.tagsService = tagsService;
     }
     async create(dto, tagNames) {
@@ -33,14 +38,24 @@ let TemplatesService = class TemplatesService {
         await template.$set('tags', tags);
     }
     async findAll() {
-        return this.templateRepository.findAll({
-            include: [questions_model_1.Question],
+        return await this.templateRepository.findAll({
+            include: [
+                questions_model_1.Question,
+                {
+                    model: tags_model_1.Tag,
+                    through: { attributes: [] },
+                },
+                {
+                    model: template_likes_model_1.TemplateLike,
+                    required: false,
+                },
+            ],
             order: [['createdAt', 'DESC']],
         });
     }
     async findOne(id) {
         const template = await this.templateRepository.findByPk(id, {
-            include: [questions_model_1.Question],
+            include: [questions_model_1.Question, tags_model_1.Tag, templates_tags_model_1.TemplateTag, template_likes_model_1.TemplateLike],
         });
         if (!template)
             throw new common_1.NotFoundException('Template not found');
@@ -51,8 +66,13 @@ let TemplatesService = class TemplatesService {
         if (!template)
             throw new common_1.NotFoundException('Template not found');
         const updateTemplate = await template.update(dto);
-        const tags = await this.tagsService.findOrCreate(tagNames);
-        await updateTemplate.$set('tags', tags);
+        if (tagNames) {
+            const tags = await this.tagsService.findOrCreate(tagNames);
+            await updateTemplate.$set('tags', tags);
+        }
+        else {
+            await updateTemplate.$set('tags', []);
+        }
         return updateTemplate;
     }
     async remove(id) {
@@ -71,12 +91,26 @@ let TemplatesService = class TemplatesService {
             order: [['order', 'ASC']],
         });
     }
+    async toggleLike(templateId, userId) {
+        const existingLike = await this.templateLikeRepository.findOne({
+            where: { templateId, userId },
+        });
+        if (existingLike) {
+            await existingLike.destroy();
+            return { liked: false };
+        }
+        else {
+            await this.templateLikeRepository.create({ templateId, userId });
+            return { liked: true };
+        }
+    }
 };
 exports.TemplatesService = TemplatesService;
 exports.TemplatesService = TemplatesService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, sequelize_1.InjectModel)(templates_model_1.Template)),
     __param(1, (0, sequelize_1.InjectModel)(questions_model_1.Question)),
-    __metadata("design:paramtypes", [Object, Object, tags_service_1.TagsService])
+    __param(2, (0, sequelize_1.InjectModel)(template_likes_model_1.TemplateLike)),
+    __metadata("design:paramtypes", [Object, Object, Object, tags_service_1.TagsService])
 ], TemplatesService);
 //# sourceMappingURL=templates.service.js.map

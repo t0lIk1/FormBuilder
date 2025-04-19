@@ -9,10 +9,18 @@ import { AuthModule } from '../auth/auth.module';
 import { Tag } from '../tags/tags.model';
 import { TemplateTag } from '../tags/templates-tags.model';
 import { TagsModule } from '../tags/tags.module';
+import { TemplateLike } from './template-likes.model';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([Question, Template, User, Tag, TemplateTag]),
+    SequelizeModule.forFeature([
+      Question,
+      Template,
+      User,
+      Tag,
+      TemplateTag,
+      TemplateLike,
+    ]),
     AuthModule,
     TagsModule,
   ],

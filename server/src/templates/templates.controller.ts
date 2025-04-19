@@ -38,26 +38,36 @@ export class TemplatesController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: number) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.templatesService.findOne(id);
   }
 
   @UseGuards(JwtAuthGuard, AccessTemplatesGuard)
   @Put(':id')
-  update(@Param('id') id: number, @Body() dto: CreateTemplateDto) {
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: CreateTemplateDto,
+  ) {
     const { tags, ...templateDto } = dto;
     return this.templatesService.update(id, templateDto, tags);
   }
 
   @UseGuards(JwtAuthGuard, AccessTemplatesGuard)
   @Delete(':id')
-  remove(@Param('id') id: number) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.templatesService.remove(id);
   }
 
   @UseGuards(JwtAuthGuard, AccessTemplatesGuard)
   @Get(':id/questions')
-  getTemplateQuestions(@Param('id') id: number) {
+  getTemplateQuestions(@Param('id', ParseIntPipe) id: number) {
     return this.templatesService.getTemplateQuestions(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/toggle-like')
+  async toggleLike(@Param('id', ParseIntPipe) id: number, @Req() req: Request) {
+    const user = req.user as { id: number };
+    return this.templatesService.toggleLike(id, user.id);
   }
 }

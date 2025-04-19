@@ -4,12 +4,18 @@ import { Template } from './templates.model';
 import { Question } from '../questions/questions.model';
 import { CreateTemplateDto } from './dto/create-template.dto';
 import { TagsService } from '../tags/tags.service';
+import { TemplateLike } from './template-likes.model';
+import { UpdateTemplateDto } from './dto/update-template.dto';
+import { Tag } from '../tags/tags.model';
+import { TemplateTag } from '../tags/templates-tags.model';
 
 @Injectable()
 export class TemplatesService {
   constructor(
     @InjectModel(Template) private templateRepository: typeof Template,
     @InjectModel(Question) private questionRepository: typeof Question,
+    @InjectModel(TemplateLike)
+    private templateLikeRepository: typeof TemplateLike,
     private tagsService: TagsService,
   ) {}
 
@@ -21,26 +27,41 @@ export class TemplatesService {
   }
 
   async findAll() {
-    return this.templateRepository.findAll({
-      include: [Question],
+    return await this.templateRepository.findAll({
+      include: [
+        Question,
+        {
+          model: Tag,
+          through: { attributes: [] },
+        },
+        {
+          model: TemplateLike,
+          required: false,
+        },
+      ],
       order: [['createdAt', 'DESC']],
     });
   }
 
   async findOne(id: number) {
     const template = await this.templateRepository.findByPk(id, {
-      include: [Question],
+      include: [Question, Tag, TemplateTag, TemplateLike],
     });
     if (!template) throw new NotFoundException('Template not found');
     return template;
   }
 
-  async update(id: number, dto: CreateTemplateDto, tagNames?: string[]) {
+  async update(id: number, dto: UpdateTemplateDto, tagNames?: string[]) {
     const template = await this.templateRepository.findByPk(id);
     if (!template) throw new NotFoundException('Template not found');
     const updateTemplate = await template.update(dto);
-    const tags = await this.tagsService.findOrCreate(tagNames);
-    await updateTemplate.$set('tags', tags);
+
+    if (tagNames) {
+      const tags = await this.tagsService.findOrCreate(tagNames);
+      await updateTemplate.$set('tags', tags);
+    } else {
+      await updateTemplate.$set('tags', []);
+    }
     return updateTemplate;
   }
 
@@ -61,5 +82,19 @@ export class TemplatesService {
       where: { templateId: id },
       order: [['order', 'ASC']],
     });
+  }
+
+  async toggleLike(templateId: number, userId: number) {
+    const existingLike = await this.templateLikeRepository.findOne({
+      where: { templateId, userId },
+    });
+
+    if (existingLike) {
+      await existingLike.destroy();
+      return { liked: false };
+    } else {
+      await this.templateLikeRepository.create({ templateId, userId });
+      return { liked: true };
+    }
   }
 }

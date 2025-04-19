@@ -10,4 +10,7 @@ export declare class TemplatesController {
     update(id: number, dto: CreateTemplateDto): Promise<import("./templates.model").Template>;
     remove(id: number): Promise<void>;
     getTemplateQuestions(id: number): Promise<import("../questions/questions.model").Question[]>;
+    toggleLike(id: number, req: Request): Promise<{
+        liked: boolean;
+    }>;
 }

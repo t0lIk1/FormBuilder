@@ -16,6 +16,7 @@ const questions_model_1 = require("../questions/questions.model");
 const forms_model_1 = require("../forms/forms.model");
 const tags_model_1 = require("../tags/tags.model");
 const templates_tags_model_1 = require("../tags/templates-tags.model");
+const template_likes_model_1 = require("./template-likes.model");
 let Template = class Template extends sequelize_typescript_1.Model {
     title;
     description;
@@ -26,6 +27,7 @@ let Template = class Template extends sequelize_typescript_1.Model {
     questions;
     forms;
     tags;
+    likes;
 };
 exports.Template = Template;
 __decorate([
@@ -75,6 +77,10 @@ __decorate([
     (0, sequelize_typescript_1.BelongsToMany)(() => tags_model_1.Tag, () => templates_tags_model_1.TemplateTag),
     __metadata("design:type", Array)
 ], Template.prototype, "tags", void 0);
+__decorate([
+    (0, sequelize_typescript_1.HasMany)(() => template_likes_model_1.TemplateLike),
+    __metadata("design:type", Array)
+], Template.prototype, "likes", void 0);
 exports.Template = Template = __decorate([
     (0, sequelize_typescript_1.Table)({ tableName: 'templates' })
 ], Template);

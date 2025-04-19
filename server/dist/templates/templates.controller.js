@@ -44,6 +44,10 @@ let TemplatesController = class TemplatesController {
     getTemplateQuestions(id) {
         return this.templatesService.getTemplateQuestions(id);
     }
+    async toggleLike(id, req) {
+        const user = req.user;
+        return this.templatesService.toggleLike(id, user.id);
+    }
 };
 exports.TemplatesController = TemplatesController;
 __decorate([
@@ -64,7 +68,7 @@ __decorate([
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
@@ -72,7 +76,7 @@ __decorate([
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, access_templates_guard_1.AccessTemplatesGuard),
     (0, common_1.Put)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, create_template_dto_1.CreateTemplateDto]),
@@ -81,7 +85,7 @@ __decorate([
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, access_templates_guard_1.AccessTemplatesGuard),
     (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
@@ -89,11 +93,20 @@ __decorate([
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, access_templates_guard_1.AccessTemplatesGuard),
     (0, common_1.Get)(':id/questions'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], TemplatesController.prototype, "getTemplateQuestions", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Post)(':id/toggle-like'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:returntype", Promise)
+], TemplatesController.prototype, "toggleLike", null);
 exports.TemplatesController = TemplatesController = __decorate([
     (0, common_1.Controller)('templates'),
     __metadata("design:paramtypes", [templates_service_1.TemplatesService])

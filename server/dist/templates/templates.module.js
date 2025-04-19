@@ -18,13 +18,21 @@ const auth_module_1 = require("../auth/auth.module");
 const tags_model_1 = require("../tags/tags.model");
 const templates_tags_model_1 = require("../tags/templates-tags.model");
 const tags_module_1 = require("../tags/tags.module");
+const template_likes_model_1 = require("./template-likes.model");
 let TemplatesModule = class TemplatesModule {
 };
 exports.TemplatesModule = TemplatesModule;
 exports.TemplatesModule = TemplatesModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            sequelize_1.SequelizeModule.forFeature([questions_model_1.Question, templates_model_1.Template, users_model_1.User, tags_model_1.Tag, templates_tags_model_1.TemplateTag]),
+            sequelize_1.SequelizeModule.forFeature([
+                questions_model_1.Question,
+                templates_model_1.Template,
+                users_model_1.User,
+                tags_model_1.Tag,
+                templates_tags_model_1.TemplateTag,
+                template_likes_model_1.TemplateLike,
+            ]),
             auth_module_1.AuthModule,
             tags_module_1.TagsModule,
         ],
