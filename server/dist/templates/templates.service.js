@@ -20,7 +20,6 @@ const questions_model_1 = require("../questions/questions.model");
 const tags_service_1 = require("../tags/tags.service");
 const template_likes_model_1 = require("./template-likes.model");
 const tags_model_1 = require("../tags/tags.model");
-const templates_tags_model_1 = require("../tags/templates-tags.model");
 let TemplatesService = class TemplatesService {
     templateRepository;
     questionRepository;
@@ -55,7 +54,7 @@ let TemplatesService = class TemplatesService {
     }
     async findOne(id) {
         const template = await this.templateRepository.findByPk(id, {
-            include: [questions_model_1.Question, tags_model_1.Tag, templates_tags_model_1.TemplateTag, template_likes_model_1.TemplateLike],
+            include: { all: true },
         });
         if (!template)
             throw new common_1.NotFoundException('Template not found');

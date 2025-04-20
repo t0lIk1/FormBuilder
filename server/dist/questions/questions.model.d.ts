@@ -17,6 +17,7 @@ export declare class Question extends Model<Question, QuestionAttributes> {
     question: string;
     description: string;
     type: QuestionType;
+    options: string[];
     isRequired: boolean;
     order: number;
     showInTable: boolean;

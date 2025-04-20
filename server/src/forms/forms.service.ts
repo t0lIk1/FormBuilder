@@ -16,12 +16,12 @@ export class FormsService {
     @InjectModel(Template) private templateRepository: typeof Template,
   ) {}
 
-  async submitForm(dto: SubmitFormDto) {
-    const template = await this.templateRepository.findByPk(dto.templateId);
+  async submitForm(dto: SubmitFormDto, templateId: number) {
+    const template = await this.templateRepository.findByPk(templateId);
     if (!template) {
       throw new NotFoundException('Template not found');
     }
-    const questions = await this.validateQuestion(dto);
+    const questions = await this.validateQuestion(dto, templateId);
     for (const answer of dto.answers) {
       const question = questions.find((q) => q.id === answer.questionId);
       if (!question) {
@@ -32,13 +32,13 @@ export class FormsService {
 
       if (!this.validateAnswer(answer.value, question.dataValues.type)) {
         throw new NotFoundException(
-          `Invalid answer value for question ID ${answer.questionId} (expected ${question.type}, got ${answer.value})`,
+          `Invalid answer value for question ID ${answer.questionId} (expected ${question.dataValues.type}, got ${answer.value})`,
         );
       }
     }
 
     const form = await this.formRepository.create({
-      templateId: dto.templateId,
+      templateId,
       userId: dto.userId,
     });
 
@@ -47,10 +47,9 @@ export class FormsService {
       questionId: answer.questionId,
       value: answer.value,
     }));
+    console.log(answers);
 
-    await this.answerRepository.bulkCreate(answers, {
-      returning: true,
-    });
+    await this.answerRepository.bulkCreate(answers as any);
 
     return await this.getFormResponse(form.id);
   }
@@ -100,9 +99,7 @@ export class FormsService {
     });
   }
 
-  private validateAnswer(value: string, type: QuestionType) {
-    console.log(type);
-    console.log(value);
+  private validateAnswer(value: string | string[], type: QuestionType) {
     switch (type) {
       case QuestionType.TEXT:
       case QuestionType.TEXTAREA:
@@ -110,29 +107,28 @@ export class FormsService {
       case QuestionType.NUMBER:
         return !isNaN(Number(value));
       case QuestionType.CHECKBOX:
-        return typeof value === 'boolean';
+        return Array.isArray(value);
+      case QuestionType.SELECT:
+        return value.length === 1;
       default:
         return false;
     }
   }
 
-  private async validateQuestion(dto: SubmitFormDto) {
+  private async validateQuestion(dto: SubmitFormDto, templateId: number) {
     const requiredQuestionIds = (
       await this.questionRepository.findAll({
         where: {
-          templateId: dto.templateId,
+          templateId,
           isRequired: true,
         },
         attributes: ['id'],
       })
     ).map((q) => q.id);
-
     const answeredQuestionIds = dto.answers.map((a) => a.questionId);
-
     const allRequiredAnswered = requiredQuestionIds.every((id) =>
       answeredQuestionIds.includes(id),
     );
-
     if (!allRequiredAnswered) {
       throw new NotFoundException(
         'There are no answers to the required questions.',
@@ -142,7 +138,7 @@ export class FormsService {
     const questions = await this.questionRepository.findAll({
       where: {
         id: answeredQuestionIds,
-        templateId: dto.templateId,
+        templateId,
       },
     });
 
@@ -152,5 +148,48 @@ export class FormsService {
       );
     }
     return questions;
+  }
+
+  async updateFormResponse(id: number, dto: SubmitFormDto, userId: number) {
+    const form = await this.formRepository.findByPk(id);
+    if (!form) {
+      throw new NotFoundException('Form not found');
+    }
+
+    if (form.userId !== userId) {
+      throw new NotFoundException('You are not authorized to update this form');
+    }
+
+    const questions = await this.validateQuestion(dto, form.templateId);
+    for (const answer of dto.answers) {
+      const question = questions.find((q) => q.id === answer.questionId);
+      if (!question) {
+        throw new NotFoundException(
+          `Question with ID ${answer.questionId} not found`,
+        );
+      }
+
+      if (!this.validateAnswer(answer.value, question.type)) {
+        throw new NotFoundException(
+          `Invalid answer value for question ID ${answer.questionId} (expected ${question.type}, got ${answer.value})`,
+        );
+      }
+    }
+
+    // Удаляем старые ответы
+    await this.answerRepository.destroy({
+      where: { formId: id },
+    });
+
+    // Создаем новые ответы
+    const answers = dto.answers.map((answer) => ({
+      formId: id,
+      questionId: answer.questionId,
+      value: answer.value,
+    }));
+
+    await this.answerRepository.bulkCreate(answers as any);
+
+    return await this.getFormResponse(id);
   }
 }

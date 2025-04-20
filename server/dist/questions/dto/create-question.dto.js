@@ -12,10 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateQuestionDto = void 0;
 const class_validator_1 = require("class-validator");
 const enum_1 = require("../../types/enum");
+const class_transformer_1 = require("class-transformer");
 class CreateQuestionDto {
     question;
     description;
     type;
+    options;
     isRequired = false;
     order;
     showInTable = false;
@@ -23,6 +25,7 @@ class CreateQuestionDto {
 exports.CreateQuestionDto = CreateQuestionDto;
 __decorate([
     (0, class_validator_1.IsNotEmpty)({ message: 'Question text is required' }),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateQuestionDto.prototype, "question", void 0);
 __decorate([
@@ -30,9 +33,16 @@ __decorate([
     __metadata("design:type", String)
 ], CreateQuestionDto.prototype, "description", void 0);
 __decorate([
+    (0, class_validator_1.IsNotEmpty)({ message: 'Question type is required' }),
+    (0, class_transformer_1.Transform)(({ value }) => value?.toUpperCase()),
     (0, class_validator_1.IsEnum)(enum_1.QuestionType, { message: 'Invalid question type' }),
     __metadata("design:type", String)
 ], CreateQuestionDto.prototype, "type", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsArray)(),
+    __metadata("design:type", Array)
+], CreateQuestionDto.prototype, "options", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsBoolean)({ message: 'isRequired must be a boolean' }),

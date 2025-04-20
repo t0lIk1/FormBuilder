@@ -1,33 +1,43 @@
 import {
+  IsArray,
   IsBoolean,
   IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsString,
   Min,
 } from 'class-validator';
 import { QuestionType } from '../../types/enum';
+import { Transform } from 'class-transformer';
 
 export class CreateQuestionDto {
   @IsNotEmpty({ message: 'Question text is required' })
-  readonly question: string;
+  @IsString()
+  question: string;
 
   @IsOptional()
-  readonly description?: string;
+  description?: string;
 
+  @IsNotEmpty({ message: 'Question type is required' })
+  @Transform(({ value }: { value: string }) => value?.toUpperCase())
   @IsEnum(QuestionType, { message: 'Invalid question type' })
-  readonly type: QuestionType;
+  type: QuestionType;
+
+  @IsOptional()
+  @IsArray()
+  options?: string[];
 
   @IsOptional()
   @IsBoolean({ message: 'isRequired must be a boolean' })
-  readonly isRequired?: boolean = false;
+  isRequired?: boolean = false;
 
   @IsOptional()
   @IsNumber()
   @Min(0)
-  readonly order?: number;
+  order?: number;
 
   @IsOptional()
   @IsBoolean()
-  readonly showInTable?: boolean = false;
+  showInTable?: boolean = false;
 }

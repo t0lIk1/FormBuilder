@@ -15,8 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FormsController = void 0;
 const common_1 = require("@nestjs/common");
 const forms_service_1 = require("./forms.service");
-const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const submit_form_dto_1 = require("./dto/submit-form.dto");
+const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 let FormsController = class FormsController {
     formsService;
     constructor(formsService) {
@@ -24,21 +24,11 @@ let FormsController = class FormsController {
     }
     async submitForm(dto, req, templateId) {
         const user = req.user;
+        console.log(user.id);
         return this.formsService.submitForm({
-            templateId: Number(templateId),
             ...dto,
             userId: user.id,
-        });
-    }
-    getFormResponse(id) {
-        return this.formsService.getFormResponse(Number(id));
-    }
-    getUserResponses(req) {
-        const user = req.user;
-        return this.formsService.getUserResponses(user.id);
-    }
-    getTemplateResponses(templateId) {
-        return this.formsService.getTemplateResponses(Number(templateId));
+        }, templateId);
     }
 };
 exports.FormsController = FormsController;
@@ -46,32 +36,11 @@ __decorate([
     (0, common_1.Post)('submit'),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Req)()),
-    __param(2, (0, common_1.Param)('templateId')),
+    __param(2, (0, common_1.Param)('templateId', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [submit_form_dto_1.SubmitFormDto, Object, Number]),
     __metadata("design:returntype", Promise)
 ], FormsController.prototype, "submitForm", null);
-__decorate([
-    (0, common_1.Get)('responses/:id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], FormsController.prototype, "getFormResponse", null);
-__decorate([
-    (0, common_1.Get)('user'),
-    __param(0, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], FormsController.prototype, "getUserResponses", null);
-__decorate([
-    (0, common_1.Get)('template-responses'),
-    __param(0, (0, common_1.Param)('templateId')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], FormsController.prototype, "getTemplateResponses", null);
 exports.FormsController = FormsController = __decorate([
     (0, common_1.Controller)('templates/:templateId/forms'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),

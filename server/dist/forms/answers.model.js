@@ -10,15 +10,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Answer = void 0;
-const sequelize_typescript_1 = require("sequelize-typescript");
 const questions_model_1 = require("../questions/questions.model");
+const answer_option_model_1 = require("./answer-option.model");
+const sequelize_typescript_1 = require("sequelize-typescript");
 const forms_model_1 = require("./forms.model");
 let Answer = class Answer extends sequelize_typescript_1.Model {
-    formId;
-    formResponse;
-    questionId;
-    question;
-    value;
 };
 exports.Answer = Answer;
 __decorate([
@@ -26,7 +22,6 @@ __decorate([
         type: sequelize_typescript_1.DataType.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-        unique: true,
     }),
     __metadata("design:type", Number)
 ], Answer.prototype, "id", void 0);
@@ -39,10 +34,6 @@ __decorate([
     __metadata("design:type", Number)
 ], Answer.prototype, "formId", void 0);
 __decorate([
-    (0, sequelize_typescript_1.BelongsTo)(() => forms_model_1.Form),
-    __metadata("design:type", forms_model_1.Form)
-], Answer.prototype, "formResponse", void 0);
-__decorate([
     (0, sequelize_typescript_1.ForeignKey)(() => questions_model_1.Question),
     (0, sequelize_typescript_1.Column)({
         type: sequelize_typescript_1.DataType.INTEGER,
@@ -51,17 +42,25 @@ __decorate([
     __metadata("design:type", Number)
 ], Answer.prototype, "questionId", void 0);
 __decorate([
+    (0, sequelize_typescript_1.Column)({
+        type: sequelize_typescript_1.DataType.STRING,
+        allowNull: true,
+    }),
+    __metadata("design:type", Object)
+], Answer.prototype, "value", void 0);
+__decorate([
+    (0, sequelize_typescript_1.BelongsTo)(() => forms_model_1.Form),
+    __metadata("design:type", forms_model_1.Form)
+], Answer.prototype, "form", void 0);
+__decorate([
     (0, sequelize_typescript_1.BelongsTo)(() => questions_model_1.Question),
     __metadata("design:type", questions_model_1.Question)
 ], Answer.prototype, "question", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)({
-        type: sequelize_typescript_1.DataType.TEXT,
-        allowNull: false,
-    }),
-    __metadata("design:type", String)
-], Answer.prototype, "value", void 0);
+    (0, sequelize_typescript_1.HasMany)(() => answer_option_model_1.AnswerOption),
+    __metadata("design:type", Array)
+], Answer.prototype, "selectedOptions", void 0);
 exports.Answer = Answer = __decorate([
-    (0, sequelize_typescript_1.Table)({ tableName: 'answers', timestamps: false })
+    (0, sequelize_typescript_1.Table)({ tableName: 'answers' })
 ], Answer);
 //# sourceMappingURL=answers.model.js.map

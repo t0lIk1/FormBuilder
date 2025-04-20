@@ -43,7 +43,7 @@ export class Question extends Model<Question, QuestionAttributes> {
   question: string;
 
   @Column({
-    type: DataType.STRING(500),
+    type: DataType.STRING,
   })
   description: string;
 
@@ -54,26 +54,32 @@ export class Question extends Model<Question, QuestionAttributes> {
   type: QuestionType;
 
   @Column({
+    type: DataType.ARRAY(DataType.STRING), // Для PostgreSQL
+    defaultValue: [],
+    validate: {
+      validateOptions(value: string[]) {
+        if (
+          this.getDataValue('type') === QuestionType.SELECT ||
+          this.getDataValue('type') === QuestionType.CHECKBOX
+        ) {
+          if (!value || value.length === 0) {
+            throw new Error(
+              'Options are required for SELECT/CHECKBOX type questions',
+            );
+          }
+        }
+      },
+    },
+  })
+  options: string[];
+
+  @Column({
     type: DataType.BOOLEAN,
     defaultValue: false,
   })
   isRequired: boolean;
 
-  // @Column({
-  //   type: DataType.JSON,
-  //   defaultValue: [],
-  //   validate: {
-  //     validateOptions(value: string[]) {
-  //       // Проверяем только для SELECT типа
-  //       if (this.getDataValue('type') === 'SELECT') {
-  //         if (!value || value.length === 0) {
-  //           throw new Error('Options are required for SELECT type questions');
-  //         }
-  //       }
-  //     },
-  //   },
-  // })
-  // options: string[];
+
 
   @Column({
     type: DataType.INTEGER,

@@ -1,11 +1,13 @@
+import { Question } from 'src/questions/questions.model';
+import { AnswerOption } from './answer-option.model';
 import { Model } from 'sequelize-typescript';
-import { Question } from '../questions/questions.model';
 import { Form } from './forms.model';
-export declare class Answer extends Model {
+export declare class Answer extends Model<Answer> {
     id: number;
     formId: number;
-    formResponse: Form;
     questionId: number;
+    value: string | null;
+    form: Form;
     question: Question;
-    value: string;
+    selectedOptions: AnswerOption[];
 }

@@ -1,22 +1,22 @@
+import { Question } from 'src/questions/questions.model';
+import { AnswerOption } from './answer-option.model';
 import {
   BelongsTo,
   Column,
   DataType,
   ForeignKey,
+  HasMany,
   Model,
   Table,
 } from 'sequelize-typescript';
-import { Question } from '../questions/questions.model';
 import { Form } from './forms.model';
-import { QuestionType } from '../types/enum';
 
-@Table({ tableName: 'answers', timestamps: false })
-export class Answer extends Model {
+@Table({ tableName: 'answers' })
+export class Answer extends Model<Answer> {
   @Column({
     type: DataType.INTEGER,
     primaryKey: true,
     autoIncrement: true,
-    unique: true,
   })
   declare id: number;
 
@@ -25,24 +25,28 @@ export class Answer extends Model {
     type: DataType.INTEGER,
     allowNull: false,
   })
-  formId: number;
-
-  @BelongsTo(() => Form)
-  formResponse: Form;
+  declare formId: number;
 
   @ForeignKey(() => Question)
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
   })
-  questionId: number;
-
-  @BelongsTo(() => Question)
-  question: Question;
+  declare questionId: number;
 
   @Column({
-    type: DataType.TEXT,
-    allowNull: false,
+    type: DataType.STRING,
+    allowNull: true,
   })
-  value: string;
+  declare value: string | null;
+
+  // Добавляем явное объявление для ассоциаций
+  @BelongsTo(() => Form)
+  declare form: Form;
+
+  @BelongsTo(() => Question)
+  declare question: Question;
+
+  @HasMany(() => AnswerOption)
+  declare selectedOptions: AnswerOption[];
 }

@@ -6,11 +6,18 @@ import { Form } from './forms.model';
 import { Answer } from './answers.model';
 import { Question } from '../questions/questions.model';
 import { Template } from '../templates/templates.model';
-import { AuthModule } from '../auth/auth.module';
+import { AuthModule } from 'src/auth/auth.module';
+import { AnswerOption } from './answer-option.model';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([Form, Answer, Question, Template]),
+    SequelizeModule.forFeature([
+      Form,
+      Answer,
+      Question,
+      Template,
+      AnswerOption,
+    ]),
     AuthModule,
   ],
   controllers: [FormsController],

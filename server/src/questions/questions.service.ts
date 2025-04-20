@@ -15,7 +15,6 @@ export class QuestionsService {
   async create(templateId: number, dto: CreateQuestionDto) {
     const template = await this.templatesRepository.findByPk(templateId);
     if (!template) throw new NotFoundException('Template not found');
-
     const maxOrder = await this.questionRepository.max('order', {
       where: { templateId },
     });

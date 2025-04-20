@@ -45,7 +45,7 @@ export class TemplatesService {
 
   async findOne(id: number) {
     const template = await this.templateRepository.findByPk(id, {
-      include: [Question, Tag, TemplateTag, TemplateLike],
+      include: { all: true },
     });
     if (!template) throw new NotFoundException('Template not found');
     return template;

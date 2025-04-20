@@ -3,13 +3,15 @@ import {
   Controller,
   Get,
   Param,
+  ParseIntPipe,
   Post,
+  Put,
   Req,
   UseGuards,
 } from '@nestjs/common';
 import { FormsService } from './forms.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { SubmitFormDto } from './dto/submit-form.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Request } from 'express';
 
 @Controller('templates/:templateId/forms')
@@ -21,39 +23,42 @@ export class FormsController {
   async submitForm(
     @Body() dto: SubmitFormDto,
     @Req() req: Request,
-    @Param('templateId') templateId: number,
+    @Param('templateId', ParseIntPipe) templateId: number,
   ) {
     const user = req.user as { id: number };
-
-    return this.formsService.submitForm({
-      templateId: Number(templateId),
-      ...dto,
-      userId: user.id,
-    });
+    console.log(user.id);
+    return this.formsService.submitForm(
+      {
+        ...dto,
+        userId: user.id,
+      },
+      templateId,
+    );
   }
-
-  @Get('responses/:id')
-  getFormResponse(
-    @Param('id')
-    id: string,
-  ) {
-    return this.formsService.getFormResponse(Number(id));
-  }
-
-  @Get('user')
-  getUserResponses(
-    @Req()
-    req: Request,
-  ) {
-    const user = req.user as { id: number };
-    return this.formsService.getUserResponses(user.id);
-  }
-
-  @Get('template-responses')
-  getTemplateResponses(
-    @Param('templateId')
-    templateId: string,
-  ) {
-    return this.formsService.getTemplateResponses(Number(templateId));
-  }
+  //
+  // @Get('responses/:id')
+  // getFormResponse(@Param('id', ParseIntPipe) id: number) {
+  //   return this.formsService.getFormResponse(id);
+  // }
+  //
+  // @Get('user')
+  // getUserResponses(@Req() req: Request) {
+  //   const user = req.user as { id: number };
+  //   return this.formsService.getUserResponses(user.id);
+  // }
+  //
+  // @Get('template-responses')
+  // getTemplateResponses(@Param('templateId', ParseIntPipe) templateId: number) {
+  //   return this.formsService.getTemplateResponses(templateId);
+  // }
+  //
+  // @Put('update/:id')
+  // async updateFormResponse(
+  //   @Param('id', ParseIntPipe) id: number,
+  //   @Body() dto: SubmitFormDto,
+  //   @Req() req: Request,
+  // ) {
+  //   const user = req.user as { id: number };
+  //   return this.formsService.updateFormResponse(id, dto, user.id);
+  // }
 }

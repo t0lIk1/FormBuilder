@@ -18,6 +18,7 @@ let Question = class Question extends sequelize_typescript_1.Model {
     question;
     description;
     type;
+    options;
     isRequired;
     order;
     showInTable;
@@ -48,7 +49,7 @@ __decorate([
 ], Question.prototype, "question", void 0);
 __decorate([
     (0, sequelize_typescript_1.Column)({
-        type: sequelize_typescript_1.DataType.STRING(500),
+        type: sequelize_typescript_1.DataType.STRING,
     }),
     __metadata("design:type", String)
 ], Question.prototype, "description", void 0);
@@ -59,6 +60,23 @@ __decorate([
     }),
     __metadata("design:type", String)
 ], Question.prototype, "type", void 0);
+__decorate([
+    (0, sequelize_typescript_1.Column)({
+        type: sequelize_typescript_1.DataType.ARRAY(sequelize_typescript_1.DataType.STRING),
+        defaultValue: [],
+        validate: {
+            validateOptions(value) {
+                if (this.getDataValue('type') === enum_1.QuestionType.SELECT ||
+                    this.getDataValue('type') === enum_1.QuestionType.CHECKBOX) {
+                    if (!value || value.length === 0) {
+                        throw new Error('Options are required for SELECT/CHECKBOX type questions');
+                    }
+                }
+            },
+        },
+    }),
+    __metadata("design:type", Array)
+], Question.prototype, "options", void 0);
 __decorate([
     (0, sequelize_typescript_1.Column)({
         type: sequelize_typescript_1.DataType.BOOLEAN,

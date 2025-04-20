@@ -16,13 +16,20 @@ const answers_model_1 = require("./answers.model");
 const questions_model_1 = require("../questions/questions.model");
 const templates_model_1 = require("../templates/templates.model");
 const auth_module_1 = require("../auth/auth.module");
+const answer_option_model_1 = require("./answer-option.model");
 let FormsModule = class FormsModule {
 };
 exports.FormsModule = FormsModule;
 exports.FormsModule = FormsModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            sequelize_1.SequelizeModule.forFeature([forms_model_1.Form, answers_model_1.Answer, questions_model_1.Question, templates_model_1.Template]),
+            sequelize_1.SequelizeModule.forFeature([
+                forms_model_1.Form,
+                answers_model_1.Answer,
+                questions_model_1.Question,
+                templates_model_1.Template,
+                answer_option_model_1.AnswerOption,
+            ]),
             auth_module_1.AuthModule,
         ],
         controllers: [forms_controller_1.FormsController],

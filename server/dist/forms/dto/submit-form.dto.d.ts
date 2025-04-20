@@ -1,10 +1,8 @@
+export declare class AnswerDto {
+    questionId: number;
+    value: string | string[];
+}
 export declare class SubmitFormDto {
-    templateId?: number;
-    userId?: number;
-    answers: [
-        {
-            questionId: number;
-            value: string;
-        }
-    ];
+    userId: number;
+    answers: AnswerDto[];
 }
