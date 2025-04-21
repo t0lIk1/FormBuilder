@@ -4,7 +4,8 @@ import { Request } from 'express';
 export declare class TemplatesController {
     private readonly templatesService;
     constructor(templatesService: TemplatesService);
-    create(dto: CreateTemplateDto, req: Request): Promise<void>;
+    search(query: string): Promise<import("./templates.model").Template[]>;
+    create(dto: CreateTemplateDto, req: Request): Promise<import("./templates.model").Template>;
     findAll(): Promise<import("./templates.model").Template[]>;
     findOne(id: number): Promise<import("./templates.model").Template>;
     update(id: number, dto: CreateTemplateDto): Promise<import("./templates.model").Template>;

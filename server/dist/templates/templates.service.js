@@ -1,10 +1,43 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
@@ -20,6 +53,7 @@ const questions_model_1 = require("../questions/questions.model");
 const tags_service_1 = require("../tags/tags.service");
 const template_likes_model_1 = require("./template-likes.model");
 const tags_model_1 = require("../tags/tags.model");
+const Fuse = __importStar(require("fuse.js"));
 let TemplatesService = class TemplatesService {
     templateRepository;
     questionRepository;
@@ -35,6 +69,7 @@ let TemplatesService = class TemplatesService {
         const template = await this.templateRepository.create(dto);
         const tags = await this.tagsService.findOrCreate(tagNames);
         await template.$set('tags', tags);
+        return template;
     }
     async findAll() {
         return await this.templateRepository.findAll({
@@ -102,6 +137,43 @@ let TemplatesService = class TemplatesService {
             await this.templateLikeRepository.create({ templateId, userId });
             return { liked: true };
         }
+    }
+    async searchTemplates(query) {
+        if (!query || query.trim() === '') {
+            return this.findAll();
+        }
+        console.log(query, 'query');
+        const templates = await this.templateRepository.findAll({
+            include: [
+                questions_model_1.Question,
+                { model: tags_model_1.Tag },
+                { model: template_likes_model_1.TemplateLike, required: false },
+            ],
+        });
+        console.log(templates);
+        const options = {
+            keys: [
+                { name: 'dataValues.title', weight: 0.6 },
+                { name: 'dataValues.description', weight: 0.2 },
+                { name: 'dataValues.topic', weight: 0.1 },
+                { name: 'dataValues.tags[0].name', weight: 0.4 },
+            ],
+            includeScore: true,
+            threshold: 0.5,
+            minMatchCharLength: 3,
+            ignoreLocation: true,
+            shouldSort: true,
+            findAllMatches: false,
+            ignoreCase: true,
+        };
+        console.log(options);
+        const fuse = new Fuse.default(templates, options);
+        const results = fuse.search(query);
+        console.log(results);
+        const sortedResults = results
+            .sort((a, b) => (a.score || 1) - (b.score || 1))
+            .map((result) => result.item);
+        return sortedResults;
     }
 };
 exports.TemplatesService = TemplatesService;

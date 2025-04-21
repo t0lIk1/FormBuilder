@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -19,6 +20,11 @@ import { Request } from 'express';
 @Controller('templates')
 export class TemplatesController {
   constructor(private readonly templatesService: TemplatesService) {}
+
+  @Get('search')
+  async search(@Query('q') query: string) {
+    return this.templatesService.searchTemplates(query);
+  }
 
   @UseGuards(JwtAuthGuard)
   @Post()

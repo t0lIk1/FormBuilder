@@ -1,7 +1,7 @@
 import {
   IsArray,
   IsBoolean,
-  IsNotEmpty,
+  IsNotEmpty, IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -9,29 +9,30 @@ import {
 export class CreateTemplateDto {
   @IsNotEmpty()
   @IsString()
-  title: string;
+  declare title: string;
 
   @IsNotEmpty()
   @IsString()
-  description: string;
+  declare description: string;
 
   @IsNotEmpty()
   @IsString()
-  topic: string;
+  declare topic: string;
 
   // @IsOptional()
   // @IsString()
   // imageUrl?: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsBoolean()
-  isPublic: boolean;
+  declare isPublic: boolean;
 
-  @IsNotEmpty()
-  userId: number;
+  @IsOptional()
+  @IsNumber()
+  declare userId: number;
 
   @IsOptional()
   @IsArray()
-  @IsString()
-  tags?: string[];
+  @IsString({ each: true })
+  declare tags?: string[];
 }

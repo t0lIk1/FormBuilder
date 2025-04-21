@@ -12,12 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateTemplateDto = void 0;
 const class_validator_1 = require("class-validator");
 class CreateTemplateDto {
-    title;
-    description;
-    topic;
-    isPublic;
-    userId;
-    tags;
 }
 exports.CreateTemplateDto = CreateTemplateDto;
 __decorate([
@@ -36,18 +30,19 @@ __decorate([
     __metadata("design:type", String)
 ], CreateTemplateDto.prototype, "topic", void 0);
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsBoolean)(),
     __metadata("design:type", Boolean)
 ], CreateTemplateDto.prototype, "isPublic", void 0);
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], CreateTemplateDto.prototype, "userId", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsArray)(),
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsString)({ each: true }),
     __metadata("design:type", Array)
 ], CreateTemplateDto.prototype, "tags", void 0);
 //# sourceMappingURL=create-template.dto.js.map

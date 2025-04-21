@@ -10,7 +10,7 @@ export declare class TemplatesService {
     private templateLikeRepository;
     private tagsService;
     constructor(templateRepository: typeof Template, questionRepository: typeof Question, templateLikeRepository: typeof TemplateLike, tagsService: TagsService);
-    create(dto: CreateTemplateDto, tagNames?: string[]): Promise<void>;
+    create(dto: CreateTemplateDto, tagNames?: string[]): Promise<Template>;
     findAll(): Promise<Template[]>;
     findOne(id: number): Promise<Template>;
     update(id: number, dto: UpdateTemplateDto, tagNames?: string[]): Promise<Template>;
@@ -19,4 +19,5 @@ export declare class TemplatesService {
     toggleLike(templateId: number, userId: number): Promise<{
         liked: boolean;
     }>;
+    searchTemplates(query: string): Promise<Template[]>;
 }

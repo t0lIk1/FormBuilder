@@ -23,6 +23,9 @@ let TemplatesController = class TemplatesController {
     constructor(templatesService) {
         this.templatesService = templatesService;
     }
+    async search(query) {
+        return this.templatesService.searchTemplates(query);
+    }
     create(dto, req) {
         const user = req.user;
         const { tags, ...templateDto } = dto;
@@ -50,6 +53,13 @@ let TemplatesController = class TemplatesController {
     }
 };
 exports.TemplatesController = TemplatesController;
+__decorate([
+    (0, common_1.Get)('search'),
+    __param(0, (0, common_1.Query)('q')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], TemplatesController.prototype, "search", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)(),

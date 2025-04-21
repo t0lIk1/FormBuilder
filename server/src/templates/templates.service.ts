@@ -8,6 +8,7 @@ import { TemplateLike } from './template-likes.model';
 import { UpdateTemplateDto } from './dto/update-template.dto';
 import { Tag } from '../tags/tags.model';
 import { TemplateTag } from '../tags/templates-tags.model';
+import * as Fuse from 'fuse.js';
 
 @Injectable()
 export class TemplatesService {
@@ -24,6 +25,7 @@ export class TemplatesService {
 
     const tags = await this.tagsService.findOrCreate(tagNames);
     await template.$set('tags', tags);
+    return template;
   }
 
   async findAll() {
@@ -96,5 +98,49 @@ export class TemplatesService {
       await this.templateLikeRepository.create({ templateId, userId });
       return { liked: true };
     }
+  }
+
+  async searchTemplates(query: string) {
+    if (!query || query.trim() === '') {
+      return this.findAll();
+    }
+    console.log(query, 'query');
+
+    const templates = await this.templateRepository.findAll({
+      include: [
+        Question,
+        { model: Tag },
+        { model: TemplateLike, required: false },
+      ],
+    });
+    console.log(templates)
+    // Оптимизированные настройки Fuse.js
+    const options = {
+      keys: [
+        { name: 'dataValues.title', weight: 0.6 }, // Наибольший вес для title
+        { name: 'dataValues.description', weight: 0.2 },
+        { name: 'dataValues.topic', weight: 0.1 },
+        { name: 'dataValues.tags[0].name', weight: 0.4 },
+      ],
+      includeScore: true,
+      threshold: 0.5, // Более строгий порог
+      minMatchCharLength: 3, // Минимум 3 символа для совпадения
+      ignoreLocation: true, // Искать совпадения в любом месте строки
+      shouldSort: true, // Обязательная сортировка
+      findAllMatches: false, // Только лучшие совпадения
+      ignoreCase: true,
+    };
+
+    console.log(options);
+
+    const fuse = new Fuse.default(templates, options);
+    const results = fuse.search(query);
+    console.log(results);
+    // Сортировка по релевантности (score)
+    const sortedResults = results
+      .sort((a, b) => (a.score || 1) - (b.score || 1))
+      .map((result) => result.item);
+
+    return sortedResults;
   }
 }
