@@ -1,5 +1,12 @@
 // submit-form.dto.ts
-import { IsArray, IsNotEmpty, IsNumber, ValidateNested, IsString, IsOptional } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  ValidateNested,
+  IsString,
+  IsOptional,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class AnswerDto {

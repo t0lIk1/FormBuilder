@@ -29,7 +29,7 @@ let TemplatesController = class TemplatesController {
     create(dto, req) {
         const user = req.user;
         const { tags, ...templateDto } = dto;
-        return this.templatesService.create({ ...templateDto, userId: user.id }, tags);
+        return this.templatesService.create({ ...templateDto, authorId: user.id }, tags);
     }
     findAll() {
         return this.templatesService.findAll();

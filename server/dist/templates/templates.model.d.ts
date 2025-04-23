@@ -3,13 +3,14 @@ import { User } from '../users/users.model';
 import { Question } from '../questions/questions.model';
 import { Form } from '../forms/forms.model';
 import { Tag } from '../tags/tags.model';
-import { TemplateLike } from "./template-likes.model";
+import { TemplateLike } from './template-likes.model';
 interface TemplateAttributes {
     title: string;
     description: string;
     topic: string;
     isPublic: boolean;
-    userId: number;
+    authorId: number;
+    authorName: string;
 }
 export declare class Template extends Model<Template, TemplateAttributes> {
     id: number;
@@ -17,7 +18,8 @@ export declare class Template extends Model<Template, TemplateAttributes> {
     description: string;
     topic: string;
     isPublic: boolean;
-    userId: number;
+    authorId: number;
+    authorName: string;
     user: User;
     questions: Question[];
     forms: Form[];

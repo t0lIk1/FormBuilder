@@ -3,6 +3,7 @@ export declare class CreateTemplateDto {
     description: string;
     topic: string;
     isPublic: boolean;
-    userId: number;
+    authorId: number;
+    authorName: string;
     tags?: string[];
 }

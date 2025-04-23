@@ -31,7 +31,7 @@ let AccessTemplatesGuard = class AccessTemplatesGuard {
         if (!user) {
             throw new common_1.ForbiddenException('Access denied: you are not logged in');
         }
-        if (template.userId !== user.id && user.role !== 'ADMIN') {
+        if (template.authorId !== user.id && user.role !== 'ADMIN') {
             throw new common_1.ForbiddenException('Access denied: you do not have permission for this template');
         }
         request.template = template;

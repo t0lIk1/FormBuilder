@@ -54,19 +54,26 @@ const tags_service_1 = require("../tags/tags.service");
 const template_likes_model_1 = require("./template-likes.model");
 const tags_model_1 = require("../tags/tags.model");
 const Fuse = __importStar(require("fuse.js"));
+const users_model_1 = require("../users/users.model");
 let TemplatesService = class TemplatesService {
     templateRepository;
     questionRepository;
+    userRepository;
     templateLikeRepository;
     tagsService;
-    constructor(templateRepository, questionRepository, templateLikeRepository, tagsService) {
+    constructor(templateRepository, questionRepository, userRepository, templateLikeRepository, tagsService) {
         this.templateRepository = templateRepository;
         this.questionRepository = questionRepository;
+        this.userRepository = userRepository;
         this.templateLikeRepository = templateLikeRepository;
         this.tagsService = tagsService;
     }
     async create(dto, tagNames) {
         const template = await this.templateRepository.create(dto);
+        const author = await this.userRepository.findByPk(dto.authorId);
+        if (!author)
+            throw new common_1.NotFoundException();
+        template.authorName = author.dataValues.name;
         const tags = await this.tagsService.findOrCreate(tagNames);
         await template.$set('tags', tags);
         return template;
@@ -181,7 +188,8 @@ exports.TemplatesService = TemplatesService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, sequelize_1.InjectModel)(templates_model_1.Template)),
     __param(1, (0, sequelize_1.InjectModel)(questions_model_1.Question)),
-    __param(2, (0, sequelize_1.InjectModel)(template_likes_model_1.TemplateLike)),
-    __metadata("design:paramtypes", [Object, Object, Object, tags_service_1.TagsService])
+    __param(2, (0, sequelize_1.InjectModel)(users_model_1.User)),
+    __param(3, (0, sequelize_1.InjectModel)(template_likes_model_1.TemplateLike)),
+    __metadata("design:paramtypes", [Object, Object, Object, Object, tags_service_1.TagsService])
 ], TemplatesService);
 //# sourceMappingURL=templates.service.js.map

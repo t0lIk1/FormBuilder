@@ -1,7 +1,8 @@
 import {
   IsArray,
   IsBoolean,
-  IsNotEmpty, IsNumber,
+  IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -29,7 +30,11 @@ export class CreateTemplateDto {
 
   @IsOptional()
   @IsNumber()
-  declare userId: number;
+  declare authorId: number;
+
+  @IsOptional()
+  @IsString()
+  authorName: string;
 
   @IsOptional()
   @IsArray()

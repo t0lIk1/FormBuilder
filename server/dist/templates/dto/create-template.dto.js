@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateTemplateDto = void 0;
 const class_validator_1 = require("class-validator");
 class CreateTemplateDto {
+    authorName;
 }
 exports.CreateTemplateDto = CreateTemplateDto;
 __decorate([
@@ -38,7 +39,12 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
-], CreateTemplateDto.prototype, "userId", void 0);
+], CreateTemplateDto.prototype, "authorId", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateTemplateDto.prototype, "authorName", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsArray)(),

@@ -13,7 +13,7 @@ import { Question } from '../questions/questions.model';
 import { Form } from '../forms/forms.model';
 import { Tag } from '../tags/tags.model';
 import { TemplateTag } from '../tags/templates-tags.model';
-import {TemplateLike} from "./template-likes.model";
+import { TemplateLike } from './template-likes.model';
 
 interface TemplateAttributes {
   title: string;
@@ -21,7 +21,8 @@ interface TemplateAttributes {
   topic: string;
   // imageUrl?: string;
   isPublic: boolean;
-  userId: number;
+  authorId: number;
+  authorName: string;
 }
 
 @Table({ tableName: 'templates' })
@@ -52,7 +53,11 @@ export class Template extends Model<Template, TemplateAttributes> {
 
   @ForeignKey(() => User)
   @Column({ type: DataType.INTEGER, allowNull: false })
-  userId: number;
+  authorId: number;
+
+  @ForeignKey(() => User)
+  @Column({ type: DataType.STRING, allowNull: false })
+  authorName: string
 
   @BelongsTo(() => User)
   user: User;

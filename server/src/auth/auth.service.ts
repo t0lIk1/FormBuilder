@@ -22,7 +22,10 @@ export class AuthService {
     const candidate = await this.usersService.findOneUser(userDto.email);
     if (candidate) {
       console.log(candidate);
-      throw new HttpException('User with this name or email exists', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'User with this name or email exists',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     const hashedPassword = await bcrypt.hash(userDto.password, 4);

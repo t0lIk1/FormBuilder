@@ -7,14 +7,15 @@ import { TagsService } from '../tags/tags.service';
 import { TemplateLike } from './template-likes.model';
 import { UpdateTemplateDto } from './dto/update-template.dto';
 import { Tag } from '../tags/tags.model';
-import { TemplateTag } from '../tags/templates-tags.model';
 import * as Fuse from 'fuse.js';
+import { User } from '../users/users.model';
 
 @Injectable()
 export class TemplatesService {
   constructor(
     @InjectModel(Template) private templateRepository: typeof Template,
     @InjectModel(Question) private questionRepository: typeof Question,
+    @InjectModel(User) private userRepository: typeof User,
     @InjectModel(TemplateLike)
     private templateLikeRepository: typeof TemplateLike,
     private tagsService: TagsService,
@@ -22,7 +23,11 @@ export class TemplatesService {
 
   async create(dto: CreateTemplateDto, tagNames?: string[]) {
     const template = await this.templateRepository.create(dto);
+    const author = await this.userRepository.findByPk(dto.authorId);
 
+    if (!author) throw new NotFoundException();
+
+    template.authorName = author.dataValues.name;
     const tags = await this.tagsService.findOrCreate(tagNames);
     await template.$set('tags', tags);
     return template;
@@ -113,7 +118,7 @@ export class TemplatesService {
         { model: TemplateLike, required: false },
       ],
     });
-    console.log(templates)
+    console.log(templates);
     // Оптимизированные настройки Fuse.js
     const options = {
       keys: [

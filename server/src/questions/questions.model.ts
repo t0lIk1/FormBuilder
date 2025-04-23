@@ -79,8 +79,6 @@ export class Question extends Model<Question, QuestionAttributes> {
   })
   isRequired: boolean;
 
-
-
   @Column({
     type: DataType.INTEGER,
     defaultValue: 0,

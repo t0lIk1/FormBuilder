@@ -32,7 +32,7 @@ export class TemplatesController {
     const user = req.user as { id: number };
     const { tags, ...templateDto } = dto;
     return this.templatesService.create(
-      { ...templateDto, userId: user.id },
+      { ...templateDto, authorId: user.id },
       tags,
     );
   }

@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { TemplatesService } from './templates.service';
-import {Template} from "./templates.model";
+import { Template } from './templates.model';
 
 @Injectable()
 export class AccessTemplatesGuard implements CanActivate {
@@ -35,7 +35,7 @@ export class AccessTemplatesGuard implements CanActivate {
       throw new ForbiddenException('Access denied: you are not logged in');
     }
 
-    if (template.userId !== user.id && user.role !== 'ADMIN') {
+    if (template.authorId !== user.id && user.role !== 'ADMIN') {
       throw new ForbiddenException(
         'Access denied: you do not have permission for this template',
       );
