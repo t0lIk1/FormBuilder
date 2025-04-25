@@ -21,5 +21,17 @@ export const useAuth = () => {
     });
   };
 
-  return { auth, loading, error };
+  const token = localStorage.getItem("token");
+  const getUser = () => {
+    return run(async () => {
+      const res = await api.get(`/users/now`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      })
+      return res.data;
+    })
+  }
+
+  return {getUser, auth, loading, error };
 };

@@ -148,6 +148,7 @@ const Navbar = () => {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
+        sx={{minWidth: "1000px"}}
       >
         <MenuItem onClick={() => handleLanguageChange('en')}>English</MenuItem>
         <MenuItem onClick={() => handleLanguageChange('ru')}>Русский</MenuItem>
@@ -258,7 +259,6 @@ const Navbar = () => {
         >
           <MenuItem onClick={() => handleLanguageChange('en')}>English</MenuItem>
           <MenuItem onClick={() => handleLanguageChange('ru')}>Русский</MenuItem>
-          <MenuItem onClick={() => handleLanguageChange('es')}>Español</MenuItem>
         </Menu>
       )}
     </ThemeProvider>

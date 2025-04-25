@@ -1,3 +1,4 @@
+import { CreateQuestionDto } from 'src/questions/dto/create-question.dto';
 export declare class CreateTemplateDto {
     title: string;
     description: string;
@@ -6,4 +7,5 @@ export declare class CreateTemplateDto {
     authorId: number;
     authorName: string;
     tags?: string[];
+    questions?: CreateQuestionDto[];
 }

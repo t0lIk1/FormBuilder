@@ -55,31 +55,61 @@ const template_likes_model_1 = require("./template-likes.model");
 const tags_model_1 = require("../tags/tags.model");
 const Fuse = __importStar(require("fuse.js"));
 const users_model_1 = require("../users/users.model");
+const questions_service_1 = require("../questions/questions.service");
 let TemplatesService = class TemplatesService {
     templateRepository;
     questionRepository;
     userRepository;
     templateLikeRepository;
     tagsService;
-    constructor(templateRepository, questionRepository, userRepository, templateLikeRepository, tagsService) {
+    questionsService;
+    constructor(templateRepository, questionRepository, userRepository, templateLikeRepository, tagsService, questionsService) {
         this.templateRepository = templateRepository;
         this.questionRepository = questionRepository;
         this.userRepository = userRepository;
         this.templateLikeRepository = templateLikeRepository;
         this.tagsService = tagsService;
+        this.questionsService = questionsService;
     }
     async create(dto, tagNames) {
-        const template = await this.templateRepository.create(dto);
         const author = await this.userRepository.findByPk(dto.authorId);
-        if (!author)
-            throw new common_1.NotFoundException();
-        template.authorName = author.dataValues.name;
+        if (!author) {
+            throw new common_1.NotFoundException('User not found');
+        }
+        const template = await this.templateRepository.create({
+            ...dto,
+            authorName: author.dataValues.name,
+        });
         const tags = await this.tagsService.findOrCreate(tagNames);
         await template.$set('tags', tags);
-        return template;
+        if (dto.questions?.length) {
+            for (const questionDto of dto.questions) {
+                await this.questionsService.create(template.id, questionDto);
+            }
+        }
+        return this.templateRepository.findByPk(template.id, {
+            include: [tags_model_1.Tag, questions_model_1.Question],
+        });
     }
     async findAll() {
         return await this.templateRepository.findAll({
+            include: [
+                questions_model_1.Question,
+                {
+                    model: tags_model_1.Tag,
+                    through: { attributes: [] },
+                },
+                {
+                    model: template_likes_model_1.TemplateLike,
+                    required: false,
+                },
+            ],
+            order: [['createdAt', 'DESC']],
+        });
+    }
+    async findAllByUser(userId) {
+        return await this.templateRepository.findAll({
+            where: { authorId: userId },
             include: [
                 questions_model_1.Question,
                 {
@@ -190,6 +220,7 @@ exports.TemplatesService = TemplatesService = __decorate([
     __param(1, (0, sequelize_1.InjectModel)(questions_model_1.Question)),
     __param(2, (0, sequelize_1.InjectModel)(users_model_1.User)),
     __param(3, (0, sequelize_1.InjectModel)(template_likes_model_1.TemplateLike)),
-    __metadata("design:paramtypes", [Object, Object, Object, Object, tags_service_1.TagsService])
+    __metadata("design:paramtypes", [Object, Object, Object, Object, tags_service_1.TagsService,
+        questions_service_1.QuestionsService])
 ], TemplatesService);
 //# sourceMappingURL=templates.service.js.map

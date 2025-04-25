@@ -30,7 +30,13 @@ let UsersController = class UsersController {
     getAll() {
         return this.usersService.findAllUsers();
     }
-    getOne(email) {
+    getUser(req) {
+        const user = req.user;
+        console.log(user);
+        return this.usersService.findByToken(user.id);
+    }
+    getOneByEmail(email) {
+        console.log('hi');
         return this.usersService.findOneUser(email);
     }
     delete(body) {
@@ -65,12 +71,20 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "getAll", null);
 __decorate([
-    (0, common_1.Get)(':email'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Get)('now'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "getUser", null);
+__decorate([
+    (0, common_1.Get)('email/:email'),
     __param(0, (0, common_1.Param)('email')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
-], UsersController.prototype, "getOne", null);
+], UsersController.prototype, "getOneByEmail", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, roles_decorator_1.Roles)('ADMIN'),

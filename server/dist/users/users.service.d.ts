@@ -6,7 +6,7 @@ export declare class UsersService {
     createUser(dto: CreateUserDto): Promise<User>;
     findAllUsers(): Promise<User[]>;
     findOneUser(email: string): Promise<User | null>;
-    findOneUsers(email: string): Promise<User[]>;
+    findByToken(userId: number): Promise<User | null>;
     deleteUsers(ids: number[]): Promise<void>;
     blockUsers(ids: number[]): Promise<void>;
     unBlockUsers(ids: number[]): Promise<void>;

@@ -5,7 +5,10 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  ValidateNested,
 } from 'class-validator';
+import { CreateQuestionDto } from 'src/questions/dto/create-question.dto';
+import { Type } from 'class-transformer';
 
 export class CreateTemplateDto {
   @IsNotEmpty()
@@ -40,4 +43,10 @@ export class CreateTemplateDto {
   @IsArray()
   @IsString({ each: true })
   declare tags?: string[];
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateQuestionDto)
+  questions?: CreateQuestionDto[];
 }

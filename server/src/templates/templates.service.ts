@@ -9,6 +9,7 @@ import { UpdateTemplateDto } from './dto/update-template.dto';
 import { Tag } from '../tags/tags.model';
 import * as Fuse from 'fuse.js';
 import { User } from '../users/users.model';
+import { QuestionsService } from '../questions/questions.service';
 
 @Injectable()
 export class TemplatesService {
@@ -19,22 +20,54 @@ export class TemplatesService {
     @InjectModel(TemplateLike)
     private templateLikeRepository: typeof TemplateLike,
     private tagsService: TagsService,
+    private questionsService: QuestionsService,
   ) {}
 
   async create(dto: CreateTemplateDto, tagNames?: string[]) {
-    const template = await this.templateRepository.create(dto);
     const author = await this.userRepository.findByPk(dto.authorId);
+    if (!author) {
+      throw new NotFoundException('User not found');
+    }
 
-    if (!author) throw new NotFoundException();
+    const template = await this.templateRepository.create({
+      ...dto,
+      authorName: author.dataValues.name,
+    });
 
-    template.authorName = author.dataValues.name;
     const tags = await this.tagsService.findOrCreate(tagNames);
     await template.$set('tags', tags);
-    return template;
+
+    if (dto.questions?.length) {
+      for (const questionDto of dto.questions) {
+        await this.questionsService.create(template.id, questionDto);
+      }
+    }
+
+    return this.templateRepository.findByPk(template.id, {
+      include: [Tag, Question],
+    });
   }
 
   async findAll() {
     return await this.templateRepository.findAll({
+      include: [
+        Question,
+        {
+          model: Tag,
+          through: { attributes: [] },
+        },
+        {
+          model: TemplateLike,
+          required: false,
+        },
+      ],
+      order: [['createdAt', 'DESC']],
+    });
+  }
+
+  async findAllByUser(userId: number) {
+    return await this.templateRepository.findAll({
+      where: { authorId: userId },
       include: [
         Question,
         {

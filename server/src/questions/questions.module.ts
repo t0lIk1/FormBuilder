@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { QuestionsService } from './questions.service';
 import { QuestionsController } from './questions.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
@@ -12,9 +12,10 @@ import { Answer } from '../forms/answers.model';
   imports: [
     SequelizeModule.forFeature([Question, Template, Answer]),
     AuthModule,
-    TemplatesModule,
+    forwardRef(() => TemplatesModule),
   ],
   controllers: [QuestionsController],
   providers: [QuestionsService],
+  exports: [QuestionsService],
 })
 export class QuestionsModule {}

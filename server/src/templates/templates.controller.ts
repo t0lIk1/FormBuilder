@@ -43,6 +43,13 @@ export class TemplatesController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('user')
+  findAllByUser(@Req() req: Request) {
+    const user = req.user as { id: number };
+    return this.templatesService.findAllByUser(user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.templatesService.findOne(id);

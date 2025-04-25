@@ -1,17 +1,32 @@
 import { Card, CardActions, CardContent, CardHeader, IconButton, Typography } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
-const TemplateCard = ({ description, title, tags, likes }) => {
+// Функция для форматирования даты
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat("ru-RU", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+};
+
+const TemplateCard = ({ description, title, tags, likes, updatedAt }) => {
   return (
     <Card
       sx={{
-        width: "100%", // Занимает всю ширину ячейки сетки
-        height: "100%", // Занимает всю высоту ячейки сетки
+        width: "100%",
+        height: "100%",
         display: "flex",
         flexDirection: "column",
       }}
     >
-      <CardHeader title={title} subheader="Date" />
+      <CardHeader
+        title={title}
+        subheader={formatDate(updatedAt)} // Форматированная дата
+      />
 
       <CardContent sx={{ flex: 1, overflow: "hidden" }}>
         <Typography
@@ -21,7 +36,7 @@ const TemplateCard = ({ description, title, tags, likes }) => {
             wordBreak: "break-word",
             display: "-webkit-box",
             WebkitBoxOrient: "vertical",
-            WebkitLineClamp: 3, // Ограничение в 3 строки (можно изменить)
+            WebkitLineClamp: 3,
             overflow: "hidden",
             textOverflow: "ellipsis",
           }}

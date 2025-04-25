@@ -33,9 +33,8 @@ let UsersService = class UsersService {
             include: { all: true },
         });
     }
-    async findOneUsers(email) {
-        return await this.userRepository.findAll({
-            where: { email },
+    async findByToken(userId) {
+        return await this.userRepository.findByPk(userId, {
             include: { all: true },
         });
     }

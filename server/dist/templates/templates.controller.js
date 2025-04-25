@@ -34,6 +34,10 @@ let TemplatesController = class TemplatesController {
     findAll() {
         return this.templatesService.findAll();
     }
+    findAllByUser(req) {
+        const user = req.user;
+        return this.templatesService.findAllByUser(user.id);
+    }
     findOne(id) {
         return this.templatesService.findOne(id);
     }
@@ -75,6 +79,14 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], TemplatesController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Get)('user'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], TemplatesController.prototype, "findAllByUser", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)(':id'),

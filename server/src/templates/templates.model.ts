@@ -57,7 +57,7 @@ export class Template extends Model<Template, TemplateAttributes> {
 
   @ForeignKey(() => User)
   @Column({ type: DataType.STRING, allowNull: false })
-  authorName: string
+  authorName: string;
 
   @BelongsTo(() => User)
   user: User;

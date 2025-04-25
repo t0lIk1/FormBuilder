@@ -19,6 +19,7 @@ const tags_model_1 = require("../tags/tags.model");
 const templates_tags_model_1 = require("../tags/templates-tags.model");
 const tags_module_1 = require("../tags/tags.module");
 const template_likes_model_1 = require("./template-likes.model");
+const questions_module_1 = require("../questions/questions.module");
 let TemplatesModule = class TemplatesModule {
 };
 exports.TemplatesModule = TemplatesModule;
@@ -35,6 +36,7 @@ exports.TemplatesModule = TemplatesModule = __decorate([
             ]),
             auth_module_1.AuthModule,
             tags_module_1.TagsModule,
+            questions_module_1.QuestionsModule,
         ],
         controllers: [templates_controller_1.TemplatesController],
         providers: [templates_service_1.TemplatesService],

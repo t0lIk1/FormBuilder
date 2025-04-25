@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
@@ -13,6 +14,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
+import { Request } from 'express';
 
 @Controller('users')
 export class UsersController {
@@ -31,8 +33,17 @@ export class UsersController {
     return this.usersService.findAllUsers();
   }
 
-  @Get(':email')
-  getOne(@Param('email') email: string) {
+  @UseGuards(JwtAuthGuard)
+  @Get('now')
+  getUser(@Req() req: Request) {
+    const user = req.user as { id: number };
+    console.log(user);
+    return this.usersService.findByToken(user.id);
+  }
+
+  @Get('email/:email')
+  getOneByEmail(@Param('email') email: string) {
+    console.log('hi');
     return this.usersService.findOneUser(email);
   }
 

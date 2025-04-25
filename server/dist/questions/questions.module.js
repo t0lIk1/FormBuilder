@@ -24,10 +24,11 @@ exports.QuestionsModule = QuestionsModule = __decorate([
         imports: [
             sequelize_1.SequelizeModule.forFeature([questions_model_1.Question, templates_model_1.Template, answers_model_1.Answer]),
             auth_module_1.AuthModule,
-            templates_module_1.TemplatesModule,
+            (0, common_1.forwardRef)(() => templates_module_1.TemplatesModule),
         ],
         controllers: [questions_controller_1.QuestionsController],
         providers: [questions_service_1.QuestionsService],
+        exports: [questions_service_1.QuestionsService],
     })
 ], QuestionsModule);
 //# sourceMappingURL=questions.module.js.map

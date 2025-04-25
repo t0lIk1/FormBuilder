@@ -16,15 +16,15 @@ export class UsersService {
   }
 
   async findOneUser(email: string) {
+
     return await this.userRepository.findOne({
       where: { email },
       include: { all: true },
     });
   }
 
-  async findOneUsers(email: string) {
-    return await this.userRepository.findAll({
-      where: { email },
+  async findByToken(userId: number) {
+    return await this.userRepository.findByPk(userId, {
       include: { all: true },
     });
   }

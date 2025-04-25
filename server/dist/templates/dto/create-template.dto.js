@@ -11,8 +11,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateTemplateDto = void 0;
 const class_validator_1 = require("class-validator");
+const create_question_dto_1 = require("../../questions/dto/create-question.dto");
+const class_transformer_1 = require("class-transformer");
 class CreateTemplateDto {
     authorName;
+    questions;
 }
 exports.CreateTemplateDto = CreateTemplateDto;
 __decorate([
@@ -51,4 +54,11 @@ __decorate([
     (0, class_validator_1.IsString)({ each: true }),
     __metadata("design:type", Array)
 ], CreateTemplateDto.prototype, "tags", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => create_question_dto_1.CreateQuestionDto),
+    __metadata("design:type", Array)
+], CreateTemplateDto.prototype, "questions", void 0);
 //# sourceMappingURL=create-template.dto.js.map

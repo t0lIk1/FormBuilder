@@ -10,6 +10,7 @@ import { Tag } from '../tags/tags.model';
 import { TemplateTag } from '../tags/templates-tags.model';
 import { TagsModule } from '../tags/tags.module';
 import { TemplateLike } from './template-likes.model';
+import { QuestionsModule } from '../questions/questions.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { TemplateLike } from './template-likes.model';
     ]),
     AuthModule,
     TagsModule,
+    QuestionsModule,
   ],
   controllers: [TemplatesController],
   providers: [TemplatesService],
