@@ -8,7 +8,8 @@ interface AuthPayload {
   password: string;
 }
 
-export const useAuth = () => {
+export const useUsers = () => {
+  // const token = localStorage.getItem("token");
   const { run, loading, error } = useAsync();
   const navigate = useNavigate();
 
@@ -33,5 +34,21 @@ export const useAuth = () => {
     })
   }
 
-  return {getUser, auth, loading, error };
+  const getAllUsers = async () => {
+    return run(async () => {
+      const res = await api.get('/users', { headers: { Authorization: `Bearer ${token}` } })
+      return res.data;
+    })
+  }
+
+  const toggleLike = (id: number) => {
+    return run(async () => {
+      const res = await api.post(`/templates/${id}/toggle-like`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      return res.data;
+    })
+  }
+
+  return {getUser, auth, loading, error, toggleLike, getAllUsers };
 };

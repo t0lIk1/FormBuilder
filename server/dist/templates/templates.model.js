@@ -46,7 +46,7 @@ __decorate([
     __metadata("design:type", String)
 ], Template.prototype, "title", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.STRING, allowNull: false }),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.TEXT, allowNull: false }),
     __metadata("design:type", String)
 ], Template.prototype, "description", void 0);
 __decorate([

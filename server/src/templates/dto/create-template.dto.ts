@@ -4,7 +4,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
-  IsString,
+  IsString, Max,
   ValidateNested,
 } from 'class-validator';
 import { CreateQuestionDto } from 'src/questions/dto/create-question.dto';

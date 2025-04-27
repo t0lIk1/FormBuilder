@@ -39,7 +39,7 @@ export class Template extends Model<Template, TemplateAttributes> {
   @Column({ type: DataType.STRING, allowNull: false })
   title: string;
 
-  @Column({ type: DataType.STRING, allowNull: false })
+  @Column({ type: DataType.TEXT, allowNull: false })
   description: string;
 
   @Column({ type: DataType.STRING, allowNull: false })

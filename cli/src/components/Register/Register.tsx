@@ -1,6 +1,5 @@
 import {Link, useNavigate} from 'react-router-dom';
 import {
-  Alert,
   Box,
   Button,
   CircularProgress,
@@ -14,21 +13,22 @@ import {
 import {PersonAdd as PersonAddIcon} from '@mui/icons-material';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
-import {useAuth} from '../../api/useAuth';
 import {useEffect} from "react";
+import {useUsers} from "src/api/useUsers.ts";
 
 const Register = () => {
 
 
   const navigate = useNavigate();
-  const {auth, loading, error} = useAuth()
+  const {auth, loading} = useUsers()
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (!!token) {
+    if (token) {
       navigate('/');
     }
   }, []);
+
   const validationSchema = Yup.object({
     name: Yup.string().required('Введите имя'),
     email: Yup.string().email('Некорректный email').required('Введите email'),
@@ -72,12 +72,6 @@ const Register = () => {
         <Typography component="h1" variant="h5">
           Регистрация
         </Typography>
-
-        {error && (
-          <Alert severity="error" sx={{width: '100%', mt: 2, mb: 2}}>
-            {error}
-          </Alert>
-        )}
 
         <Box component="form" onSubmit={formik.handleSubmit} noValidate sx={{mt: 1, width: '100%'}}>
           <Stack spacing={2}>

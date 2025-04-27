@@ -1,31 +1,21 @@
-import {
-  Alert,
-  Button,
-  CircularProgress,
-  Container,
-  Grid,
-  Link as MuiLink,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material"
+import {Button, CircularProgress, Container, Grid, Link as MuiLink, Stack, TextField, Typography,} from "@mui/material"
 import Box from "@mui/material/Box";
 import {Lock as LockIcon} from '@mui/icons-material';
 import {Link, useNavigate} from "react-router-dom"
 import * as Yup from "yup";
 import {useFormik} from "formik";
-import {useAuth} from "../../api/useAuth";
+import {useUsers} from "../../api/useUsers.ts";
 import {useEffect} from "react";
 
 const Login = () => {
 
-  const {auth, loading, error} = useAuth()
+  const {auth, loading} = useUsers()
   const navigate = useNavigate();
 
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (!!token) {
+    if (token) {
       navigate('/');
     }
   }, []);
@@ -71,11 +61,6 @@ const Login = () => {
         <Typography component="h1" variant="h5">
           Логин
         </Typography>
-        {error && (
-          <Alert severity="error" sx={{width: '100%', mt: 2, mb: 2}}>
-            {error}
-          </Alert>
-        )}
         <Box component="form" onSubmit={formik.handleSubmit} sx={{mt: 1, width: '100%'}}>
           <Stack spacing={2}>
             <TextField
@@ -117,7 +102,7 @@ const Login = () => {
           <Grid container justifyContent="flex-end">
             <Grid item>
               <MuiLink component={Link} to="/register" variant="body2">
-                Уже есть аккаунт? Войдите
+                У вас нету аккаунта, зарегестрируйтесь
               </MuiLink>
             </Grid>
           </Grid>
