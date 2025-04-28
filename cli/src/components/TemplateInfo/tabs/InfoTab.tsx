@@ -1,4 +1,4 @@
-import {Avatar, Box, Chip, Divider, Paper, Stack, Typography} from "@mui/material";
+import {Avatar, Box, Button, Chip, Divider, Link, Paper, Stack, Typography} from "@mui/material";
 import {CalendarToday, Code, Public, Update} from "@mui/icons-material";
 import {TemplateI} from "src/types/type.ts";
 
@@ -75,24 +75,34 @@ const InfoTab = (template: TemplateI) => {
         />
       </Stack>
 
-      {template?.tags?.length > 0 && (
-        <Box sx={{mb: 3}}>
-          <Typography variant="subtitle2" sx={{mb: 1}}>
-            Tags:
-          </Typography>
-          <Stack direction="row" spacing={1} flexWrap="wrap">
-            {template?.tags?.map(tag => (
-              <Chip
-                key={tag.id}
-                label={tag.name}
-                size="small"
-                color="primary"
-                sx={{mb: 1}}
-              />
-            ))}
-          </Stack>
-        </Box>
-      )}
+      <Box sx={{
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center"
+      }}>
+        {template?.tags?.length > 0 && (
+          <Box>
+            <Typography variant="subtitle2" sx={{mb: 1}}>
+              Tags:
+            </Typography>
+            <Stack direction="row" spacing={1} flexWrap="wrap">
+              {template?.tags?.map(tag => (
+                <Chip
+                  key={tag.id}
+                  label={tag.name}
+                  size="small"
+                  color="primary"
+                  sx={{mb: 1}}
+                />
+              ))}
+            </Stack>
+          </Box>
+        )}
+        <Button size="small" href={`/templates/${template.id}/answer`}>
+          Fill out the form
+        </Button>
+      </Box>
     </Paper>
   )
 

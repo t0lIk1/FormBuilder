@@ -6,6 +6,7 @@ import TemplatesList from "../TemplatesList/TemplatesList.tsx"
 import TemplateCreatePage from "src/components/TemplateCreatePage/TemplateCreatePage.tsx";
 import ProfilePage from "src/components/ProfilePage/ProfilePage.tsx";
 import TemplateInfo from "src/components/TemplateInfo/TemplateInfo.tsx";
+import AnswerFormPage from "src/components/AnswerFormPage/AnswerFormPage.tsx";
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
         <Route path="/profile" element={<ProfilePage/>}/>
         <Route path="/templates/new" element={<TemplateCreatePage/>}/>
         <Route path="/templates/:id" element={<TemplateInfo/>}/>
+        <Route path="/templates/:id/answer" element={<AnswerFormPage/>}/>
       </Routes>
     </>
 

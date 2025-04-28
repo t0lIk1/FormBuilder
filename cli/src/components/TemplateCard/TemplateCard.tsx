@@ -63,7 +63,7 @@ const TemplateCard = ({ id, title, description, likes, updatedAt }: TemplateI) =
             </Tooltip>
             <Typography>{likeCount}</Typography>
           </Box>
-          {localStorage.getItem("token") && <Button size="small" href={`/templates/${id}`}>View</Button>}
+          <Button size="small" href={`/templates/${id}`}>View</Button>
         </CardActions>
       </Card>
     </Paper>
