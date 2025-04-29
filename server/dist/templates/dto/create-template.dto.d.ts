@@ -5,7 +5,6 @@ export declare class CreateTemplateDto {
     topic: string;
     isPublic: boolean;
     authorId: number;
-    authorName: string;
     tags?: string[];
     questions?: CreateQuestionDto[];
 }

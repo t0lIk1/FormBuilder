@@ -34,6 +34,8 @@ export const useUsers = () => {
     })
   }
 
+  const updateUser = async (data: AuthPayload, id: number) => {}
+
   const getAllUsers = async () => {
     return run(async () => {
       const res = await api.get('/users', { headers: { Authorization: `Bearer ${token}` } })

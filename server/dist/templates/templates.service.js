@@ -76,10 +76,7 @@ let TemplatesService = class TemplatesService {
         if (!author) {
             throw new common_1.NotFoundException('User not found');
         }
-        const template = await this.templateRepository.create({
-            ...dto,
-            authorName: author.dataValues.name,
-        });
+        const template = await this.templateRepository.create(dto);
         const tags = await this.tagsService.findOrCreate(tagNames);
         await template.$set('tags', tags);
         if (dto.questions?.length) {
@@ -88,7 +85,7 @@ let TemplatesService = class TemplatesService {
             }
         }
         return this.templateRepository.findByPk(template.id, {
-            include: [tags_model_1.Tag, questions_model_1.Question],
+            include: [tags_model_1.Tag, questions_model_1.Question, users_model_1.User],
         });
     }
     async findAll() {
@@ -132,19 +129,28 @@ let TemplatesService = class TemplatesService {
             throw new common_1.NotFoundException('Template not found');
         return template;
     }
-    async update(id, dto, tagNames) {
-        const template = await this.templateRepository.findByPk(id);
-        if (!template)
+    async update(id, dto) {
+        const template = await this.templateRepository.findByPk(id, {
+            include: [questions_model_1.Question, tags_model_1.Tag],
+        });
+        if (!template) {
             throw new common_1.NotFoundException('Template not found');
-        const updateTemplate = await template.update(dto);
-        if (tagNames) {
-            const tags = await this.tagsService.findOrCreate(tagNames);
-            await updateTemplate.$set('tags', tags);
         }
-        else {
-            await updateTemplate.$set('tags', []);
+        const { questions, tags, ...templateData } = dto;
+        await template.update(templateData);
+        if (tags) {
+            const foundOrCreatedTags = await this.tagsService.findOrCreate(tags);
+            await template.$set('tags', foundOrCreatedTags);
         }
-        return updateTemplate;
+        if (questions) {
+            await this.questionsService.removeAllByTemplate(id);
+            for (const questionDto of questions) {
+                await this.questionsService.create(id, questionDto);
+            }
+        }
+        return this.templateRepository.findByPk(id, {
+            include: [tags_model_1.Tag, questions_model_1.Question, users_model_1.User],
+        });
     }
     async remove(id) {
         const template = await this.templateRepository.findByPk(id);

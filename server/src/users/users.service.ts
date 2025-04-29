@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './users.model';
 import { CreateUserDto } from './dto/create-user.dto';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
@@ -11,12 +12,27 @@ export class UsersService {
     return await this.userRepository.create(dto);
   }
 
+  async updateUser(dto: CreateUserDto, id: number) {
+    const user = await this.userRepository.findByPk(id);
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    const updateData = { ...dto };
+
+    if (updateData.password) {
+      updateData.password = await bcrypt.hash(updateData.password, 4);
+    }
+
+    await user.update(updateData);
+    return user;
+  }
+
   async findAllUsers() {
     return await this.userRepository.findAll();
   }
 
   async findOneUser(email: string) {
-
     return await this.userRepository.findOne({
       where: { email },
       include: { all: true },

@@ -1,5 +1,5 @@
 // src/comments/comments.service.ts
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Comment } from './comments.model';
 import { User } from '../users/users.model';
@@ -14,16 +14,14 @@ export class CommentsService {
   ) {}
 
   async create(userId: number, templateId: number, content: string) {
-    const template = await this.templateRepository.findByPk(templateId);
-    if (!template) {
-      throw new NotFoundException('Template not found');
-    }
-    const user = await this.userRepository.findByPk(userId);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    return await this.commentRepository.create({ userId, templateId, content });
+    const comment = await this.commentRepository.create({
+      userId,
+      templateId,
+      content,
+    });
+    return this.commentRepository.findByPk(comment.id, {
+      include: [{ model: User, attributes: ['id', 'name', 'avatar'] }],
+    });
   }
 
   async getAllComments(templateId: number) {
@@ -45,5 +43,14 @@ export class CommentsService {
         userId: userId,
       },
     });
+  }
+
+  async updateComment(commentId: number, userId: number, content: string) {
+    const [updated] = await this.commentRepository.update(
+      { content },
+      { where: { id: commentId, userId } },
+    );
+
+    return updated > 0;
   }
 }

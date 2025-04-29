@@ -17,4 +17,10 @@ export declare class CommentsGateway implements OnGatewayConnection, OnGatewayDi
     }, client: Socket): Promise<{
         success: boolean;
     }>;
+    handleEditComment(data: {
+        commentId: number;
+        content: string;
+    }, client: Socket): Promise<{
+        success: boolean;
+    }>;
 }

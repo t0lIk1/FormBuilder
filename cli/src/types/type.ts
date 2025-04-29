@@ -16,7 +16,7 @@ export interface TemplateI {
 }
 
 export interface QuestionI {
-  id: number;
+  id?: number;
   question: string;
   description: string;
   type: QuestionType;
@@ -30,7 +30,7 @@ export interface QuestionI {
 }
 
 export interface TagI {
-  id: number;
+  id?: number;
   name: string;
 }
 

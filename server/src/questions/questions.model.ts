@@ -37,7 +37,7 @@ export class Question extends Model<Question, QuestionAttributes> {
     allowNull: false,
     validate: {
       notEmpty: true,
-      len: [3, 1000],
+      len: [1, 1000],
     },
   })
   question: string;

@@ -14,7 +14,6 @@ const class_validator_1 = require("class-validator");
 const create_question_dto_1 = require("../../questions/dto/create-question.dto");
 const class_transformer_1 = require("class-transformer");
 class CreateTemplateDto {
-    authorName;
     questions;
 }
 exports.CreateTemplateDto = CreateTemplateDto;
@@ -43,11 +42,6 @@ __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], CreateTemplateDto.prototype, "authorId", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateTemplateDto.prototype, "authorName", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsArray)(),

@@ -22,7 +22,6 @@ interface TemplateAttributes {
   // imageUrl?: string;
   isPublic: boolean;
   authorId: number;
-  authorName: string;
 }
 
 @Table({ tableName: 'templates' })
@@ -54,10 +53,6 @@ export class Template extends Model<Template, TemplateAttributes> {
   @ForeignKey(() => User)
   @Column({ type: DataType.INTEGER, allowNull: false })
   authorId: number;
-
-  @ForeignKey(() => User)
-  @Column({ type: DataType.STRING, allowNull: false })
-  authorName: string;
 
   @BelongsTo(() => User)
   user: User;

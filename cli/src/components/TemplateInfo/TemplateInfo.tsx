@@ -3,10 +3,11 @@ import {useTemplates} from "src/api/useTemplates.ts";
 import {useEffect, useState} from "react";
 import Loader from "src/components/Loader/Loader.tsx";
 import {Container, Paper, Tab, Tabs, Typography} from "@mui/material";
-import {Analytics, Person, Settings} from "@mui/icons-material";
+import {Analytics, Comment, Person, Settings} from "@mui/icons-material";
 import InfoTab from "src/components/TemplateInfo/tabs/InfoTab.tsx";
 import {TemplateI} from "src/types/type.ts";
 import {useNowUser} from "src/context/UserContext.tsx";
+import Comments from "src/components/Comments/Comments.tsx";
 
 
 const TemplateInfo = () => {
@@ -23,6 +24,7 @@ const TemplateInfo = () => {
       if (id) {
         const res = await getTemplateById(id);
         setTemplate(res);
+        console.log(res)
       }
     };
     fetchTemplate();
@@ -92,6 +94,8 @@ const TemplateInfo = () => {
       </Tabs>}
 
       {tabContent[activeTab]}
+
+      <Comments templateId={template.id}/>
     </Container>
   );
 };

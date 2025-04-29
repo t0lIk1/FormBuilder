@@ -18,13 +18,19 @@ const templates_service_1 = require("./templates.service");
 const create_template_dto_1 = require("./dto/create-template.dto");
 const access_templates_guard_1 = require("./access-templates.guard");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
+const tags_service_1 = require("../tags/tags.service");
 let TemplatesController = class TemplatesController {
     templatesService;
-    constructor(templatesService) {
+    tagsService;
+    constructor(templatesService, tagsService) {
         this.templatesService = templatesService;
+        this.tagsService = tagsService;
     }
     async search(query) {
         return this.templatesService.searchTemplates(query);
+    }
+    async autocompleteTags(prefix) {
+        return this.tagsService.autocomplete(prefix);
     }
     create(dto, req) {
         const user = req.user;
@@ -41,9 +47,8 @@ let TemplatesController = class TemplatesController {
     findOne(id) {
         return this.templatesService.findOne(id);
     }
-    update(id, dto) {
-        const { tags, ...templateDto } = dto;
-        return this.templatesService.update(id, templateDto, tags);
+    async update(id, dto) {
+        return this.templatesService.update(id, dto);
     }
     remove(id) {
         return this.templatesService.remove(id);
@@ -64,6 +69,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], TemplatesController.prototype, "search", null);
+__decorate([
+    (0, common_1.Get)('tags/autocomplete'),
+    __param(0, (0, common_1.Query)('prefix')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], TemplatesController.prototype, "autocompleteTags", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)(),
@@ -102,7 +114,7 @@ __decorate([
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, create_template_dto_1.CreateTemplateDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], TemplatesController.prototype, "update", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, access_templates_guard_1.AccessTemplatesGuard),
@@ -131,6 +143,7 @@ __decorate([
 ], TemplatesController.prototype, "toggleLike", null);
 exports.TemplatesController = TemplatesController = __decorate([
     (0, common_1.Controller)('templates'),
-    __metadata("design:paramtypes", [templates_service_1.TemplatesService])
+    __metadata("design:paramtypes", [templates_service_1.TemplatesService,
+        tags_service_1.TagsService])
 ], TemplatesController);
 //# sourceMappingURL=templates.controller.js.map

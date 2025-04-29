@@ -27,6 +27,10 @@ let UsersController = class UsersController {
     create(dto) {
         return this.usersService.createUser(dto);
     }
+    async update(req, dto) {
+        const user = req.user;
+        return this.usersService.updateUser(dto, user.id);
+    }
     getAll() {
         return this.usersService.findAllUsers();
     }
@@ -64,6 +68,15 @@ __decorate([
     __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "create", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Put)('edit'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, create_user_dto_1.CreateUserDto]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "update", null);
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),

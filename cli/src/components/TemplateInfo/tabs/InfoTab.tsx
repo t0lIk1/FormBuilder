@@ -44,11 +44,11 @@ const InfoTab = (template: TemplateI) => {
         useFlexGap
       >
         <Chip
-          label={`Author: ${template.authorName}`}
+          label={`Author: ${template?.user?.name}`}
           variant="outlined"
           avatar={
             <Avatar sx={{width: 24, height: 24}}>
-              {template.authorName.charAt(0)}
+              {template?.user?.name.charAt(0)}
             </Avatar>
           }
         />

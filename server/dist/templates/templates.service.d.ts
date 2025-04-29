@@ -3,7 +3,6 @@ import { Question } from '../questions/questions.model';
 import { CreateTemplateDto } from './dto/create-template.dto';
 import { TagsService } from '../tags/tags.service';
 import { TemplateLike } from './template-likes.model';
-import { UpdateTemplateDto } from './dto/update-template.dto';
 import { User } from '../users/users.model';
 import { QuestionsService } from '../questions/questions.service';
 export declare class TemplatesService {
@@ -18,7 +17,7 @@ export declare class TemplatesService {
     findAll(): Promise<Template[]>;
     findAllByUser(userId: number): Promise<Template[]>;
     findOne(id: number): Promise<Template>;
-    update(id: number, dto: UpdateTemplateDto, tagNames?: string[]): Promise<Template>;
+    update(id: number, dto: CreateTemplateDto): Promise<Template | null>;
     remove(id: number): Promise<void>;
     getTemplateQuestions(id: number): Promise<Question[]>;
     toggleLike(templateId: number, userId: number): Promise<{

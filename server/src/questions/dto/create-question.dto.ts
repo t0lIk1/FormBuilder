@@ -12,6 +12,10 @@ import { QuestionType } from '../../types/enum';
 import { Transform } from 'class-transformer';
 
 export class CreateQuestionDto {
+  @IsOptional()
+  @IsNumber()
+  id?: number;
+
   @IsNotEmpty({ message: 'Question text is required' })
   @IsString()
   question: string;

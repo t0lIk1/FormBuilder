@@ -23,7 +23,6 @@ let Template = class Template extends sequelize_typescript_1.Model {
     topic;
     isPublic;
     authorId;
-    authorName;
     user;
     questions;
     forms;
@@ -62,11 +61,6 @@ __decorate([
     (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER, allowNull: false }),
     __metadata("design:type", Number)
 ], Template.prototype, "authorId", void 0);
-__decorate([
-    (0, sequelize_typescript_1.ForeignKey)(() => users_model_1.User),
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.STRING, allowNull: false }),
-    __metadata("design:type", String)
-], Template.prototype, "authorName", void 0);
 __decorate([
     (0, sequelize_typescript_1.BelongsTo)(() => users_model_1.User),
     __metadata("design:type", users_model_1.User)

@@ -42,7 +42,7 @@ __decorate([
         allowNull: false,
         validate: {
             notEmpty: true,
-            len: [3, 1000],
+            len: [1, 1000],
         },
     }),
     __metadata("design:type", String)

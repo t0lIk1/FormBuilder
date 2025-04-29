@@ -14,6 +14,7 @@ const class_validator_1 = require("class-validator");
 const enum_1 = require("../../types/enum");
 const class_transformer_1 = require("class-transformer");
 class CreateQuestionDto {
+    id;
     question;
     description;
     type;
@@ -23,6 +24,11 @@ class CreateQuestionDto {
     showInTable = false;
 }
 exports.CreateQuestionDto = CreateQuestionDto;
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], CreateQuestionDto.prototype, "id", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)({ message: 'Question text is required' }),
     (0, class_validator_1.IsString)(),

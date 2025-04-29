@@ -4,6 +4,7 @@ export declare class UsersService {
     private userRepository;
     constructor(userRepository: typeof User);
     createUser(dto: CreateUserDto): Promise<User>;
+    updateUser(dto: CreateUserDto, id: number): Promise<User>;
     findAllUsers(): Promise<User[]>;
     findOneUser(email: string): Promise<User | null>;
     findByToken(userId: number): Promise<User | null>;

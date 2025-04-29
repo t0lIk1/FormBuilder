@@ -10,7 +10,6 @@ interface TemplateAttributes {
     topic: string;
     isPublic: boolean;
     authorId: number;
-    authorName: string;
 }
 export declare class Template extends Model<Template, TemplateAttributes> {
     id: number;
@@ -19,7 +18,6 @@ export declare class Template extends Model<Template, TemplateAttributes> {
     topic: string;
     isPublic: boolean;
     authorId: number;
-    authorName: string;
     user: User;
     questions: Question[];
     forms: Form[];

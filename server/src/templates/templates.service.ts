@@ -5,7 +5,6 @@ import { Question } from '../questions/questions.model';
 import { CreateTemplateDto } from './dto/create-template.dto';
 import { TagsService } from '../tags/tags.service';
 import { TemplateLike } from './template-likes.model';
-import { UpdateTemplateDto } from './dto/update-template.dto';
 import { Tag } from '../tags/tags.model';
 import * as Fuse from 'fuse.js';
 import { User } from '../users/users.model';
@@ -29,10 +28,7 @@ export class TemplatesService {
       throw new NotFoundException('User not found');
     }
 
-    const template = await this.templateRepository.create({
-      ...dto,
-      authorName: author.dataValues.name,
-    });
+    const template = await this.templateRepository.create(dto);
 
     const tags = await this.tagsService.findOrCreate(tagNames);
     await template.$set('tags', tags);
@@ -44,7 +40,7 @@ export class TemplatesService {
     }
 
     return this.templateRepository.findByPk(template.id, {
-      include: [Tag, Question],
+      include: [Tag, Question, User],
     });
   }
 
@@ -91,18 +87,33 @@ export class TemplatesService {
     return template;
   }
 
-  async update(id: number, dto: UpdateTemplateDto, tagNames?: string[]) {
-    const template = await this.templateRepository.findByPk(id);
-    if (!template) throw new NotFoundException('Template not found');
-    const updateTemplate = await template.update(dto);
+  async update(id: number, dto: CreateTemplateDto) {
+    const template = await this.templateRepository.findByPk(id, {
+      include: [Question, Tag],
+    });
 
-    if (tagNames) {
-      const tags = await this.tagsService.findOrCreate(tagNames);
-      await updateTemplate.$set('tags', tags);
-    } else {
-      await updateTemplate.$set('tags', []);
+    if (!template) {
+      throw new NotFoundException('Template not found');
     }
-    return updateTemplate;
+    const { questions, tags, ...templateData } = dto;
+    await template.update(templateData);
+
+    if (tags) {
+      const foundOrCreatedTags = await this.tagsService.findOrCreate(tags);
+      await template.$set('tags', foundOrCreatedTags);
+    }
+
+    if (questions) {
+      await this.questionsService.removeAllByTemplate(id);
+      for (const questionDto of questions) {
+        await this.questionsService.create(id, questionDto);
+      }
+    }
+
+    // Возвращаем обновленный шаблон с ассоциациями
+    return this.templateRepository.findByPk(id, {
+      include: [Tag, Question, User],
+    });
   }
 
   async remove(id: number) {

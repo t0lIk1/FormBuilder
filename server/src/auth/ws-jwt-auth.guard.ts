@@ -19,7 +19,7 @@ export class WsJwtAuthGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const client: Socket = context.switchToWs().getClient();
     const token = this.extractTokenFromHeader(client);
-
+    console.log(token)
     if (!token) {
       throw new WsException('Unauthorized: No token provided');
     }

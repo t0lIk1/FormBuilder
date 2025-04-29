@@ -25,6 +25,13 @@ export class UsersController {
     return this.usersService.createUser(dto);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Put('edit')
+  async update(@Req() req: Request, @Body() dto: CreateUserDto) {
+    const user = req.user as { id: number };
+    return this.usersService.updateUser(dto, user.id);
+  }
+
   @Get()
   // @UseGuards(JwtAuthGuard)
   // @Roles('ADMIN')

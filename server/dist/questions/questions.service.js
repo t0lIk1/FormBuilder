@@ -64,6 +64,11 @@ let QuestionsService = class QuestionsService {
         await question.destroy();
         await this.reorderAfterDelete(templateId);
     }
+    async removeAllByTemplate(templateId) {
+        await this.questionRepository.destroy({
+            where: { templateId }
+        });
+    }
     async reorder(templateId, dto) {
         const updates = dto.orderedIds.map((id, index) => this.questionRepository.update({ order: index }, { where: { id, templateId } }));
         return Promise.all(updates);

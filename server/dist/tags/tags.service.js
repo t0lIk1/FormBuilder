@@ -16,6 +16,7 @@ exports.TagsService = void 0;
 const common_1 = require("@nestjs/common");
 const sequelize_1 = require("@nestjs/sequelize");
 const tags_model_1 = require("./tags.model");
+const sequelize_2 = require("sequelize");
 let TagsService = class TagsService {
     tagRepository;
     constructor(tagRepository) {
@@ -23,16 +24,30 @@ let TagsService = class TagsService {
     }
     async findOrCreate(names) {
         const tags = [];
-        if (!names) {
+        if (!names)
             return [];
-        }
-        for (const name of names) {
+        for (let name of names) {
+            name = name.trim().toLowerCase();
             const [tag] = await this.tagRepository.findOrCreate({
-                where: { name: name.trim().toLowerCase() },
+                where: { name },
             });
             tags.push(tag);
         }
         return tags;
+    }
+    async findAll() {
+        return this.tagRepository.findAll({ order: [['name', 'ASC']] });
+    }
+    async autocomplete(prefix) {
+        return this.tagRepository.findAll({
+            where: {
+                name: {
+                    [sequelize_2.Op.iLike]: `${prefix}%`,
+                },
+            },
+            limit: 10,
+            order: [['name', 'ASC']],
+        });
     }
 };
 exports.TagsService = TagsService;

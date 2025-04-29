@@ -21,6 +21,7 @@ let WsJwtAuthGuard = class WsJwtAuthGuard {
     canActivate(context) {
         const client = context.switchToWs().getClient();
         const token = this.extractTokenFromHeader(client);
+        console.log(token);
         if (!token) {
             throw new websockets_1.WsException('Unauthorized: No token provided');
         }

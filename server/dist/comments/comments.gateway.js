@@ -31,12 +31,14 @@ let CommentsGateway = class CommentsGateway {
         console.log(`Client disconnected: ${client.id}`);
     }
     async handleAddComment(data, client) {
+        console.log("comment");
         const comment = await this.commentsService.create(client.data.userId, data.templateId, data.content);
         this.server.to(`template_${data.templateId}`).emit('new_comment', comment);
     }
     async handleGetComments(templateId, client) {
         client.join(`template_${templateId}`);
         const comments = await this.commentsService.getAllComments(templateId);
+        console.log(comments);
         client.emit('comments_list', comments);
     }
     async handleDeleteComment(data, client) {
@@ -57,6 +59,20 @@ let CommentsGateway = class CommentsGateway {
         catch (error) {
             throw new websockets_1.WsException(error.message);
         }
+    }
+    async handleEditComment(data, client) {
+        const userId = client.data.userId;
+        const updated = await this.commentsService.updateComment(data.commentId, userId, data.content);
+        if (!updated) {
+            throw new websockets_1.WsException('Комментарий не найден или у вас нет прав на редактирование');
+        }
+        const updatedComment = await this.commentsService.getCommentById(data.commentId);
+        if (updatedComment) {
+            this.server
+                .to(`template_${updatedComment.templateId}`)
+                .emit('comment_updated', updatedComment);
+        }
+        return { success: true };
     }
 };
 exports.CommentsGateway = CommentsGateway;
@@ -91,6 +107,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
     __metadata("design:returntype", Promise)
 ], CommentsGateway.prototype, "handleDeleteComment", null);
+__decorate([
+    (0, common_1.UseGuards)(ws_jwt_auth_guard_1.WsJwtAuthGuard),
+    (0, websockets_1.SubscribeMessage)('edit_comment'),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __param(1, (0, websockets_1.ConnectedSocket)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
+    __metadata("design:returntype", Promise)
+], CommentsGateway.prototype, "handleEditComment", null);
 exports.CommentsGateway = CommentsGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({
         cors: {

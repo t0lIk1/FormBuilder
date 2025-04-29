@@ -28,15 +28,14 @@ let CommentsService = class CommentsService {
         this.templateRepository = templateRepository;
     }
     async create(userId, templateId, content) {
-        const template = await this.templateRepository.findByPk(templateId);
-        if (!template) {
-            throw new common_1.NotFoundException('Template not found');
-        }
-        const user = await this.userRepository.findByPk(userId);
-        if (!user) {
-            throw new common_1.NotFoundException('User not found');
-        }
-        return await this.commentRepository.create({ userId, templateId, content });
+        const comment = await this.commentRepository.create({
+            userId,
+            templateId,
+            content,
+        });
+        return this.commentRepository.findByPk(comment.id, {
+            include: [{ model: users_model_1.User, attributes: ['id', 'name', 'avatar'] }],
+        });
     }
     async getAllComments(templateId) {
         return await this.commentRepository.findAll({
@@ -55,6 +54,10 @@ let CommentsService = class CommentsService {
                 userId: userId,
             },
         });
+    }
+    async updateComment(commentId, userId, content) {
+        const [updated] = await this.commentRepository.update({ content }, { where: { id: commentId, userId } });
+        return updated > 0;
     }
 };
 exports.CommentsService = CommentsService;

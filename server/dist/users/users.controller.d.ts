@@ -5,6 +5,7 @@ export declare class UsersController {
     private usersService;
     constructor(usersService: UsersService);
     create(dto: CreateUserDto): Promise<import("./users.model").User>;
+    update(req: Request, dto: CreateUserDto): Promise<import("./users.model").User>;
     getAll(): Promise<import("./users.model").User[]>;
     getUser(req: Request): Promise<import("./users.model").User | null>;
     getOneByEmail(email: string): Promise<import("./users.model").User | null>;

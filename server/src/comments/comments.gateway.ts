@@ -42,6 +42,7 @@ export class CommentsGateway
     @MessageBody() data: { templateId: number; content: string },
     @ConnectedSocket() client: Socket,
   ) {
+    console.log("comment")
     const comment = await this.commentsService.create(
       client.data.userId,
       data.templateId,
@@ -60,6 +61,7 @@ export class CommentsGateway
     client.join(`template_${templateId}`);
 
     const comments = await this.commentsService.getAllComments(templateId);
+    console.log(comments);
     client.emit('comments_list', comments);
   }
 
@@ -97,5 +99,36 @@ export class CommentsGateway
     } catch (error) {
       throw new WsException(error.message);
     }
+  }
+
+  @UseGuards(WsJwtAuthGuard)
+  @SubscribeMessage('edit_comment')
+  async handleEditComment(
+    @MessageBody() data: { commentId: number; content: string },
+    @ConnectedSocket() client: Socket,
+  ) {
+    const userId = client.data.userId;
+
+    const updated = await this.commentsService.updateComment(
+      data.commentId,
+      userId,
+      data.content,
+    );
+
+    if (!updated) {
+      throw new WsException(
+        'Комментарий не найден или у вас нет прав на редактирование',
+      );
+    }
+
+    const updatedComment = await this.commentsService.getCommentById(data.commentId);
+
+    if (updatedComment) {
+      this.server
+        .to(`template_${updatedComment.templateId}`)
+        .emit('comment_updated', updatedComment);
+    }
+
+    return { success: true };
   }
 }

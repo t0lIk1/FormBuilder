@@ -1,18 +1,35 @@
-import {createContext, useContext, useEffect, useState} from "react";
-import {useUsers} from "src/api/useUsers.ts";
+import { createContext, useContext, useEffect, useState } from "react";
+import { useUsers } from "src/api/useUsers.ts";
 
-const UserContext = createContext(null);
+interface UserContextType {
+  user: any; // Замените any на тип вашего пользователя
+  token: string | null;
+  updateUser: (userData: any) => void; // Добавляем функцию обновления
+}
 
-export const UserProvider = ({children}) => {
-  const [user, setUser] = useState()
-  const {getUser} = useUsers()
+const UserContext = createContext<UserContextType | null>(null);
+
+export const UserProvider = ({ children }) => {
+  const [user, setUser] = useState<any>(null); // Замените any на тип вашего пользователя
+  const { getUser } = useUsers();
   const token = localStorage.getItem("token");
 
-  useEffect(() => {
-    const fetchUser = async () => {
+  const fetchUser = async () => {
+    try {
       const res = await getUser();
-      setUser(res)
+      setUser(res);
+    } catch (error) {
+      console.error("Ошибка при получении пользователя:", error);
+      setUser(null);
     }
+  };
+
+  // Функция для обновления пользователя
+  const updateUser = (userData: any) => {
+    setUser(prev => ({ ...prev, ...userData }));
+  };
+
+  useEffect(() => {
     if (token) {
       if (!user) {
         console.log("request user");
@@ -21,19 +38,20 @@ export const UserProvider = ({children}) => {
     } else {
       setUser(null);
     }
-  }, [token])
+  }, [token]);
 
   const value = {
     user,
     token,
-  }
+    updateUser, // Добавляем функцию в контекст
+  };
 
   return (
     <UserContext.Provider value={value}>
       {children}
-    < /UserContext.Provider>
-  )
-}
+    </UserContext.Provider>
+  );
+};
 
 export function useNowUser() {
   const context = useContext(UserContext);

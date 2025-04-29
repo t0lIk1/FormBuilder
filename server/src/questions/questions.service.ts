@@ -57,6 +57,12 @@ export class QuestionsService {
     await this.reorderAfterDelete(templateId);
   }
 
+  async removeAllByTemplate(templateId: number) {
+    await this.questionRepository.destroy({
+      where: { templateId }
+    });
+  }
+
   async reorder(templateId: number, dto: ReorderQuestionsDto) {
     const updates = dto.orderedIds.map((id, index) =>
       this.questionRepository.update(

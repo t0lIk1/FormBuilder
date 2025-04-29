@@ -4,7 +4,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
-  IsString, Max,
+  IsString,
   ValidateNested,
 } from 'class-validator';
 import { CreateQuestionDto } from 'src/questions/dto/create-question.dto';
@@ -34,10 +34,6 @@ export class CreateTemplateDto {
   @IsOptional()
   @IsNumber()
   declare authorId: number;
-
-  @IsOptional()
-  @IsString()
-  authorName: string;
 
   @IsOptional()
   @IsArray()
