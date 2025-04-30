@@ -33,9 +33,6 @@ export class UsersController {
   }
 
   @Get()
-  // @UseGuards(JwtAuthGuard)
-  // @Roles('ADMIN')
-  // @UseGuards(RolesGuard)
   getAll() {
     return this.usersService.findAllUsers();
   }
@@ -44,13 +41,11 @@ export class UsersController {
   @Get('now')
   getUser(@Req() req: Request) {
     const user = req.user as { id: number };
-    console.log(user);
     return this.usersService.findByToken(user.id);
   }
 
   @Get('email/:email')
   getOneByEmail(@Param('email') email: string) {
-    console.log('hi');
     return this.usersService.findOneUser(email);
   }
 

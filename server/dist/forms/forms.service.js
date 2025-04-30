@@ -55,7 +55,6 @@ let FormsService = class FormsService {
             questionId: answer.questionId,
             value: answer.value,
         }));
-        console.log(answers);
         await this.answerRepository.bulkCreate(answers);
         return await this.getFormResponse(form.id);
     }
@@ -153,6 +152,7 @@ let FormsService = class FormsService {
             if (!question) {
                 throw new common_1.NotFoundException(`Question with ID ${answer.questionId} not found`);
             }
+            console.log(question);
             if (!this.validateAnswer(answer.value, question.type)) {
                 throw new common_1.NotFoundException(`Invalid answer value for question ID ${answer.questionId} (expected ${question.type}, got ${answer.value})`);
             }

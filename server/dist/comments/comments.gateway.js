@@ -18,11 +18,14 @@ const socket_io_1 = require("socket.io");
 const comments_service_1 = require("./comments.service");
 const common_1 = require("@nestjs/common");
 const ws_jwt_auth_guard_1 = require("../auth/ws-jwt-auth.guard");
+const jwt_1 = require("@nestjs/jwt");
 let CommentsGateway = class CommentsGateway {
     commentsService;
+    jwtService;
     server;
-    constructor(commentsService) {
+    constructor(commentsService, jwtService) {
         this.commentsService = commentsService;
+        this.jwtService = jwtService;
     }
     handleConnection(client) {
         console.log(`Client connected: ${client.id}`);
@@ -31,48 +34,27 @@ let CommentsGateway = class CommentsGateway {
         console.log(`Client disconnected: ${client.id}`);
     }
     async handleAddComment(data, client) {
-        console.log("comment");
         const comment = await this.commentsService.create(client.data.userId, data.templateId, data.content);
         this.server.to(`template_${data.templateId}`).emit('new_comment', comment);
     }
     async handleGetComments(templateId, client) {
         client.join(`template_${templateId}`);
         const comments = await this.commentsService.getAllComments(templateId);
-        console.log(comments);
         client.emit('comments_list', comments);
     }
-    async handleDeleteComment(data, client) {
-        try {
-            const userId = client.data.userId;
-            const result = await this.commentsService.deleteComment(data.commentId, userId);
-            if (result === 0) {
-                throw new websockets_1.WsException('Комментарий не найден или у вас нет прав на его удаление');
-            }
-            const deletedComment = await this.commentsService.getCommentById(data.commentId);
-            if (deletedComment) {
-                this.server
-                    .to(`template_${deletedComment.templateId}`)
-                    .emit('comment_deleted', data.commentId);
-            }
-            return { success: true };
-        }
-        catch (error) {
-            throw new websockets_1.WsException(error.message);
+    async handleDeleteComment(body, client) {
+        console.log(body);
+        const deleted = await this.commentsService.deleteComment(body.commentId, client.data.userId);
+        if (deleted) {
+            this.server.emit('comment_deleted', body.commentId);
         }
     }
-    async handleEditComment(data, client) {
-        const userId = client.data.userId;
-        const updated = await this.commentsService.updateComment(data.commentId, userId, data.content);
-        if (!updated) {
-            throw new websockets_1.WsException('Комментарий не найден или у вас нет прав на редактирование');
+    async handleEditComment(body, client) {
+        const success = await this.commentsService.updateComment(body.commentId, client.data.userId, body.content);
+        if (success) {
+            const updated = await this.commentsService.getCommentById(body.commentId);
+            this.server.emit('comment_updated', updated);
         }
-        const updatedComment = await this.commentsService.getCommentById(data.commentId);
-        if (updatedComment) {
-            this.server
-                .to(`template_${updatedComment.templateId}`)
-                .emit('comment_updated', updatedComment);
-        }
-        return { success: true };
     }
 };
 exports.CommentsGateway = CommentsGateway;
@@ -90,7 +72,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], CommentsGateway.prototype, "handleAddComment", null);
 __decorate([
-    (0, common_1.UseGuards)(ws_jwt_auth_guard_1.WsJwtAuthGuard),
     (0, websockets_1.SubscribeMessage)('get_comments'),
     __param(0, (0, websockets_1.MessageBody)()),
     __param(1, (0, websockets_1.ConnectedSocket)()),
@@ -124,6 +105,7 @@ exports.CommentsGateway = CommentsGateway = __decorate([
             credentials: true,
         },
     }),
-    __metadata("design:paramtypes", [comments_service_1.CommentsService])
+    __metadata("design:paramtypes", [comments_service_1.CommentsService,
+        jwt_1.JwtService])
 ], CommentsGateway);
 //# sourceMappingURL=comments.gateway.js.map

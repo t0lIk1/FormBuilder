@@ -12,7 +12,6 @@ export const useAsync = () => {
     try {
       return await callback();
     } catch (err: any) {
-
       showNotification(err?.response?.data?.message || err.message || "Что-то пошло не так")
       setError(err?.response?.data?.message || err.message || "Что-то пошло не так");
       console.log(err)

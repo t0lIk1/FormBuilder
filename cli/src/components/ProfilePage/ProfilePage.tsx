@@ -14,13 +14,14 @@ import TemplatesList from "src/components/TemplatesList/TemplatesList";
 import { useAsync } from 'src/api/useAsync';
 import { useNowUser } from "src/context/UserContext";
 import AdminPanelTab from "src/components/ProfilePage/tabs/AdminPanelTab";
+import FormsTab from "src/components/ProfilePage/tabs/FormsTab.tsx";
 
 type ProfileTab = 'templates' | 'forms' | 'admin-panel';
 
 const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState<ProfileTab>('templates');
   const [isMobile, setIsMobile] = useState(false);
-  const { loading, error } = useAsync();
+  const { loading } = useAsync();
   const { user } = useNowUser();
 
   // Определение мобильного устройства без использования темы
@@ -47,6 +48,7 @@ const ProfilePage = () => {
 
   if (!user) {
     return (
+
       <Container maxWidth="lg" sx={{ mt: 4 }}>
         <Typography variant="h6" color="text.secondary">
           Пользователь не найден
@@ -61,9 +63,7 @@ const ProfilePage = () => {
         return <TemplatesList type="user" />;
       case 'forms':
         return (
-          <Typography color="text.secondary" sx={{ mt: 2 }}>
-            Раздел форм находится в разработке
-          </Typography>
+          <FormsTab />
         );
       case 'admin-panel':
         return user.role === "ADMIN" ? <AdminPanelTab /> : null;
@@ -74,7 +74,6 @@ const ProfilePage = () => {
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
-      {/* Профиль пользователя */}
       <Box
         display="flex"
         alignItems={isMobile ? 'flex-start' : 'center'}
@@ -111,7 +110,6 @@ const ProfilePage = () => {
         </Box>
       </Box>
 
-      {/* Навигация по табам */}
       <Paper sx={{ mb: 3, overflowX: 'auto' }}>
         <Tabs
           value={activeTab}
@@ -128,7 +126,6 @@ const ProfilePage = () => {
         </Tabs>
       </Paper>
 
-      {/* Контент табов */}
       <Box sx={{ minHeight: '60vh' }}>
         {renderTabContent()}
       </Box>

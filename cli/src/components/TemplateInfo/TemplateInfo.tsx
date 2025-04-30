@@ -24,7 +24,6 @@ const TemplateInfo = () => {
       if (id) {
         const res = await getTemplateById(id);
         setTemplate(res);
-        console.log(res)
       }
     };
     fetchTemplate();

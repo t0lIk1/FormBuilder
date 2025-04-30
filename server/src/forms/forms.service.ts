@@ -47,7 +47,6 @@ export class FormsService {
       questionId: answer.questionId,
       value: answer.value,
     }));
-    console.log(answers);
 
     await this.answerRepository.bulkCreate(answers as any);
 
@@ -168,7 +167,7 @@ export class FormsService {
           `Question with ID ${answer.questionId} not found`,
         );
       }
-
+      console.log(question);
       if (!this.validateAnswer(answer.value, question.type)) {
         throw new NotFoundException(
           `Invalid answer value for question ID ${answer.questionId} (expected ${question.type}, got ${answer.value})`,
@@ -176,12 +175,10 @@ export class FormsService {
       }
     }
 
-    // Удаляем старые ответы
     await this.answerRepository.destroy({
       where: { formId: id },
     });
 
-    // Создаем новые ответы
     const answers = dto.answers.map((answer) => ({
       formId: id,
       questionId: answer.questionId,

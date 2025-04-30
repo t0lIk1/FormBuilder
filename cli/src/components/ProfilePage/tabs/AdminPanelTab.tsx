@@ -1,11 +1,9 @@
 import {
-  Alert,
   Box,
   Button,
   ButtonGroup,
   Checkbox,
   Chip,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -18,20 +16,22 @@ import {
   TableHead,
   TableRow
 } from "@mui/material";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {UserI} from "src/types/type";
 import {useAdmin} from "src/api/useAdmin";
 import api from "src/api/axios";
 import {useUsers} from "src/api/useUsers.ts";
+import {NotificationContext} from "src/context/NotificationContext.tsx";
+import Loader from "src/components/Loader/Loader.tsx";
 
 const AdminPanelTab = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [allUsers, setAllUsers] = useState<UserI[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
-  const [notification, setNotification] = useState<{ type: 'success' | 'error', message: string } | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [actionType, setActionType] = useState<'delete' | 'block' | 'unblock' | 'toggle-role' | null>(null);
   const {getAllUsers, loading} = useUsers();
+  const {showNotification} = useContext(NotificationContext)
 
   useEffect(() => {
     const checkIfMobile = () => {
@@ -79,15 +79,11 @@ const AdminPanelTab = () => {
       setAllUsers(response.data || []);
       setSelectedUsers([]);
 
-      setNotification({
-        type: 'success',
-        message: 'Действие выполнено успешно'
-      });
+      showNotification(
+        'Действие выполнено успешно',
+        'success');
     } catch (error) {
-      setNotification({
-        type: 'error',
-        message: error.response?.data?.message || 'Ошибка выполнения действия'
-      });
+      showNotification(error.response?.data?.message || 'Ошибка выполнения действия', 'error');
     } finally {
       setConfirmOpen(false);
       setActionType(null);
@@ -98,28 +94,11 @@ const AdminPanelTab = () => {
     setActionType(type);
     setConfirmOpen(true);
   };
+  if (loading) return <Loader/>
 
-  if (loading) {
-    return (
-      <Box display="flex" justifyContent="center" mt={4}>
-        <CircularProgress/>
-      </Box>
-    );
-  }
-// #TODO разобратся с сообщением о том что действие выполнено
   return (
     <Box sx={{mt: 2}}>
-      {notification && (
-        <Alert
-          severity={notification.type}
-          sx={{mb: 2}}
-          onClose={() => setNotification(null)}
-        >
-          {notification.message}
-        </Alert>
-      )}
 
-      {/* Адаптивная кнопочная группа */}
       <Box sx={{
         mb: 2,
         overflowX: 'auto',
@@ -162,7 +141,6 @@ const AdminPanelTab = () => {
         </ButtonGroup>
       </Box>
 
-      {/* Адаптивная таблица */}
       <TableContainer component={Paper} sx={{
         maxWidth: '100%',
         overflowX: 'auto'
@@ -222,7 +200,6 @@ const AdminPanelTab = () => {
         </Table>
       </TableContainer>
 
-      {/* Диалог подтверждения */}
       <Dialog
         open={confirmOpen}
         onClose={() => setConfirmOpen(false)}
@@ -247,7 +224,6 @@ const AdminPanelTab = () => {
   );
 };
 
-// Вспомогательная функция для текста действия
 const getActionText = (action: string | null) => {
   switch (action) {
     case 'delete':

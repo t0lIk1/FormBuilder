@@ -1,8 +1,12 @@
-import {Avatar, Box, Button, Chip, Divider, Link, Paper, Stack, Typography} from "@mui/material";
+import {Avatar, Box, Button, Chip, Divider, Paper, Stack, Typography} from "@mui/material";
 import {CalendarToday, Code, Public, Update} from "@mui/icons-material";
 import {TemplateI} from "src/types/type.ts";
+import {useNowUser} from "src/context/UserContext.tsx";
 
 const InfoTab = (template: TemplateI) => {
+  const {user} = useNowUser()
+
+
   return (
     <Paper elevation={3} sx={{p: 4, my: 4, borderRadius: 2}}>
       <Box sx={{mb: 3}}>
@@ -99,9 +103,9 @@ const InfoTab = (template: TemplateI) => {
             </Stack>
           </Box>
         )}
-        <Button size="small" href={`/templates/${template.id}/answer`}>
+        {user && template?.questions?.length > 0 ? <Button size="small" href={`/templates/${template.id}/answer`}>
           Fill out the form
-        </Button>
+        </Button> : null}
       </Box>
     </Paper>
   )

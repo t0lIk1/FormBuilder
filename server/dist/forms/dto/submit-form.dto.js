@@ -18,11 +18,10 @@ class AnswerDto {
 }
 exports.AnswerDto = AnswerDto;
 __decorate([
-    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Number)
 ], AnswerDto.prototype, "questionId", void 0);
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Object)
 ], AnswerDto.prototype, "value", void 0);

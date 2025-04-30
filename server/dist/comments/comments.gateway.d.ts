@@ -1,10 +1,12 @@
 import { OnGatewayConnection, OnGatewayDisconnect } from '@nestjs/websockets';
-import { Socket, Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { CommentsService } from './comments.service';
+import { JwtService } from '@nestjs/jwt';
 export declare class CommentsGateway implements OnGatewayConnection, OnGatewayDisconnect {
-    private readonly commentsService;
+    private commentsService;
+    private jwtService;
     server: Server;
-    constructor(commentsService: CommentsService);
+    constructor(commentsService: CommentsService, jwtService: JwtService);
     handleConnection(client: Socket): void;
     handleDisconnect(client: Socket): void;
     handleAddComment(data: {
@@ -12,15 +14,11 @@ export declare class CommentsGateway implements OnGatewayConnection, OnGatewayDi
         content: string;
     }, client: Socket): Promise<void>;
     handleGetComments(templateId: number, client: Socket): Promise<void>;
-    handleDeleteComment(data: {
+    handleDeleteComment(body: {
         commentId: number;
-    }, client: Socket): Promise<{
-        success: boolean;
-    }>;
-    handleEditComment(data: {
+    }, client: Socket): Promise<void>;
+    handleEditComment(body: {
         commentId: number;
         content: string;
-    }, client: Socket): Promise<{
-        success: boolean;
-    }>;
+    }, client: Socket): Promise<void>;
 }

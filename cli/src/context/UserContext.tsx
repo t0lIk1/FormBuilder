@@ -2,15 +2,15 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useUsers } from "src/api/useUsers.ts";
 
 interface UserContextType {
-  user: any; // Замените any на тип вашего пользователя
+  user: any;
   token: string | null;
-  updateUser: (userData: any) => void; // Добавляем функцию обновления
+  updateUser: (userData: any) => void;
 }
 
 const UserContext = createContext<UserContextType | null>(null);
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState<any>(null); // Замените any на тип вашего пользователя
+  const [user, setUser] = useState(null);
   const { getUser } = useUsers();
   const token = localStorage.getItem("token");
 
@@ -24,8 +24,7 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  // Функция для обновления пользователя
-  const updateUser = (userData: any) => {
+  const updateUser = (userData) => {
     setUser(prev => ({ ...prev, ...userData }));
   };
 
@@ -43,7 +42,7 @@ export const UserProvider = ({ children }) => {
   const value = {
     user,
     token,
-    updateUser, // Добавляем функцию в контекст
+    updateUser,
   };
 
   return (

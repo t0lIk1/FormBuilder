@@ -100,7 +100,6 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], TemplatesController.prototype, "findAllByUser", null);
 __decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),

@@ -1,17 +1,17 @@
 import {
-  SubscribeMessage,
-  WebSocketGateway,
+  ConnectedSocket,
+  MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
-  MessageBody,
-  ConnectedSocket,
+  SubscribeMessage,
+  WebSocketGateway,
   WebSocketServer,
-  WsException,
 } from '@nestjs/websockets';
-import { Socket, Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { CommentsService } from './comments.service';
 import { UseGuards } from '@nestjs/common';
 import { WsJwtAuthGuard } from '../auth/ws-jwt-auth.guard';
+import { JwtService } from '@nestjs/jwt';
 
 @WebSocketGateway({
   cors: {
@@ -26,7 +26,10 @@ export class CommentsGateway
   @WebSocketServer()
   server: Server;
 
-  constructor(private readonly commentsService: CommentsService) {}
+  constructor(
+    private commentsService: CommentsService,
+    private jwtService: JwtService,
+  ) {}
 
   handleConnection(client: Socket) {
     console.log(`Client connected: ${client.id}`);
@@ -42,7 +45,6 @@ export class CommentsGateway
     @MessageBody() data: { templateId: number; content: string },
     @ConnectedSocket() client: Socket,
   ) {
-    console.log("comment")
     const comment = await this.commentsService.create(
       client.data.userId,
       data.templateId,
@@ -52,7 +54,6 @@ export class CommentsGateway
     this.server.to(`template_${data.templateId}`).emit('new_comment', comment);
   }
 
-  @UseGuards(WsJwtAuthGuard)
   @SubscribeMessage('get_comments')
   async handleGetComments(
     @MessageBody() templateId: number,
@@ -61,74 +62,41 @@ export class CommentsGateway
     client.join(`template_${templateId}`);
 
     const comments = await this.commentsService.getAllComments(templateId);
-    console.log(comments);
     client.emit('comments_list', comments);
   }
 
   @UseGuards(WsJwtAuthGuard)
   @SubscribeMessage('delete_comment')
   async handleDeleteComment(
-    @MessageBody() data: { commentId: number },
+    @MessageBody() body: { commentId: number },
     @ConnectedSocket() client: Socket,
   ) {
-    try {
-      const userId = client.data.userId;
+    console.log(body);
+    const deleted = await this.commentsService.deleteComment(
+      body.commentId,
+      client.data.userId,
+    );
 
-      const result = await this.commentsService.deleteComment(
-        data.commentId,
-        userId,
-      );
-
-      if (result === 0) {
-        throw new WsException(
-          'Комментарий не найден или у вас нет прав на его удаление',
-        );
-      }
-
-      const deletedComment = await this.commentsService.getCommentById(
-        data.commentId,
-      );
-
-      if (deletedComment) {
-        this.server
-          .to(`template_${deletedComment.templateId}`)
-          .emit('comment_deleted', data.commentId);
-      }
-
-      return { success: true };
-    } catch (error) {
-      throw new WsException(error.message);
+    if (deleted) {
+      this.server.emit('comment_deleted', body.commentId); // ⚠️ Вот это важно!
     }
   }
 
   @UseGuards(WsJwtAuthGuard)
   @SubscribeMessage('edit_comment')
   async handleEditComment(
-    @MessageBody() data: { commentId: number; content: string },
+    @MessageBody() body: { commentId: number; content: string },
     @ConnectedSocket() client: Socket,
   ) {
-    const userId = client.data.userId;
-
-    const updated = await this.commentsService.updateComment(
-      data.commentId,
-      userId,
-      data.content,
+    const success = await this.commentsService.updateComment(
+      body.commentId,
+      client.data.userId,
+      body.content,
     );
 
-    if (!updated) {
-      throw new WsException(
-        'Комментарий не найден или у вас нет прав на редактирование',
-      );
+    if (success) {
+      const updated = await this.commentsService.getCommentById(body.commentId);
+      this.server.emit('comment_updated', updated); // Отправляем всем
     }
-
-    const updatedComment = await this.commentsService.getCommentById(data.commentId);
-
-    if (updatedComment) {
-      this.server
-        .to(`template_${updatedComment.templateId}`)
-        .emit('comment_updated', updatedComment);
-    }
-
-    return { success: true };
   }
 }

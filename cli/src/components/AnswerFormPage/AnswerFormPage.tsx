@@ -1,24 +1,38 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { useTemplates } from "src/api/useTemplates";
-import { useEffect, useState } from "react";
-import { QuestionI, QuestionType, TemplateI } from "src/types/type";
-import { Box, Button, Checkbox, TextField, Typography, Paper, Container, Select, MenuItem, FormControl, FormControlLabel, FormGroup, FormHelperText } from "@mui/material";
-import { useFormik } from "formik";
+import {useNavigate, useParams} from "react-router-dom";
+import {useTemplates} from "src/api/useTemplates";
+import {useEffect, useState} from "react";
+import {QuestionI, QuestionType, TemplateI} from "src/types/type";
+import {
+  Box,
+  Button,
+  Checkbox,
+  Container,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  FormHelperText,
+  MenuItem,
+  Paper,
+  Select,
+  TextField,
+  Typography
+} from "@mui/material";
+import {useFormik} from "formik";
 import * as Yup from "yup";
+import {useForm} from "src/api/useForm.ts";
+import Loader from "src/components/Loader/Loader.tsx";
 
 const AnswerFormPage = () => {
   const [template, setTemplate] = useState<TemplateI | null>(null);
-  const { id } = useParams();
-  const { getTemplateById, loading } = useTemplates();
+  const {id} = useParams();
+  const {getTemplateById} = useTemplates();
   const navigate = useNavigate();
-
-  // 1. Загрузка шаблона
+  const {submitForm, loading} = useForm()
   useEffect(() => {
     const fetchTemplate = async () => {
       if (id) {
         const res = await getTemplateById(id);
         setTemplate(res);
-        // Инициализация пустых значений для формы
         const emptyAnswers = res.questions?.reduce((acc, question: QuestionI): object => {
           console.log(acc, question)
           acc[question.id] = question.type === QuestionType.CHECKBOX ? [] : "";
@@ -48,15 +62,34 @@ const AnswerFormPage = () => {
     });
     return Yup.object().shape(rules);
   };
+  const onSubmit = async (values: any) => {
+    try {
+      // Преобразуем данные из формата Formik в формат, ожидаемый сервером
+      const answers = Object.entries(values).map(([questionId, value]) => ({
+        questionId: parseInt(questionId),
+        value: value
+      }));
+
+      const submitData = {
+        answers: answers
+      };
+      console.log(submitData)
+      // Отправляем данные на сервер
+      await submitForm(template.id, submitData);
+
+      // Перенаправляем после успешной отправки
+      navigate(`/templates/${id}`);
+    } catch (error) {
+      console.error('Ошибка при отправке формы:', error);
+      // Можно добавить уведомление об ошибке
+    }
+  };
 
   // 3. Форма с валидацией
   const formik = useFormik({
     initialValues: {},
     validationSchema: getValidationRules(),
-    onSubmit: (values) => {
-      console.log("Ответы:", values);
-      navigate(`/templates/${id}`);
-    },
+    onSubmit: onSubmit,
     enableReinitialize: true
   });
 
@@ -79,7 +112,6 @@ const AnswerFormPage = () => {
       onChange: formik.handleChange,
       onBlur: formik.handleBlur,
       error: !!error,
-      helperText: error,
       required: question.isRequired
     };
 
@@ -132,21 +164,21 @@ const AnswerFormPage = () => {
     }
   };
 
-  if (loading) return <div>Загрузка...</div>;
+  if (loading) return <Loader/>;
   if (!template) return <div>Шаблон не найден</div>;
 
   return (
     <Container maxWidth="md">
-      <Paper elevation={3} sx={{ p: 4, my: 4 }}>
+      <Paper elevation={3} sx={{p: 4, my: 4}}>
         <Typography variant="h4">{template.title}</Typography>
         <Typography color="text.secondary">{template.description}</Typography>
 
-        <Box component="form" onSubmit={formik.handleSubmit} sx={{ mt: 3 }}>
+        <Box component="form" onSubmit={formik.handleSubmit} sx={{mt: 3}}>
           {template.questions?.map(question => (
-            <Box key={question.id} sx={{ mb: 3 }}>
+            <Box key={question.id} sx={{mb: 3}}>
               <Typography>
                 {question.question}
-                {question.isRequired && <span style={{ color: 'red' }}>*</span>}
+                {question.isRequired && <span style={{color: 'red'}}>*</span>}
               </Typography>
               {question.description && (
                 <Typography variant="body2" color="text.secondary">
@@ -160,7 +192,7 @@ const AnswerFormPage = () => {
           <Button
             type="submit"
             variant="contained"
-            disabled={!formik.isValid}
+            disabled={!formik.isValid || loading}
           >
             Отправить
           </Button>

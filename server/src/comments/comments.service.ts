@@ -20,7 +20,7 @@ export class CommentsService {
       content,
     });
     return this.commentRepository.findByPk(comment.id, {
-      include: [{ model: User, attributes: ['id', 'name', 'avatar'] }],
+      include: [{ model: User, attributes: ['id', 'name'] }],
     });
   }
 
@@ -37,6 +37,7 @@ export class CommentsService {
   }
 
   async deleteComment(commentId: number, userId: number) {
+    console.log(commentId, userId)
     return await this.commentRepository.destroy({
       where: {
         id: commentId,

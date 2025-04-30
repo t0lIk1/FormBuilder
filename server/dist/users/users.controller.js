@@ -36,11 +36,9 @@ let UsersController = class UsersController {
     }
     getUser(req) {
         const user = req.user;
-        console.log(user);
         return this.usersService.findByToken(user.id);
     }
     getOneByEmail(email) {
-        console.log('hi');
         return this.usersService.findOneUser(email);
     }
     delete(body) {

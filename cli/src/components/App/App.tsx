@@ -10,6 +10,7 @@ import AnswerFormPage from "src/components/AnswerFormPage/AnswerFormPage.tsx";
 import EditProfile from "src/components/EditProfile/EditProfile.tsx";
 import TemplateEditPage from "src/components/TemplateEditPage/TemplateEditPage.tsx";
 import NotFound from "src/components/NotFoud/NotFound.tsx"
+import ViewFormResponsePage from "src/components/ViewAnswerPage/ViewAnswerPage.tsx";
 const App = () => {
   return (
 
@@ -25,6 +26,7 @@ const App = () => {
         <Route path="/templates/:id/edit" element={<TemplateEditPage/>}/>
         <Route path="/templates/:id/answer" element={<AnswerFormPage/>}/>
         <Route path="/templates/:id" element={<TemplateInfo/>}/>
+        <Route path="/templates/:templateId/responses/:responseId" element={<ViewFormResponsePage/>}/>
         <Route path="*" element={<NotFound/>}/>
       </Routes>
     </>
