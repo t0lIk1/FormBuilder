@@ -24,7 +24,6 @@ const EditProfile = () => {
   const [loading, setLoading] = useState(false);
   const {showNotification} = useContext(NotificationContext);
 
-  // Схема валидации (без обязательного пароля)
   const validationSchema = Yup.object({
     name: Yup.string().required('Введите имя'),
     email: Yup.string().email('Некорректный email').required('Введите email'),
@@ -99,7 +98,6 @@ const EditProfile = () => {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               error={formik.touched.name && Boolean(formik.errors.name)}
-              helperText={formik.touched.name && formik.errors.name}
             />
             <TextField
               fullWidth
@@ -110,7 +108,6 @@ const EditProfile = () => {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               error={formik.touched.email && Boolean(formik.errors.email)}
-              helperText={formik.touched.email && formik.errors.email}
             />
             <TextField
               fullWidth

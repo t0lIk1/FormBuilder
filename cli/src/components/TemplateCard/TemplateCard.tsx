@@ -55,7 +55,7 @@ const TemplateCard = ({ id, title, description, likes, updatedAt, authorId, onDe
       try {
         await deleteTemplates(id);
         if (onDeleteSuccess) {
-          onDeleteSuccess(); // Вызываем функцию обновления после успешного удаления
+          onDeleteSuccess();
         }
       } catch (error) {
         console.error('Failed to delete template', error);
@@ -89,7 +89,7 @@ const TemplateCard = ({ id, title, description, likes, updatedAt, authorId, onDe
                   onClose={handleMenuClose}
                 >
                   <MenuItem onClick={handleEdit}>
-                    <EditIcon fontSize="small" sx={{ mr: 1 }} />
+                    <EditIcon fontSize="small" sx={{ mr: 1 }}/>
                     Edit
                   </MenuItem>
                   <MenuItem onClick={handleDelete}>

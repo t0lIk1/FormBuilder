@@ -1,4 +1,3 @@
-// src/api/profileApi.ts
 import { api } from './api';
 
 export const profileApi = {

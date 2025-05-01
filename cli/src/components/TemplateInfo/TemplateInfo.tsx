@@ -3,7 +3,7 @@ import {useTemplates} from "src/api/useTemplates.ts";
 import {useEffect, useState} from "react";
 import Loader from "src/components/Loader/Loader.tsx";
 import {Container, Paper, Tab, Tabs, Typography} from "@mui/material";
-import {Analytics, Comment, Person, Settings} from "@mui/icons-material";
+import {Analytics, Person, Settings} from "@mui/icons-material";
 import InfoTab from "src/components/TemplateInfo/tabs/InfoTab.tsx";
 import {TemplateI} from "src/types/type.ts";
 import {useNowUser} from "src/context/UserContext.tsx";
@@ -22,14 +22,14 @@ const TemplateInfo = () => {
   useEffect(() => {
     const fetchTemplate = async () => {
       if (id) {
-        const res = await getTemplateById(id);
+        const res = await getTemplateById(Number(id));
         setTemplate(res);
       }
     };
     fetchTemplate();
   }, []);
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => {
     setActiveTab(newValue);
   };
 

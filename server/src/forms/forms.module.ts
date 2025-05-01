@@ -7,7 +7,6 @@ import { Answer } from './answers.model';
 import { Question } from '../questions/questions.model';
 import { Template } from '../templates/templates.model';
 import { AuthModule } from 'src/auth/auth.module';
-import { AnswerOption } from './answer-option.model';
 
 @Module({
   imports: [
@@ -16,7 +15,6 @@ import { AnswerOption } from './answer-option.model';
       Answer,
       Question,
       Template,
-      AnswerOption,
     ]),
     AuthModule,
   ],

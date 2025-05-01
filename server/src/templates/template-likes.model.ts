@@ -19,10 +19,14 @@ import { Template } from './templates.model';
 })
 export class TemplateLike extends Model {
   @ForeignKey(() => User)
-  @Column({ type: DataType.INTEGER, allowNull: false })
+  @Column({ type: DataType.INTEGER, allowNull: false, onDelete: 'CASCADE' })
   userId: number;
 
   @ForeignKey(() => Template)
-  @Column({ type: DataType.INTEGER, allowNull: false })
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+    onDelete: 'CASCADE',
+  })
   templateId: number;
 }

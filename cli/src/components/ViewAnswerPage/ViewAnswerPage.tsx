@@ -1,51 +1,54 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { useTemplates } from "src/api/useTemplates";
-import { useEffect, useState } from "react";
-import { QuestionI, QuestionType, TemplateI } from "src/types/type";
+import {useNavigate, useParams} from "react-router-dom";
+import {useTemplates} from "src/api/useTemplates";
+import {useEffect, useState} from "react";
+import {FormI, QuestionI, QuestionType, TemplateI} from "src/types/type";
 import {
   Box,
   Button,
-  Container,
-  Paper,
-  Typography,
-  Divider,
-  TextField,
   Checkbox,
+  Container,
+  Divider,
+  FormControl,
   FormControlLabel,
   FormGroup,
-  FormControl,
   InputLabel,
-  Select,
   MenuItem,
-  List,
-  ListItem,
-  Chip
+  Paper,
+  Select,
+  TextField,
+  Typography,
 } from "@mui/material";
-import { useForm } from "src/api/useForm.ts";
+import {useForm} from "src/api/useForm.ts";
 import Loader from "src/components/Loader/Loader.tsx";
-import { useNowUser } from "src/context/UserContext";
+import {useNowUser} from "src/context/UserContext";
+
+interface AnswersMap {
+  [key: number]: string | string[];
+}
+
 
 const ViewFormResponsePage = () => {
   const [template, setTemplate] = useState<TemplateI | null>(null);
-  const [formResponse, setFormResponse] = useState<any>(null);
-  const { templateId, responseId } = useParams();
-  const { getTemplateById, loading } = useTemplates();
-  const { getFormResponse } = useForm();
-  const { user } = useNowUser();
+  const [formResponse, setFormResponse] = useState<FormI | null>(null);
+  const {templateId, responseId} = useParams();
+  const {getTemplateById, loading} = useTemplates();
+  const {getFormResponse} = useForm();
+  const {user} = useNowUser();
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log(responseId, templateId);
-        const templateData = await getTemplateById(templateId);
+        if (!templateId || !responseId) {
+          throw new Error("Missing templateId or responseId");
+        }
+        const templateData = await getTemplateById(Number(templateId));
         setTemplate(templateData);
 
-        const responseData = await getFormResponse(responseId);
-        console.log(responseData);
+        const responseData = await getFormResponse(Number(responseId));
         setFormResponse(responseData);
 
-        if (responseData.userId !== user.id) {
+        if (responseData.userId !== user.id && user.role !== "ADMIN") {
           navigate("/");
         }
       } catch (error) {
@@ -54,12 +57,12 @@ const ViewFormResponsePage = () => {
     };
 
     fetchData();
-  }, [templateId, responseId, user.id, navigate, getTemplateById, getFormResponse]);
+  }, []);
 
-  const answersMap = formResponse?.answers?.reduce((acc, answer) => {
+  const answersMap = formResponse?.answers?.reduce((acc: AnswersMap, answer) => {
     acc[answer.questionId] = answer.value;
     return acc;
-  }, {});
+  }, {} as AnswersMap);
 
   const renderAnswer = (question: QuestionI) => {
     const answer = answersMap?.[question.id];
@@ -151,12 +154,12 @@ const ViewFormResponsePage = () => {
     }
   };
 
-  if (loading) return <Loader />;
+  if (loading) return <Loader/>;
   if (!template || !formResponse) return <div>Данные не найдены</div>;
 
   return (
     <Container maxWidth="md">
-      <Paper elevation={3} sx={{ p: 4, my: 4 }}>
+      <Paper elevation={3} sx={{p: 4, my: 4}}>
         <Typography variant="h4" gutterBottom>
           {template.title}
         </Typography>
@@ -164,14 +167,14 @@ const ViewFormResponsePage = () => {
           Ответ от {new Date(formResponse.submittedAt).toLocaleString()}
         </Typography>
 
-        <Divider sx={{ my: 3 }} />
+        <Divider sx={{my: 3}}/>
 
         <Box component="form">
           {template.questions?.map((question) => (
-            <Box key={question.id} sx={{ mb: 3 }}>
+            <Box key={question.id} sx={{mb: 3}}>
               <Typography fontWeight="bold" gutterBottom>
                 {question.question}
-                {question.isRequired && <span style={{ color: 'red' }}>*</span>}
+                {question.isRequired && <span style={{color: 'red'}}>*</span>}
               </Typography>
               {question.description && (
                 <Typography variant="body2" color="text.secondary" gutterBottom>
@@ -179,12 +182,12 @@ const ViewFormResponsePage = () => {
                 </Typography>
               )}
               {renderAnswer(question)}
-              <Divider sx={{ mt: 2 }} />
+              <Divider sx={{mt: 2}}/>
             </Box>
           ))}
         </Box>
 
-        <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
+        <Box sx={{mt: 3, display: 'flex', justifyContent: 'flex-end'}}>
           <Button
             variant="contained"
             onClick={() => navigate(-1)}

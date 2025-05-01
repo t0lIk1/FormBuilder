@@ -11,6 +11,7 @@ import { TemplateTag } from '../tags/templates-tags.model';
 import { TagsModule } from '../tags/tags.module';
 import { TemplateLike } from './template-likes.model';
 import { QuestionsModule } from '../questions/questions.module';
+import { Comment } from '../comments/comments.model';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { QuestionsModule } from '../questions/questions.module';
       Template,
       User,
       Tag,
+      Comment,
       TemplateTag,
       TemplateLike,
     ]),

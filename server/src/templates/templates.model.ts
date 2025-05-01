@@ -14,12 +14,12 @@ import { Form } from '../forms/forms.model';
 import { Tag } from '../tags/tags.model';
 import { TemplateTag } from '../tags/templates-tags.model';
 import { TemplateLike } from './template-likes.model';
+import { Comment } from '../comments/comments.model';
 
 interface TemplateAttributes {
   title: string;
   description: string;
   topic: string;
-  // imageUrl?: string;
   isPublic: boolean;
   authorId: number;
 }
@@ -44,17 +44,14 @@ export class Template extends Model<Template, TemplateAttributes> {
   @Column({ type: DataType.STRING, allowNull: false })
   topic: string;
 
-  // @Column({ type: DataType.STRING })
-  // imageUrl: string;
-
   @Column({ type: DataType.BOOLEAN, allowNull: false, defaultValue: false })
   isPublic: boolean;
 
   @ForeignKey(() => User)
-  @Column({ type: DataType.INTEGER, allowNull: false })
+  @Column({ type: DataType.INTEGER, allowNull: false, onDelete: 'CASCADE' })
   authorId: number;
 
-  @BelongsTo(() => User)
+  @BelongsTo(() => User, { onDelete: 'CASCADE' })
   user: User;
 
   @HasMany(() => Question)
@@ -68,4 +65,7 @@ export class Template extends Model<Template, TemplateAttributes> {
 
   @HasMany(() => TemplateLike)
   likes: TemplateLike[];
+
+  @HasMany(() => Comment)
+  comments: Comment[];
 }

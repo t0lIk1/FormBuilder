@@ -17,6 +17,7 @@ const forms_model_1 = require("../forms/forms.model");
 const tags_model_1 = require("../tags/tags.model");
 const templates_tags_model_1 = require("../tags/templates-tags.model");
 const template_likes_model_1 = require("./template-likes.model");
+const comments_model_1 = require("../comments/comments.model");
 let Template = class Template extends sequelize_typescript_1.Model {
     title;
     description;
@@ -28,6 +29,7 @@ let Template = class Template extends sequelize_typescript_1.Model {
     forms;
     tags;
     likes;
+    comments;
 };
 exports.Template = Template;
 __decorate([
@@ -58,11 +60,11 @@ __decorate([
 ], Template.prototype, "isPublic", void 0);
 __decorate([
     (0, sequelize_typescript_1.ForeignKey)(() => users_model_1.User),
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER, allowNull: false }),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER, allowNull: false, onDelete: 'CASCADE' }),
     __metadata("design:type", Number)
 ], Template.prototype, "authorId", void 0);
 __decorate([
-    (0, sequelize_typescript_1.BelongsTo)(() => users_model_1.User),
+    (0, sequelize_typescript_1.BelongsTo)(() => users_model_1.User, { onDelete: 'CASCADE' }),
     __metadata("design:type", users_model_1.User)
 ], Template.prototype, "user", void 0);
 __decorate([
@@ -81,6 +83,10 @@ __decorate([
     (0, sequelize_typescript_1.HasMany)(() => template_likes_model_1.TemplateLike),
     __metadata("design:type", Array)
 ], Template.prototype, "likes", void 0);
+__decorate([
+    (0, sequelize_typescript_1.HasMany)(() => comments_model_1.Comment),
+    __metadata("design:type", Array)
+], Template.prototype, "comments", void 0);
 exports.Template = Template = __decorate([
     (0, sequelize_typescript_1.Table)({ tableName: 'templates' })
 ], Template);

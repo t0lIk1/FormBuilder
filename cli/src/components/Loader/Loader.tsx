@@ -8,9 +8,9 @@ const Loader = () => {
 			maxWidth="lg"
 			sx={{
 				display: 'flex',
-				justifyContent: 'center', // Горизонтальное выравнивание
-				alignItems: 'center',     // Вертикальное выравнивание
-				height: '100vh',          // Высота на весь экран
+				justifyContent: 'center',
+				alignItems: 'center',
+				height: '100vh',
 			}}
 		>
 			<Box>

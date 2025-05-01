@@ -84,6 +84,9 @@ let UsersService = class UsersService {
             include: { all: true },
         });
     }
+    async deleteMe(id) {
+        return await this.userRepository.destroy({ where: { id } });
+    }
     async deleteUsers(ids) {
         const deletedCount = await this.userRepository.destroy({
             where: { id: ids },

@@ -25,20 +25,22 @@ export class Form extends Model {
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
+    onDelete: 'CASCADE',
   })
   templateId: number;
 
-  @BelongsTo(() => Template)
+  @BelongsTo(() => Template, { onDelete: 'CASCADE' })
   template: Template;
 
   @ForeignKey(() => User)
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
+    onDelete: 'CASCADE',
   })
   userId: number;
 
-  @BelongsTo(() => User)
+  @BelongsTo(() => User, { onDelete: 'CASCADE' })
   user: User;
 
   @Column({

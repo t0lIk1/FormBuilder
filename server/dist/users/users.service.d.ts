@@ -8,6 +8,7 @@ export declare class UsersService {
     findAllUsers(): Promise<User[]>;
     findOneUser(email: string): Promise<User | null>;
     findByToken(userId: number): Promise<User | null>;
+    deleteMe(id: number): Promise<number>;
     deleteUsers(ids: number[]): Promise<void>;
     blockUsers(ids: number[]): Promise<void>;
     unBlockUsers(ids: number[]): Promise<void>;

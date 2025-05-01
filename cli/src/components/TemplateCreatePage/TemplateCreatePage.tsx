@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useFormik } from 'formik';
+import React, {useState} from 'react';
+import {useFormik} from 'formik';
 import * as yup from 'yup';
 import {
   Box,
@@ -18,41 +18,13 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
+import {DragDropContext, Draggable, Droppable, DropResult} from '@hello-pangea/dnd';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import DragHandleIcon from '@mui/icons-material/DragHandle';
-import { useTemplates } from 'src/api/useTemplates';
+import {useTemplates} from 'src/api/useTemplates';
 import {useNavigate} from "react-router-dom";
-
-export enum QuestionType {
-  TEXT = 'TEXT',
-  TEXTAREA = 'TEXTAREA',
-  NUMBER = 'NUMBER',
-  CHECKBOX = 'CHECKBOX',
-  SELECT = 'SELECT',
-}
-
-interface Question {
-  question: string;
-  description: string;
-  type: QuestionType;
-  isRequired: boolean;
-  options?: string[];
-  showInTable: boolean;
-}
-
-interface Tag {
-  id: string;
-  name: string;
-}
-
-interface TemplateFormValues {
-  topic: string;
-  title: string;
-  description: string;
-  isPublic: boolean;
-}
+import {QuestionI, QuestionType, TagI, TemplateFormValuesI} from 'src/types/type';
 
 const templateValidationSchema = yup.object({
   topic: yup.string().required('Topic is required'),
@@ -74,13 +46,14 @@ const questionValidationSchema = yup.object({
 });
 
 const TemplateCreatePage = () => {
-  const [tags, setTags] = useState<Tag[]>([]);
+  const [tags, setTags] = useState<TagI[]>([]);
   const [tagInput, setTagInput] = useState('');
-  const { createTemplates } = useTemplates();
-  const [questions, setQuestions] = useState<Question[]>([]);
+  const {createTemplates} = useTemplates();
+  const [questions, setQuestions] = useState<QuestionI[]>([]);
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const templateFormik = useFormik<TemplateFormValues>({
+
+  const templateFormik = useFormik<TemplateFormValuesI>({
     initialValues: {
       topic: '',
       title: '',
@@ -89,18 +62,18 @@ const TemplateCreatePage = () => {
     },
     validationSchema: templateValidationSchema,
     onSubmit: async (values) => {
-      setIsSubmitting(true)
+      setIsSubmitting(true);
       await createTemplates({
         ...values,
         questions,
         tags: tags.map(tag => tag.name),
       });
-      navigate("/")
+      navigate("/");
     },
   });
 
   const addQuestion = () => {
-    const newQuestion: Question = {
+    const newQuestion: QuestionI = {
       question: '',
       description: '',
       type: QuestionType.TEXT,
@@ -114,13 +87,13 @@ const TemplateCreatePage = () => {
     setQuestions(questions.filter((_, i) => i !== index));
   };
 
-  const updateQuestion = (index: number, updatedData: Partial<Question>) => {
+  const updateQuestion = (index: number, updatedData: Partial<QuestionI>) => {
     setQuestions(questions.map((q, i) =>
-      i === index ? { ...q, ...updatedData } : q
+      i === index ? {...q, ...updatedData} : q
     ));
   };
 
-  const onDragEnd = (result: any) => {
+  const onDragEnd = (result: DropResult) => {
     if (!result.destination) return;
 
     const reorderedQuestions = Array.from(questions);
@@ -132,7 +105,7 @@ const TemplateCreatePage = () => {
 
   const addTag = () => {
     if (tagInput.trim() && !tags.some(tag => tag.name === tagInput.trim())) {
-      setTags([...tags, { id: `tag-${Date.now()}`, name: tagInput.trim() }]);
+      setTags([...tags, {id: `tag-${Date.now()}`, name: tagInput.trim()}]);
       setTagInput('');
     }
   };
@@ -150,14 +123,14 @@ const TemplateCreatePage = () => {
 
   return (
     <Container maxWidth="lg">
-      <Box component="form" onSubmit={templateFormik.handleSubmit} sx={{ p: 3 }}>
+      <Box component="form" onSubmit={templateFormik.handleSubmit} sx={{p: 3}}>
         <Typography variant="h4" gutterBottom>Create New Template</Typography>
 
         {/* Template Information Section */}
-        <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
+        <Paper elevation={2} sx={{p: 3, mb: 3}}>
           <Typography variant="h6" gutterBottom>Template Information</Typography>
 
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box sx={{display: 'flex', flexDirection: 'column', gap: 2}}>
             <TextField
               fullWidth
               id="topic"
@@ -206,17 +179,17 @@ const TemplateCreatePage = () => {
             />
 
             <Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
                 <TextField
                   label="Add Tags"
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
                   onKeyDown={handleTagKeyDown}
-                  sx={{ flexGrow: 1 }}
+                  sx={{flexGrow: 1}}
                 />
                 <Button onClick={addTag} variant="outlined">Add</Button>
               </Box>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
+              <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1}}>
                 {tags.map(tag => (
                   <Chip
                     key={tag.id}
@@ -230,10 +203,10 @@ const TemplateCreatePage = () => {
         </Paper>
 
         {/* Questions Section */}
-        <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Paper elevation={2} sx={{p: 3, mb: 3}}>
+          <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2}}>
             <Typography variant="h6">Questions</Typography>
-            <Button onClick={addQuestion} startIcon={<AddIcon />} variant="contained">
+            <Button onClick={addQuestion} startIcon={<AddIcon/>} variant="contained">
               Add Question
             </Button>
           </Box>
@@ -249,14 +222,14 @@ const TemplateCreatePage = () => {
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           elevation={1}
-                          sx={{ p: 2, mb: 2, position: 'relative' }}
+                          sx={{p: 2, mb: 2, position: 'relative'}}
                         >
-                          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <Box {...provided.dragHandleProps} sx={{ cursor: 'grab' }}>
-                              <DragHandleIcon />
+                          <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
+                            <Box {...provided.dragHandleProps} sx={{cursor: 'grab'}}>
+                              <DragHandleIcon/>
                             </Box>
                             <IconButton onClick={() => removeQuestion(index)}>
-                              <DeleteIcon />
+                              <DeleteIcon/>
                             </IconButton>
                           </Box>
 
@@ -276,7 +249,7 @@ const TemplateCreatePage = () => {
         </Paper>
 
         {/* Submit Button */}
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
           <Button type="submit" variant="contained" size="large" disabled={isSubmitting}>
             Create Template
           </Button>
@@ -287,15 +260,15 @@ const TemplateCreatePage = () => {
 };
 
 const QuestionForm: React.FC<{
-  question: Question;
-  updateQuestion: (updatedData: Partial<Question>) => void;
-}> = ({ question, updateQuestion }) => {
+  question: QuestionI;
+  updateQuestion: (updatedData: Partial<QuestionI>) => void;
+}> = ({question, updateQuestion}) => {
   const [optionInput, setOptionInput] = useState('');
 
   const addOption = () => {
     if (optionInput.trim()) {
       const newOptions = [...(question.options || []), optionInput.trim()];
-      updateQuestion({ options: newOptions });
+      updateQuestion({options: newOptions});
       setOptionInput('');
     }
   };
@@ -303,17 +276,17 @@ const QuestionForm: React.FC<{
   const removeOption = (index: number) => {
     const newOptions = [...(question.options || [])];
     newOptions.splice(index, 1);
-    updateQuestion({ options: newOptions });
+    updateQuestion({options: newOptions});
   };
 
   const validateQuestion = async () => {
     try {
-      await questionValidationSchema.validate(question, { abortEarly: false });
+      await questionValidationSchema.validate(question, {abortEarly: false});
       return {};
     } catch (err) {
       if (err instanceof yup.ValidationError) {
         return err.inner.reduce((acc, curr) => {
-          return { ...acc, [curr.path || '']: curr.message };
+          return {...acc, [curr.path || '']: curr.message};
         }, {});
       }
       return {};
@@ -323,25 +296,25 @@ const QuestionForm: React.FC<{
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    updateQuestion({ [name]: value });
+    const {name, value} = e.target;
+    updateQuestion({[name]: value});
     validateQuestion().then(setErrors);
   };
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
-    updateQuestion({ [name]: checked });
+    const {name, checked} = e.target;
+    updateQuestion({[name]: checked});
     validateQuestion().then(setErrors);
   };
 
   const handleSelectChange = (e: any) => {
-    const { name, value } = e.target;
-    updateQuestion({ [name]: value });
+    const {name, value} = e.target;
+    updateQuestion({[name]: value});
     validateQuestion().then(setErrors);
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+    <Box sx={{display: 'flex', flexDirection: 'column', gap: 2}}>
       <TextField
         fullWidth
         name="question"
@@ -380,7 +353,7 @@ const QuestionForm: React.FC<{
         </Select>
       </FormControl>
 
-      <Box sx={{ display: 'flex', gap: 2 }}>
+      <Box sx={{display: 'flex', gap: 2}}>
         <FormControlLabel
           control={
             <Checkbox
@@ -411,18 +384,18 @@ const QuestionForm: React.FC<{
             <FormHelperText error>{errors.options}</FormHelperText>
           )}
 
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+          <Box sx={{display: 'flex', alignItems: 'center', gap: 1, mb: 1}}>
             <TextField
               label="Add Option"
               value={optionInput}
               onChange={(e) => setOptionInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && addOption()}
-              sx={{ flexGrow: 1 }}
+              sx={{flexGrow: 1}}
             />
             <Button onClick={addOption} variant="outlined">Add</Button>
           </Box>
 
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+          <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 1}}>
             {question.options?.map((option, index) => (
               <Chip
                 key={index}

@@ -20,12 +20,16 @@ let TemplateLike = class TemplateLike extends sequelize_typescript_1.Model {
 exports.TemplateLike = TemplateLike;
 __decorate([
     (0, sequelize_typescript_1.ForeignKey)(() => users_model_1.User),
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER, allowNull: false }),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER, allowNull: false, onDelete: 'CASCADE' }),
     __metadata("design:type", Number)
 ], TemplateLike.prototype, "userId", void 0);
 __decorate([
     (0, sequelize_typescript_1.ForeignKey)(() => templates_model_1.Template),
-    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.INTEGER, allowNull: false }),
+    (0, sequelize_typescript_1.Column)({
+        type: sequelize_typescript_1.DataType.INTEGER,
+        allowNull: false,
+        onDelete: 'CASCADE',
+    }),
     __metadata("design:type", Number)
 ], TemplateLike.prototype, "templateId", void 0);
 exports.TemplateLike = TemplateLike = __decorate([

@@ -13,6 +13,7 @@ exports.User = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
 const forms_model_1 = require("../forms/forms.model");
 const templates_model_1 = require("../templates/templates.model");
+const comments_model_1 = require("../comments/comments.model");
 let User = class User extends sequelize_typescript_1.Model {
     name;
     email;
@@ -21,6 +22,7 @@ let User = class User extends sequelize_typescript_1.Model {
     role;
     answers;
     templates;
+    comments;
 };
 exports.User = User;
 __decorate([
@@ -74,13 +76,17 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "role", void 0);
 __decorate([
-    (0, sequelize_typescript_1.HasMany)(() => forms_model_1.Form),
+    (0, sequelize_typescript_1.HasMany)(() => forms_model_1.Form, { onDelete: 'CASCADE' }),
     __metadata("design:type", Array)
 ], User.prototype, "answers", void 0);
 __decorate([
-    (0, sequelize_typescript_1.HasMany)(() => templates_model_1.Template),
+    (0, sequelize_typescript_1.HasMany)(() => templates_model_1.Template, { onDelete: 'CASCADE' }),
     __metadata("design:type", Array)
 ], User.prototype, "templates", void 0);
+__decorate([
+    (0, sequelize_typescript_1.HasMany)(() => comments_model_1.Comment, { onDelete: 'CASCADE' }),
+    __metadata("design:type", Array)
+], User.prototype, "comments", void 0);
 exports.User = User = __decorate([
     (0, sequelize_typescript_1.Table)({ tableName: 'users' })
 ], User);

@@ -1,5 +1,6 @@
 import { Model } from 'sequelize-typescript';
 import { User } from '../users/users.model';
+import { Template } from '../templates/templates.model';
 interface CommentsAttributes {
     userId: number;
     templateId: number;
@@ -8,8 +9,9 @@ interface CommentsAttributes {
 export declare class Comment extends Model<Comment, CommentsAttributes> {
     id: number;
     templateId: number;
-    content: string;
     userId: number;
     user: User;
+    template: Template;
+    content: string;
 }
 export {};

@@ -58,6 +58,13 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Delete('delete/me')
+  deleteMe(@Req() req: Request) {
+    const user = req.user as { id: number };
+    return this.usersService.deleteMe(user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Roles('ADMIN')
   @UseGuards(RolesGuard)
   @Put('block')

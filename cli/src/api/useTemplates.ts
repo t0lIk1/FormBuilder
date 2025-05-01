@@ -1,6 +1,6 @@
 import api from "src/api/axios";
 import {useAsync} from "src/api/useAsync";
-import {TemplateI} from "src/types/type.ts";
+import {TemplateCreateDto} from "src/types/type.ts";
 
 export const useTemplates = () => {
   const {run, loading, error} = useAsync();
@@ -25,7 +25,7 @@ export const useTemplates = () => {
     });
   };
 
-  const createTemplates = async (data: TemplateI) => {
+  const createTemplates = async (data: TemplateCreateDto) => {
     return await run(async () => {
       const res = await api.post("/templates", data);
       return res.data;
@@ -39,7 +39,7 @@ export const useTemplates = () => {
     })
   }
 
-  const updateTemplate = async (data: TemplateI, id: number) => {
+  const updateTemplate = async (data: TemplateCreateDto, id: number) => {
     return await run(async () => {
       const res = await api.put(`/templates/${id}`, data);
       return res.data;
@@ -62,6 +62,5 @@ export const useTemplates = () => {
     deleteTemplates,
     loading,
     error,
-    token
   };
 };

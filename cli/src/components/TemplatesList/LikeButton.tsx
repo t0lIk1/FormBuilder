@@ -38,7 +38,6 @@ const LikeButton = ({
 
     try {
       const newLikedState = !isLiked;
-      // Оптимистичное обновление
       setIsLiked(newLikedState);
       setLikeCount(prev => newLikedState ? prev + 1 : prev - 1);
 
@@ -49,7 +48,6 @@ const LikeButton = ({
       }
     } catch (error) {
       console.error("Like error:", error);
-      // Откатываем изменения при ошибке
       setIsLiked(prev => !prev);
       setLikeCount(prev => isLiked ? prev + 1 : prev - 1);
     }

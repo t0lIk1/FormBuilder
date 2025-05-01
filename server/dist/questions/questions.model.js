@@ -106,11 +106,12 @@ __decorate([
     (0, sequelize_typescript_1.Column)({
         type: sequelize_typescript_1.DataType.INTEGER,
         allowNull: false,
+        onDelete: 'CASCADE'
     }),
     __metadata("design:type", Number)
 ], Question.prototype, "templateId", void 0);
 __decorate([
-    (0, sequelize_typescript_1.BelongsTo)(() => templates_model_1.Template),
+    (0, sequelize_typescript_1.BelongsTo)(() => templates_model_1.Template, { onDelete: 'CASCADE' }),
     __metadata("design:type", templates_model_1.Template)
 ], Question.prototype, "template", void 0);
 __decorate([

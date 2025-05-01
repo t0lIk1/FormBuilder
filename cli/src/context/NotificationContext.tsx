@@ -16,7 +16,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     open: false,
     message: '',
     severity: 'error' as Severity,
-    key: 0, // Добавляем ключ для принудительного обновления
+    key: 0,
   });
 
   const showNotification = (message: string, severity: Severity = 'error') => {

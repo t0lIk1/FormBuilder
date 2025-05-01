@@ -37,11 +37,12 @@ __decorate([
     (0, sequelize_typescript_1.Column)({
         type: sequelize_typescript_1.DataType.INTEGER,
         allowNull: false,
+        onDelete: 'CASCADE',
     }),
     __metadata("design:type", Number)
 ], Form.prototype, "templateId", void 0);
 __decorate([
-    (0, sequelize_typescript_1.BelongsTo)(() => templates_model_1.Template),
+    (0, sequelize_typescript_1.BelongsTo)(() => templates_model_1.Template, { onDelete: 'CASCADE' }),
     __metadata("design:type", templates_model_1.Template)
 ], Form.prototype, "template", void 0);
 __decorate([
@@ -49,11 +50,12 @@ __decorate([
     (0, sequelize_typescript_1.Column)({
         type: sequelize_typescript_1.DataType.INTEGER,
         allowNull: false,
+        onDelete: 'CASCADE',
     }),
     __metadata("design:type", Number)
 ], Form.prototype, "userId", void 0);
 __decorate([
-    (0, sequelize_typescript_1.BelongsTo)(() => users_model_1.User),
+    (0, sequelize_typescript_1.BelongsTo)(() => users_model_1.User, { onDelete: 'CASCADE' }),
     __metadata("design:type", users_model_1.User)
 ], Form.prototype, "user", void 0);
 __decorate([

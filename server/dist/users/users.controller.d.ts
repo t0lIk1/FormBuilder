@@ -12,6 +12,7 @@ export declare class UsersController {
     delete(body: {
         ids: number[];
     }): Promise<void>;
+    deleteMe(req: Request): Promise<number>;
     block(body: {
         ids: number[];
     }): Promise<void>;

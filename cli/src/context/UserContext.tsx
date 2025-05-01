@@ -1,17 +1,20 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { useUsers } from "src/api/useUsers.ts";
+import {createContext, useContext, useEffect, useState} from "react";
+import {useUsers} from "src/api/useUsers.ts";
+import {UserI} from "src/types/type.ts";
+import axios from "axios";
 
 interface UserContextType {
-  user: any;
+  user: UserI;
   token: string | null;
-  updateUser: (userData: any) => void;
+  updateUser: (userData: UserI) => void;
+  logout: () => void;
 }
 
 const UserContext = createContext<UserContextType | null>(null);
 
-export const UserProvider = ({ children }) => {
+export const UserProvider = ({children}) => {
   const [user, setUser] = useState(null);
-  const { getUser } = useUsers();
+  const {getUser} = useUsers();
   const token = localStorage.getItem("token");
 
   const fetchUser = async () => {
@@ -24,14 +27,19 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  const updateUser = (userData) => {
-    setUser(prev => ({ ...prev, ...userData }));
+  const updateUser = (userData: UserI) => {
+    setUser((prev) => ({...prev, ...userData}));
+  };
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    setUser(null);
+    delete axios.defaults.headers.common["Authorization"];
   };
 
   useEffect(() => {
     if (token) {
       if (!user) {
-        console.log("request user");
         fetchUser();
       }
     } else {
@@ -43,19 +51,16 @@ export const UserProvider = ({ children }) => {
     user,
     token,
     updateUser,
+    logout,
   };
 
-  return (
-    <UserContext.Provider value={value}>
-      {children}
-    </UserContext.Provider>
-  );
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
 
 export function useNowUser() {
   const context = useContext(UserContext);
   if (!context) {
-    throw new Error('useUser должен использоваться внутри UserProvider');
+    throw new Error("useNowUser должен использоваться внутри UserProvider");
   }
   return context;
 }

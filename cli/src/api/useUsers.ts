@@ -1,6 +1,6 @@
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import api from "src/api/axios.ts";
-import { useAsync } from "./useAsync.ts";
+import {useAsync} from "./useAsync.ts";
 
 interface AuthPayload {
   name?: string;
@@ -9,16 +9,21 @@ interface AuthPayload {
 }
 
 export const useUsers = () => {
-  // const token = localStorage.getItem("token");
-  const { run, loading, error } = useAsync();
+  const {run, loading, error} = useAsync();
   const navigate = useNavigate();
 
   const auth = (data: AuthPayload, type: "login" | "register") => {
     return run(async () => {
-      const { data: res } = await api.post(`/auth/${type}`, data);
+      const {data: res} = await api.post(`/auth/${type}`, data);
       localStorage.setItem("token", res.token);
       navigate("/");
       return res;
+    });
+  };
+
+  const deleteUser = async () => {
+    return await run(async () => {
+      await api.delete(`/users/delete/me`)
     });
   };
 
@@ -34,11 +39,9 @@ export const useUsers = () => {
     })
   }
 
-  const updateUser = async (data: AuthPayload, id: number) => {}
-
   const getAllUsers = async () => {
     return run(async () => {
-      const res = await api.get('/users', { headers: { Authorization: `Bearer ${token}` } })
+      const res = await api.get('/users', {headers: {Authorization: `Bearer ${token}`}})
       return res.data;
     })
   }
@@ -46,11 +49,11 @@ export const useUsers = () => {
   const toggleLike = (id: number) => {
     return run(async () => {
       const res = await api.post(`/templates/${id}/toggle-like`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: {Authorization: `Bearer ${token}`}
       })
       return res.data;
     })
   }
 
-  return {getUser, auth, loading, error, toggleLike, getAllUsers };
+  return {getUser, deleteUser, auth, loading, error, toggleLike, getAllUsers};
 };

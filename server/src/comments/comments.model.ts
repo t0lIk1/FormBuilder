@@ -1,12 +1,13 @@
 import {
+  BelongsTo,
   Column,
   DataType,
+  ForeignKey,
   Model,
   Table,
-  ForeignKey,
-  BelongsTo,
 } from 'sequelize-typescript';
 import { User } from '../users/users.model';
+import { Template } from '../templates/templates.model';
 
 interface CommentsAttributes {
   userId: number;
@@ -25,19 +26,28 @@ export class Comment extends Model<Comment, CommentsAttributes> {
   })
   declare id: number;
 
-  @Column({ type: DataType.INTEGER, allowNull: false })
+  @ForeignKey(() => Template)
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+    onDelete: 'CASCADE',
+  })
   templateId: number;
-
-  @Column({ type: DataType.TEXT, allowNull: false })
-  content: string;
 
   @ForeignKey(() => User)
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
+    onDelete: 'CASCADE',
   })
   userId: number;
 
-  @BelongsTo(() => User)
+  @BelongsTo(() => User, { onDelete: 'CASCADE' })
   user: User;
+
+  @BelongsTo(() => Template, { onDelete: 'CASCADE' })
+  template: Template;
+
+  @Column({ type: DataType.TEXT, allowNull: false })
+  content: string;
 }

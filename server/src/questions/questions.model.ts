@@ -98,13 +98,14 @@ export class Question extends Model<Question, QuestionAttributes> {
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
+    onDelete: 'CASCADE'
   })
   templateId: number;
 
-  @BelongsTo(() => Template)
+  @BelongsTo(() => Template, { onDelete: 'CASCADE' })
   template: Template;
 
-  // questions.model.ts
+
   @HasMany(() => Answer)
   answers: Answer[];
 }

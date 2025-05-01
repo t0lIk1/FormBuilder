@@ -1,4 +1,3 @@
-// src/hooks/useLike.ts
 import { useEffect, useState } from "react";
 import { useUsers } from "src/api/useUsers";
 import { useNowUser } from "src/context/UserContext";

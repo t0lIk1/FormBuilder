@@ -1,30 +1,23 @@
-import { useState, useEffect } from 'react';
-import {
-  Avatar,
-  Box,
-  Chip,
-  Container,
-  Paper,
-  Tab,
-  Tabs,
-  Typography
-} from '@mui/material';
+import {useEffect, useState} from 'react';
+import {Avatar, Box, Button, Chip, Container, Paper, Tab, Tabs, Typography} from '@mui/material';
 import Loader from "src/components/Loader/Loader";
 import TemplatesList from "src/components/TemplatesList/TemplatesList";
-import { useAsync } from 'src/api/useAsync';
-import { useNowUser } from "src/context/UserContext";
+import {useAsync} from 'src/api/useAsync';
+import {useNowUser} from "src/context/UserContext";
 import AdminPanelTab from "src/components/ProfilePage/tabs/AdminPanelTab";
 import FormsTab from "src/components/ProfilePage/tabs/FormsTab.tsx";
+import {useNavigate} from "react-router-dom";
+import {useUsers} from "src/api/useUsers.ts";
 
 type ProfileTab = 'templates' | 'forms' | 'admin-panel';
 
 const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState<ProfileTab>('templates');
   const [isMobile, setIsMobile] = useState(false);
-  const { loading } = useAsync();
-  const { user } = useNowUser();
-
-  // Определение мобильного устройства без использования темы
+  const {loading} = useAsync();
+  const {user, logout} = useNowUser();
+  const {deleteUser} = useUsers()
+  const navigate = useNavigate();
   useEffect(() => {
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth < 600);
@@ -38,18 +31,33 @@ const ProfilePage = () => {
     };
   }, []);
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: ProfileTab) => {
+
+  const handleDeleteProfile = async () => {
+    if (!window.confirm('Вы уверены, что хотите удалить профиль?')) return;
+
+    try {
+      await deleteUser();
+      logout();
+      navigate('/');
+    } catch (error) {
+      alert('Ошибка при удалении профиля');
+      console.error(error);
+    }
+  };
+
+
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: ProfileTab) => {
     setActiveTab(newValue);
   };
 
   if (loading) {
-    return <Loader />;
+    return <Loader/>;
   }
 
   if (!user) {
     return (
 
-      <Container maxWidth="lg" sx={{ mt: 4 }}>
+      <Container maxWidth="lg" sx={{mt: 4}}>
         <Typography variant="h6" color="text.secondary">
           Пользователь не найден
         </Typography>
@@ -60,20 +68,20 @@ const ProfilePage = () => {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'templates':
-        return <TemplatesList type="user" />;
+        return <TemplatesList type="user"/>;
       case 'forms':
         return (
-          <FormsTab />
+          <FormsTab/>
         );
       case 'admin-panel':
-        return user.role === "ADMIN" ? <AdminPanelTab /> : null;
+        return user.role === "ADMIN" ? <AdminPanelTab/> : null;
       default:
         return null;
     }
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    <Container maxWidth="lg" sx={{py: 4}}>
       <Box
         display="flex"
         alignItems={isMobile ? 'flex-start' : 'center'}
@@ -96,9 +104,19 @@ const ProfilePage = () => {
               label={user.role}
               color="primary"
               size={isMobile ? "small" : "medium"}
-              sx={{ ml: 2, verticalAlign: 'middle' }}
+              sx={{ml: 2, verticalAlign: 'middle'}}
             />
           </Typography>
+
+          <Box mt={2} display="flex" gap={2}>
+            <Button variant="outlined" color="primary" onClick={() => navigate('/profile/edit')}>
+              Редактировать профиль
+            </Button>
+            <Button variant="outlined" color="error" onClick={handleDeleteProfile}>
+              Удалить профиль
+            </Button>
+          </Box>
+
 
           <Typography variant="subtitle1" color="text.secondary">
             {user.email}
@@ -110,7 +128,7 @@ const ProfilePage = () => {
         </Box>
       </Box>
 
-      <Paper sx={{ mb: 3, overflowX: 'auto' }}>
+      <Paper sx={{mb: 3, overflowX: 'auto'}}>
         <Tabs
           value={activeTab}
           onChange={handleTabChange}
@@ -118,15 +136,15 @@ const ProfilePage = () => {
           scrollButtons={isMobile ? true : false}
           allowScrollButtonsMobile
         >
-          <Tab label="Мои шаблоны" value="templates" />
-          <Tab label="Мои формы" value="forms" />
+          <Tab label="Мои шаблоны" value="templates"/>
+          <Tab label="Мои формы" value="forms"/>
           {user.role === "ADMIN" && (
-            <Tab label="Админ Панель" value="admin-panel" />
+            <Tab label="Админ Панель" value="admin-panel"/>
           )}
         </Tabs>
       </Paper>
 
-      <Box sx={{ minHeight: '60vh' }}>
+      <Box sx={{minHeight: '60vh'}}>
         {renderTabContent()}
       </Box>
     </Container>

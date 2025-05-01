@@ -44,6 +44,10 @@ let UsersController = class UsersController {
     delete(body) {
         return this.usersService.deleteUsers(body.ids);
     }
+    deleteMe(req) {
+        const user = req.user;
+        return this.usersService.deleteMe(user.id);
+    }
     block(body) {
         return this.usersService.blockUsers(body.ids);
     }
@@ -106,6 +110,14 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "delete", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Delete)('delete/me'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "deleteMe", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, roles_decorator_1.Roles)('ADMIN'),

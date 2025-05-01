@@ -34,7 +34,6 @@ const AnswerFormPage = () => {
         const res = await getTemplateById(id);
         setTemplate(res);
         const emptyAnswers = res.questions?.reduce((acc, question: QuestionI): object => {
-          console.log(acc, question)
           acc[question.id] = question.type === QuestionType.CHECKBOX ? [] : "";
           return acc;
         }, {});
@@ -42,9 +41,8 @@ const AnswerFormPage = () => {
       }
     };
     fetchTemplate();
-  }, [id]);
+  }, []);
 
-  // 2. Простая валидация - проверяем только обязательные поля
   const getValidationRules = () => {
     const rules = {};
     template?.questions?.forEach(question => {
@@ -64,7 +62,6 @@ const AnswerFormPage = () => {
   };
   const onSubmit = async (values: any) => {
     try {
-      // Преобразуем данные из формата Formik в формат, ожидаемый сервером
       const answers = Object.entries(values).map(([questionId, value]) => ({
         questionId: parseInt(questionId),
         value: value
@@ -74,18 +71,14 @@ const AnswerFormPage = () => {
         answers: answers
       };
       console.log(submitData)
-      // Отправляем данные на сервер
       await submitForm(template.id, submitData);
 
-      // Перенаправляем после успешной отправки
       navigate(`/templates/${id}`);
     } catch (error) {
       console.error('Ошибка при отправке формы:', error);
-      // Можно добавить уведомление об ошибке
     }
   };
 
-  // 3. Форма с валидацией
   const formik = useFormik({
     initialValues: {},
     validationSchema: getValidationRules(),
@@ -93,16 +86,14 @@ const AnswerFormPage = () => {
     enableReinitialize: true
   });
 
-  // 4. Обработка чекбоксов (исправленная версия)
   const handleCheckbox = (questionId: number, option: string) => {
-    const current = formik.values[questionId] || []; // Используем questionId вместо question.id
+    const current = formik.values[questionId] || [];
     const updated = current.includes(option)
       ? current.filter(item => item !== option)
       : [...current, option];
     formik.setFieldValue(String(questionId), updated);
   };
 
-  // 5. Рендер полей с валидацией
   const renderField = (question: QuestionI) => {
     const error = formik.touched[question.id] && formik.errors[question.id];
 
@@ -135,8 +126,8 @@ const AnswerFormPage = () => {
                   control={
                     <Checkbox
                       checked={(formik.values[question.id] || []).includes(option)}
-                      onChange={() => handleCheckbox(question.id, option)} // Передаем question.id
-                      name={String(question.id)} // Добавляем name для корректной работы Formik
+                      onChange={() => handleCheckbox(question.id, option)}
+                      name={String(question.id)}
                     />
                   }
                   label={option}

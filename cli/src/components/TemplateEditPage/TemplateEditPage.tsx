@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {useFormik} from 'formik';
 import * as yup from 'yup';
 import {
@@ -26,44 +26,8 @@ import DragHandleIcon from '@mui/icons-material/DragHandle';
 import {useTemplates} from 'src/api/useTemplates';
 import {useNavigate, useParams} from "react-router-dom";
 import Loader from "src/components/Loader/Loader.tsx";
-
-export enum QuestionType {
-  TEXT = 'TEXT',
-  TEXTAREA = 'TEXTAREA',
-  NUMBER = 'NUMBER',
-  CHECKBOX = 'CHECKBOX',
-  SELECT = 'SELECT',
-}
-
-interface Tag {
-  id: number; // было string
-  name: string;
-  TemplateTag?: { // добавляем опциональное поле
-    templateId: number;
-    tagId: number;
-  };
-}
-
-interface Question {
-  id?: number; // добавляем опциональный id
-  question: string;
-  description: string;
-  type: QuestionType;
-  isRequired: boolean;
-  options?: string[];
-  showInTable: boolean;
-  order?: number; // добавляем опциональные поля
-  templateId?: number;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-interface TemplateFormValues {
-  topic: string;
-  title: string;
-  description: string;
-  isPublic: boolean;
-}
+import {QuestionI, QuestionType, TagI, TemplateI} from 'src/types/type';
+import {NotificationContext} from 'src/context/NotificationContext';
 
 const templateValidationSchema = yup.object({
   topic: yup.string().required('Topic is required'),
@@ -85,20 +49,21 @@ const questionValidationSchema = yup.object({
 });
 
 const TemplateEditPage = () => {
-  const {id} = useParams<{ id: string }>();
-  const [tags, setTags] = useState<Tag[]>([]);
+  const {id} = useParams();
+  const [tags, setTags] = useState<TagI[]>([]);
   const [tagInput, setTagInput] = useState('');
   const {updateTemplate, loading} = useTemplates();
-  const [questions, setQuestions] = useState<Question[]>([]);
+  const [questions, setQuestions] = useState<QuestionI[]>([]);
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {getTemplateById} = useTemplates();
+  const {showNotification} = useContext(NotificationContext);
 
 
   useEffect(() => {
     const loadTemplate = async () => {
       try {
-        const template = await getTemplateById(id);
+        const template = await getTemplateById(Number(id));
         templateFormik.setValues({
           topic: template.topic,
           title: template.title,
@@ -106,7 +71,6 @@ const TemplateEditPage = () => {
           isPublic: template.isPublic,
         });
 
-        // Преобразуем вопросы, удаляя лишние поля
         setQuestions(template.questions.map(q => ({
           question: q.question,
           description: q.description,
@@ -116,14 +80,12 @@ const TemplateEditPage = () => {
           showInTable: q.showInTable
         })));
 
-        // Преобразуем теги
-        setTags(template.tags.map(tag => ({
+        setTags(template.tags.map((tag: TagI) => ({
           id: tag.id,
           name: tag.name,
-          TemplateTag: tag.TemplateTag
         })));
       } catch (error) {
-        console.error('Failed to load template', error);
+        showNotification('Failed to load template', "error");
         navigate('/templates', {replace: true});
       }
     };
@@ -132,7 +94,7 @@ const TemplateEditPage = () => {
   }, []);
 
 
-  const templateFormik = useFormik<TemplateFormValues>({
+  const templateFormik = useFormik<TemplateI>({
     initialValues: {
       topic: '',
       title: '',
@@ -142,22 +104,21 @@ const TemplateEditPage = () => {
     validationSchema: templateValidationSchema,
     onSubmit: async (values) => {
       try {
-        console.log(questions)
         setIsSubmitting(true)
         await updateTemplate({
           ...values,
           questions,
           tags: tags.map(tag => tag.name),
         }, id);
-        navigate('/templates');
+        navigate('/');
       } catch (error) {
-        console.error('Error updating template:', error);
+        showNotification('Error updating template:', "error");
       }
     },
   });
 
   const addQuestion = () => {
-    const newQuestion: Question = {
+    const newQuestion: QuestionI = {
       question: '',
       description: '',
       type: QuestionType.TEXT,
@@ -171,13 +132,13 @@ const TemplateEditPage = () => {
     setQuestions(questions.filter((_, i) => i !== index));
   };
 
-  const updateQuestion = (index: number, updatedData: Partial<Question>) => {
-    setQuestions(questions.map((q, i) =>
-      i === index ? {...q, ...updatedData} : q
+  const updateQuestion = (index: number, updatedData: Partial<QuestionI>) => {
+    setQuestions(questions.map((question, i) =>
+      i === index ? {...question, ...updatedData} : question
     ));
   };
 
-  const onDragEnd = (result: any) => {
+  const onDragEnd = (result) => {
     if (!result.destination) return;
 
     const reorderedQuestions = Array.from(questions);
@@ -369,8 +330,8 @@ const TemplateEditPage = () => {
 };
 
 const QuestionForm: React.FC<{
-  question: Question;
-  updateQuestion: (updatedData: Partial<Question>) => void;
+  question: QuestionI;
+  updateQuestion: (updatedData: Partial<QuestionI>) => void;
 }> = ({question, updateQuestion}) => {
   const [optionInput, setOptionInput] = useState('');
 

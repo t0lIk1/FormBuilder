@@ -16,7 +16,6 @@ const answers_model_1 = require("./answers.model");
 const questions_model_1 = require("../questions/questions.model");
 const templates_model_1 = require("../templates/templates.model");
 const auth_module_1 = require("../auth/auth.module");
-const answer_option_model_1 = require("./answer-option.model");
 let FormsModule = class FormsModule {
 };
 exports.FormsModule = FormsModule;
@@ -28,7 +27,6 @@ exports.FormsModule = FormsModule = __decorate([
                 answers_model_1.Answer,
                 questions_model_1.Question,
                 templates_model_1.Template,
-                answer_option_model_1.AnswerOption,
             ]),
             auth_module_1.AuthModule,
         ],

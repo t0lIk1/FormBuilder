@@ -20,6 +20,7 @@ const templates_tags_model_1 = require("../tags/templates-tags.model");
 const tags_module_1 = require("../tags/tags.module");
 const template_likes_model_1 = require("./template-likes.model");
 const questions_module_1 = require("../questions/questions.module");
+const comments_model_1 = require("../comments/comments.model");
 let TemplatesModule = class TemplatesModule {
 };
 exports.TemplatesModule = TemplatesModule;
@@ -31,6 +32,7 @@ exports.TemplatesModule = TemplatesModule = __decorate([
                 templates_model_1.Template,
                 users_model_1.User,
                 tags_model_1.Tag,
+                comments_model_1.Comment,
                 templates_tags_model_1.TemplateTag,
                 template_likes_model_1.TemplateLike,
             ]),

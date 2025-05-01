@@ -1,6 +1,7 @@
 import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
 import { Form } from '../forms/forms.model';
 import { Template } from '../templates/templates.model';
+import { Comment } from '../comments/comments.model';
 
 interface UserAttributes {
   name: string;
@@ -56,9 +57,12 @@ export class User extends Model<User, UserAttributes> {
   })
   role: 'ADMIN' | 'USER';
 
-  @HasMany(() => Form)
+  @HasMany(() => Form, { onDelete: 'CASCADE' })
   answers: Form[];
 
-  @HasMany(() => Template)
+  @HasMany(() => Template, { onDelete: 'CASCADE' })
   templates: Template[];
+
+  @HasMany(() => Comment, { onDelete: 'CASCADE' })
+  comments: Comment[];
 }

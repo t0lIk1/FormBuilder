@@ -1,11 +1,9 @@
 import { Question } from 'src/questions/questions.model';
-import { AnswerOption } from './answer-option.model';
 import {
   BelongsTo,
   Column,
   DataType,
   ForeignKey,
-  HasMany,
   Model,
   Table,
 } from 'sequelize-typescript';
@@ -24,29 +22,27 @@ export class Answer extends Model<Answer> {
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
+    onDelete: 'CASCADE',
   })
-  declare formId: number;
+  formId: number;
 
   @ForeignKey(() => Question)
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
+    onDelete: 'CASCADE',
   })
-  declare questionId: number;
+  questionId: number;
+
+  @BelongsTo(() => Form, { onDelete: 'CASCADE' })
+  form: Form;
+
+  @BelongsTo(() => Question, { onDelete: 'CASCADE' })
+  question: Question;
 
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
-  declare value: string | null;
-
-  // Добавляем явное объявление для ассоциаций
-  @BelongsTo(() => Form)
-  declare form: Form;
-
-  @BelongsTo(() => Question)
-  declare question: Question;
-
-  @HasMany(() => AnswerOption)
-  declare selectedOptions: AnswerOption[];
+  value: string | null;
 }

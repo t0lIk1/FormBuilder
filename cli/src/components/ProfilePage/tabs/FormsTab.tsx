@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import api from "src/api/axios";
 import { useNowUser } from "src/context/UserContext";
 import {
   Table,
@@ -16,13 +15,12 @@ import {
   CircularProgress,
 } from "@mui/material";
 import {useForm} from "src/api/useForm.ts";
-import {useNavigate} from "react-router-dom";
+import {FormI, TemplateI} from "src/types/type.ts";
 
 const FormsTab = () => {
-  const [forms, setForms] = useState([]);
+  const [forms, setForms] = useState<FormI[]>([]);
   const { user } = useNowUser();
   const {getFormByNowUser, loading} = useForm();
-  const navigate = useNavigate();
   useEffect(() => {
     const fetchForms = async () => {
           const res = await getFormByNowUser()
@@ -30,10 +28,6 @@ const FormsTab = () => {
     };
     fetchForms();
   }, [user]);
-
-  const viewFormDetails = (formId) => {
-    navigate(`/templates/${form.templateId}/responses/${formId}`);
-  };
 
   if (loading) {
     return (
@@ -62,8 +56,7 @@ const FormsTab = () => {
           </TableHead>
           <TableBody>
             {forms.map((form) => {
-              // Find the corresponding template from user.templates
-              const template = user.templates.find(t => t.id === form.templateId);
+              const template = user.templates.find((template: TemplateI) => template.id === form.templateId);
 
               return (
                 <TableRow key={form.id}>

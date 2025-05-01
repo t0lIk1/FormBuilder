@@ -62,7 +62,7 @@ const Comments: React.FC<CommentsProps> = ({templateId}) => {
             ? {
               ...comment,
               ...updatedComment,
-              user: updatedComment.user ?? comment.user, // сохраняем старого user, если не пришёл новый
+              user: updatedComment.user ?? comment.user,
             }
             : comment
         )

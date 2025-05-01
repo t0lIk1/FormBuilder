@@ -1,5 +1,5 @@
 import Box from "@mui/material/Box";
-import {Container, Typography, useTheme} from "@mui/material";
+import {Container, Typography} from "@mui/material";
 import {useEffect, useState} from "react";
 import {useTemplates} from "../../api/useTemplates.ts";
 import Loader from "../Loader/Loader.tsx";
@@ -13,10 +13,10 @@ interface TemplatesListProps {
 }
 
 const TemplatesList = ({type = "all"}: TemplatesListProps) => {
-  const {getAllTemplates, getTemplatesByUser, loading, token} = useTemplates();
+  const {getAllTemplates, getTemplatesByUser, loading} = useTemplates();
   const [data, setData] = useState<TemplateI[]>([]);
   const {user} = useNowUser();
-  const theme = useTheme();
+  const token = localStorage.getItem("token");
 
   const fetchTemplates = async () => {
     if (type === "all") {
@@ -24,7 +24,6 @@ const TemplatesList = ({type = "all"}: TemplatesListProps) => {
       setData(res);
     } else if (type === "user") {
       const res = await getTemplatesByUser();
-      console.log(res)
       setData(res);
     }
   };
@@ -34,7 +33,6 @@ const TemplatesList = ({type = "all"}: TemplatesListProps) => {
   }, [type]);
 
   const handleDeleteSuccess = () => {
-    // Перезагружаем шаблоны после удаления
     fetchTemplates();
   };
 
@@ -46,18 +44,11 @@ const TemplatesList = ({type = "all"}: TemplatesListProps) => {
     template.isPublic || (user && template.authorId === user.id)
   );
 
-  if (filteredData.length === 0) {
-    return (
-      <Typography color="text.secondary" sx={{mt: 2}}>
-        {type === "user" ? "У вас пока нет шаблонов" : "Шаблонов пока нет"}
-      </Typography>
-    );
-  }
 
   return (
     <>
       <Container maxWidth="lg">
-        <Box
+        {filteredData.length !== 0 ? <Box
           component="div"
           sx={{
             marginTop: 6,
@@ -83,10 +74,12 @@ const TemplatesList = ({type = "all"}: TemplatesListProps) => {
                 }
               }}
             >
-              <TemplateCard {...el} onDeleteSuccess={handleDeleteSuccess} />
+              <TemplateCard {...el} onDeleteSuccess={handleDeleteSuccess}/>
             </Box>
           ))}
-        </Box>
+        </Box> : <Typography color="text.secondary" sx={{mt: 2}}>
+          {type === "user" ? "У вас пока нет шаблонов" : "Шаблонов пока нет"}
+        </Typography>}
       </Container>
       {token && <AddTemplateButton/>}
     </>
