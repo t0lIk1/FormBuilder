@@ -19,7 +19,6 @@ export class AccessTemplatesGuard implements CanActivate {
       params: { id?: string; templateId?: string };
     }>();
 
-    // Получаем ID шаблона из разных возможных параметров
     const templateId = request.params.templateId || request.params.id;
     if (!templateId || isNaN(Number(templateId))) {
       throw new NotFoundException('Incorrect template id');
@@ -35,7 +34,7 @@ export class AccessTemplatesGuard implements CanActivate {
       throw new ForbiddenException('Access denied: you are not logged in');
     }
 
-    if (template.authorId !== user.id && user.role !== 'ADMIN') {
+    if (template.dataValues.authorId !== user.id && user.role !== 'ADMIN') {
       throw new ForbiddenException(
         'Access denied: you do not have permission for this template',
       );
