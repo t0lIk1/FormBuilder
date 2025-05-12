@@ -39,6 +39,7 @@ import {
     Translate as LanguageIcon
 } from '@mui/icons-material';
 import {Dropbox} from "dropbox";
+import {useNowUser} from "src/context/UserContext.tsx";
 
 const Navbar = () => {
     const {t, i18n} = useTranslation();
@@ -52,6 +53,7 @@ const Navbar = () => {
     const [ticketDialogOpen, setTicketDialogOpen] = useState(false);
     const [summary, setSummary] = useState('');
     const [priority, setPriority] = useState('Average');
+    const {user} = useNowUser()
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -94,7 +96,7 @@ const Navbar = () => {
 
 
     const handleSubmitTicket = async () => {
-        const user = "Current User";
+        const user = user.name || "not authorized user";
         const currentPath = window.location.href;
         const template = "Some Template";
 
